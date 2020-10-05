@@ -1,0 +1,1708 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Kris van Rens">
+  <title>Understanding C++ value categories</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="reveal.js/css/reset.css">
+  <link rel="stylesheet" href="reveal.js/css/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="reveal.js/css/theme/solarized.css" id="theme">
+  <!-- Printing and PDF exports -->
+  <script>
+    var link = document.createElement( 'link' );
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match( /print-pdf/gi ) ? 'reveal.js/css/print/pdf.css' : 'reveal.js/css/print/paper.css';
+    document.getElementsByTagName( 'head' )[0].appendChild( link );
+  </script>
+  <!--[if lt IE 9]>
+  <script src="reveal.js/lib/js/html5shiv.js"></script>
+  <![endif]-->
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Understanding C++ value categories</h1>
+  <p class="author">Kris van Rens</p>
+</section>
+
+<section>
+<section id="whats-ahead" class="title-slide slide level1">
+<h1>What’s ahead?</h1>
+<ul>
+<li class="fragment"><strong>What are value categories?</strong></li>
+</ul>
+<div class="fragment">
+<p><em>(questions)</em></p>
+<ul>
+<li class="fragment"><strong>Value categories in the wild</strong></li>
+</ul>
+<aside class="notes">
+<p>Hi, and welcome to my talk on C++ value categories. Let me start off by asking you a rhetorical question: who in here has heard about lvalues/rvalues/etc. but has a blurry understanding of it? I bet there’s at least some of you who know a little bit about them, but who are not confident about their knowledge. Perhaps you’re even confused of all the information on value categories out there. And, perhaps you don’t even know what I’m talking about – that’s fine, we’re going to fix that!</p>
+<p>Let’s get started! By the way, if you have any questions during the talk, don’t hesitate to ask them right away.</p>
+<p>A little table of contents: I split the talk up in two parts: the first part is specifically about value categories, and the second part it about their practical applications.</p>
+</aside>
+</div>
+</section>
+<section id="a-little-bit-about-me" class="slide level2">
+<h2>A little bit about me</h2>
+<p><img data-src="images/em-nerd_face.svg" style="width:7.0%" /> <img data-src="images/em-man-woman-girl-boy.svg" style="width:7.0%" /> <img data-src="images/em-guitar.svg" style="width:7.0%" /> <img data-src="images/em-running.svg" style="width:7.0%" /> <img data-src="images/em-man_climbing.svg" style="width:7.0%" /></p>
+<p><a href="">kris@vanrens.org</a></p>
+<aside class="notes">
+<p>A little bit about me: I’m Kris. I’m lead developer at ViNotion, a computer vision company here in Eindhoven. We make products that use video data to perform automated analysis such as multimodal traffic counting. We exploit machine learning algorithms on GPUs for our vision processing, and build our product software in C++. Outside of work I’m a husband, father of two, guitarist in a metal band and an avid runner and occasional climber. For any questions or comments, don’t hesitate to reach out to me by e-mail or LinkedIn.</p>
+</aside>
+</section>
+<section id="the-premise-and-goals" class="slide level2">
+<h2>The premise and goals</h2>
+<aside class="notes">
+<p>In this talk I’m going to cover a specific aspect of the C++ language standard: expression value categories. And I mean C++11/14 but specifically C++17 and onwards. Of course, as with every aspect of C++, there’s more to it than can be told in 50 minutes, so you might want to dig in deeper yourself. For that, if you’re interested, I will provide this presentation and an included list of resources.</p>
+<p>The goals of this talk are:</p>
+<ul>
+<li>Provide you with a basic understanding of the value categories and their meaning in C++,</li>
+<li>Show you how to apply your knowledge of value categories to make effective implementation choices and improve your code!</li>
+</ul>
+<p>To jump right in, and let’s start with a quiz!</p>
+</aside>
+</section>
+<section id="quiz" class="slide level2">
+<h2>Quiz</h2>
+<div class="columns">
+<div class="column">
+<div class="sourceCode" id="cb1"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">struct</span> Number {</span>
+<span id="cb1-2"><a href="#cb1-2"></a>  <span class="dt">int</span> <span class="va">value_</span> = {};</span>
+<span id="cb1-3"><a href="#cb1-3"></a>};</span>
+<span id="cb1-4"><a href="#cb1-4"></a></span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="kw">class</span> T {</span>
+<span id="cb1-6"><a href="#cb1-6"></a><span class="kw">public</span>:</span>
+<span id="cb1-7"><a href="#cb1-7"></a>  T(<span class="at">const</span> Number &amp;n) : <span class="va">n_</span>{n} {}</span>
+<span id="cb1-8"><a href="#cb1-8"></a></span>
+<span id="cb1-9"><a href="#cb1-9"></a>  T(<span class="at">const</span> T &amp;) { puts(<span class="st">&quot;Copy c&#39;tor&quot;</span>); }</span>
+<span id="cb1-10"><a href="#cb1-10"></a></span>
+<span id="cb1-11"><a href="#cb1-11"></a>  Number get() { <span class="cf">return</span> <span class="va">n_</span>; }</span>
+<span id="cb1-12"><a href="#cb1-12"></a></span>
+<span id="cb1-13"><a href="#cb1-13"></a><span class="kw">private</span>:</span>
+<span id="cb1-14"><a href="#cb1-14"></a>  Number <span class="va">n_</span>;</span>
+<span id="cb1-15"><a href="#cb1-15"></a>};</span></code></pre></div>
+</div><div class="column">
+<div class="sourceCode" id="cb2"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb2-1"><a href="#cb2-1"></a><span class="at">static</span> T create(Number &amp;&amp;n) {</span>
+<span id="cb2-2"><a href="#cb2-2"></a>  <span class="cf">return</span> T{<span class="bu">std::</span>move(n)};</span>
+<span id="cb2-3"><a href="#cb2-3"></a>}</span>
+<span id="cb2-4"><a href="#cb2-4"></a></span>
+<span id="cb2-5"><a href="#cb2-5"></a><span class="dt">int</span> main() {</span>
+<span id="cb2-6"><a href="#cb2-6"></a>  T x = T{create(Number{<span class="dv">42</span>})};</span>
+<span id="cb2-7"><a href="#cb2-7"></a></span>
+<span id="cb2-8"><a href="#cb2-8"></a>  <span class="cf">return</span> x.get().<span class="va">value_</span>;</span>
+<span id="cb2-9"><a href="#cb2-9"></a>}</span></code></pre></div>
+<p>What’s the output?</p>
+</div>
+</div>
+<aside class="notes">
+<p>The question is: what is the output of this code? Both in terms of assembly code and standard output messages.</p>
+<p>Just take some time to read this.</p>
+<p>…</p>
+<p>Remember or write down your answer. We’re going to revisit this quiz code a couple of times during this presentation.</p>
+</aside>
+</section></section>
+<section>
+<section id="what-are-value-categories" class="title-slide slide level1">
+<h1>What are value categories?</h1>
+
+</section>
+<section id="it-all-starts-with" class="slide level2">
+<h2>It all starts with…</h2>
+<aside class="notes">
+<p>Let’s get cracking! Before we get on though, I’d like you to temporarily forget everything you know about value categories. Be open-minded about what I have to say, it’s not hard at all to understand correctly.</p>
+<p>So, what are value categories? Value categories are about …</p>
+</aside>
+</section>
+<section id="expressions" class="slide level2">
+<h2>…expressions!</h2>
+<div class="fragment">
+<blockquote>
+<p>Value categories are <strong>not about objects or class types</strong>, they are about <strong>expressions</strong>!</p>
+</blockquote>
+<aside class="notes">
+<p>This is a very important bit of information.</p>
+<p>…</p>
+</aside>
+</div>
+</section>
+<section id="i-mean-seriously" class="slide level2">
+<h2>I mean, seriously…</h2>
+<aside class="notes">
+<p>…</p>
+</aside>
+</section>
+<section id="expressions-1" class="slide level2">
+<h2>…expressions!</h2>
+<aside class="notes">
+<p>Now, I’m repeating this, because it is key to understanding value categories. And it’s where most people go wrong in the understanding of value categories.</p>
+<p>If you’re going to leave this presentation early, fall asleep, whatever – at least remember this: value categories are about expressions.</p>
+<p>If expressions are that important, what is an expression?</p>
+</aside>
+</section>
+<section id="what-is-an-expression" class="slide level2">
+<h2>What is an expression?</h2>
+<blockquote>
+<p>An expression is a sequence of operators and their operands, that specifies a computation.</p>
+</blockquote>
+<aside class="notes">
+<p>…</p>
+<p>OK, operators and their operands specifying computations. A very general and often used concept in your code. In fact, I reckon about half of your code is expressions, so value categories are relevant for a large part of your code. Expressions live alongside statements, and are often parts of statements.</p>
+</aside>
+</section>
+<section id="expression-outcome" class="slide level2">
+<h2>Expression outcome</h2>
+<blockquote>
+<p>Expression evaluation may produce a result, and may generate a side-effect.</p>
+</blockquote>
+<aside class="notes">
+<p>…</p>
+<p>So, an expression may produce a result and have a side-effect. For those that don’t know what a side-effect is: for example: the <code>printf</code> function has a side-effect, namely that a string is written to standard output. Let’s look at some examples.</p>
+</aside>
+</section>
+<section id="section" class="slide level2">
+<h2></h2>
+<h3 id="example-expressions-1">Example expressions (1)</h3>
+<div class="sourceCode" id="cb3"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb3-1"><a href="#cb3-1"></a><span class="dv">42</span>  <span class="co">// Expression evaluating to value 42</span></span>
+<span id="cb3-2"><a href="#cb3-2"></a></span>
+<span id="cb3-3"><a href="#cb3-3"></a><span class="dv">17</span> + <span class="dv">42</span>  <span class="co">// Expression evaluating to value 59</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb4-1"><a href="#cb4-1"></a><span class="dt">int</span> a;</span>
+<span id="cb4-2"><a href="#cb4-2"></a></span>
+<span id="cb4-3"><a href="#cb4-3"></a>a = <span class="dv">23</span>  <span class="co">// Expression evaluating to value 23</span></span>
+<span id="cb4-4"><a href="#cb4-4"></a>a + <span class="dv">17</span>  <span class="co">// Expression evaluation to value 40</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb5-1"><a href="#cb5-1"></a><span class="kw">static_cast</span>&lt;<span class="dt">float</span>&gt;(a)  <span class="co">// Expression evaluating to floating-point value 23.0f</span></span></code></pre></div>
+<aside class="notes">
+<p>Some simple examples.</p>
+<p>…</p>
+</aside>
+</section>
+<section id="section-1" class="slide level2">
+<h2></h2>
+<h3 id="example-expressions-2">Example expressions (2)</h3>
+<div class="sourceCode" id="cb6"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb6-1"><a href="#cb6-1"></a><span class="dt">int</span> a;</span>
+<span id="cb6-2"><a href="#cb6-2"></a></span>
+<span id="cb6-3"><a href="#cb6-3"></a><span class="kw">sizeof</span> a  <span class="co">// Expression evaluating to the byte size of &#39;a&#39;</span></span>
+<span id="cb6-4"><a href="#cb6-4"></a>          <span class="co">// Id-expression &#39;a&#39; is unevaluated</span></span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb7-1"><a href="#cb7-1"></a>[]{ <span class="cf">return</span> <span class="dv">3</span>; }  <span class="co">// Expression evaluating to a closure</span></span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb8-1"><a href="#cb8-1"></a>printf(<span class="st">&quot;Hi!</span><span class="sc">\n</span><span class="st">&quot;</span>)  <span class="co">// Expression evaluating to the number of characters written</span></span>
+<span id="cb8-2"><a href="#cb8-2"></a>                 <span class="co">// Result is often discarded, i.e. a &#39;discarded-value expression&#39;</span></span></code></pre></div>
+<aside class="notes">
+<p>Some more involved examples.</p>
+<p>…</p>
+<p>Now, where do value categories stand in relation to expressions?</p>
+</aside>
+</section>
+<section id="expressions-in-c" class="slide level2">
+<h2>Expressions in C++</h2>
+<p>In C++, each expression is identified by two properties:</p>
+<p><img data-src="images/expressions.png" style="width:60.0%" /></p>
+<aside class="notes">
+<ul>
+<li>Type: is some non-reference type,</li>
+<li>Value category: is one of three primary value categories.</li>
+</ul>
+<p>Let’s take a look at them!</p>
+</aside>
+</section>
+<section id="primary-value-categories" class="slide level2">
+<h2>Primary value categories</h2>
+<div class="fragment">
+<p><span style="color:#cc0000"><strong><code>lvalue</code></strong></span> – <strong>L</strong>ocator value</p>
+</div>
+<div class="fragment">
+<p><span style="color:#0066cc"><strong><code>prvalue</code></strong></span> – <strong>P</strong>ure <code>rvalue</code></p>
+</div>
+<div class="fragment">
+<p><span style="color:#cc00cc"><strong><code>xvalue</code></strong></span> – e<strong>X</strong>piring value</p>
+<aside class="notes">
+<p>First, there is the lvalue, or locator value. Second, there’s the prvalue, or pure rvalue. Lastly, there’s the xvalue, or expiring value.</p>
+<p>These are the three primary value categories, as described in the C++ standard.</p>
+<p>Please note that these alternative names are unofficial. They can help you memorize the meaning of a value category, but in literature or the standard or articles you’ll only find the use of the shortened names.</p>
+<p>But probably most of you know about the existence of rvalues, and they’re not on the list! That’s because there’s more!</p>
+</aside>
+</div>
+</section>
+<section id="but-waittheres-more" class="slide level2">
+<h2>But wait…there’s more!</h2>
+<div class="fragment">
+<p><span style="color:#cc0000"><strong><code>glvalue</code></strong></span> – <strong>G</strong>eneral <code>lvalue</code></p>
+</div>
+<div class="fragment">
+<p><span style="color:#0066cc"><strong><code>rvalue</code></strong></span> – errr<strong>R</strong>rr..value <img data-src="images/em-pirate_flag.svg" style="width:3.0%" /></p>
+<aside class="notes">
+<p>The previously mentioned value categories were the primary value categories.</p>
+<p>But there are two more value categories: the glvalue, or general lvalue, and the rvalue, or errrrrrRrrrvalue.</p>
+<p>Now that we know all the value categories there are, let’s organize them.</p>
+</aside>
+</div>
+</section>
+<section id="back-to-expressions" class="slide level2">
+<h2>Back to expressions</h2>
+<p>Value categories are organized based on expression properties:</p>
+<ol type="1">
+<li class="fragment">Does it evaluate to an identity?</li>
+<li class="fragment">Can its result resources be safely stolen?</li>
+</ol>
+<aside class="notes">
+<p>…</p>
+<p>Remember each expression may evaluate to a result? This is the result the second property is about.</p>
+<p>Stealing resources might sound rather hostile, but really this is the best way to describe it. Disembowelling could be another candidate, but that doesn’t really make it any better I guess..</p>
+<p>Let’s take a look at some code examples for each of the two properties.</p>
+</aside>
+</section>
+<section id="section-2" class="slide level2">
+<h2></h2>
+<h3 id="does-it-evaluate-to-an-identity">Does it evaluate to an identity?</h3>
+<div class="columns">
+<div class="column">
+<div class="sourceCode" id="cb9"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb9-1"><a href="#cb9-1"></a><span class="dt">int</span> a;</span>
+<span id="cb9-2"><a href="#cb9-2"></a></span>
+<span id="cb9-3"><a href="#cb9-3"></a>a  <span class="co">// Has identity</span></span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb10-1"><a href="#cb10-1"></a><span class="dv">42</span>                <span class="co">// Has no identity</span></span>
+<span id="cb10-2"><a href="#cb10-2"></a><span class="kw">nullptr</span>           <span class="co">// Has no identity</span></span>
+<span id="cb10-3"><a href="#cb10-3"></a><span class="kw">false</span>             <span class="co">// Has no identity</span></span>
+<span id="cb10-4"><a href="#cb10-4"></a>[]{ <span class="cf">return</span> <span class="dv">42</span>; }  <span class="co">// Has no identity</span></span>
+<span id="cb10-5"><a href="#cb10-5"></a><span class="st">&quot;Hi&quot;</span>              <span class="co">// Has identity</span></span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb11-1"><a href="#cb11-1"></a><span class="bu">std::</span>cout  <span class="co">// Has identity</span></span></code></pre></div>
+</div><div class="column">
+<div class="sourceCode" id="cb12"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb12-1"><a href="#cb12-1"></a>a + <span class="dv">2</span>      <span class="co">// Has no identity</span></span>
+<span id="cb12-2"><a href="#cb12-2"></a>a || <span class="kw">true</span>  <span class="co">// Has no identity</span></span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb13-1"><a href="#cb13-1"></a>a++  <span class="co">// Has no identity</span></span>
+<span id="cb13-2"><a href="#cb13-2"></a>++a  <span class="co">// Has identity</span></span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb14-1"><a href="#cb14-1"></a><span class="kw">static_cast</span>&lt;<span class="dt">int</span>&gt;(a)  <span class="co">// Has no identity</span></span>
+<span id="cb14-2"><a href="#cb14-2"></a><span class="bu">std::</span>move(a)         <span class="co">// Has identity</span></span></code></pre></div>
+</div>
+</div>
+<aside class="notes">
+<p>…</p>
+<p>I’ll give you a few seconds to study them.</p>
+<p>Right. The ‘has identity’ property is basically standardese for being able to take the address of an expression result.</p>
+<p>Some standouts:</p>
+<p>A string literal has a static storage duration, meaning it has an identity.</p>
+<p>Post and pre-increment are slightly tricky. But when you think about it, it does make sense.</p>
+<p>A std::move of something, for those well-versed in move semantics, doesn’t really mean there is a move, it’s just a value category conversion or cast. It simply explicitly retags the operand expression for resource reuse. And its result actually has an identity.</p>
+</aside>
+</section>
+<section id="section-3" class="slide level2">
+<h2></h2>
+<h3 id="can-its-resources-be-safely-stolen">Can its resources be safely stolen?</h3>
+<blockquote>
+<p>Expression result resources can be stolen if it evaluates to an anonymous temporary, or if the associated object is near the end of its lifetime.</p>
+</blockquote>
+<div class="fragment">
+<p>This was the main motivation for move semantics <img data-src="images/em-thinking_face.svg" style="width:4.0%" /></p>
+<aside class="notes">
+<p>Now, when can expression result resources be stolen? Generally, this happens when an expression evaluates to an anonymous temporary, or if the associated object is at the end of its lifetime.</p>
+<p>Actually this was the main motivation to add move semantics to C++.</p>
+<p>Again, let’s look at some examples.</p>
+</aside>
+</div>
+</section>
+<section id="section-4" class="slide level2">
+<h2></h2>
+<h3 id="can-its-resources-be-safely-stolen-1">Can its resources be safely stolen?</h3>
+<div class="columns">
+<div class="column">
+<div class="sourceCode" id="cb15"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb15-1"><a href="#cb15-1"></a><span class="bu">std::</span>string func()</span>
+<span id="cb15-2"><a href="#cb15-2"></a>{</span>
+<span id="cb15-3"><a href="#cb15-3"></a>  <span class="cf">return</span> <span class="st">&quot;Steal me!&quot;</span>;</span>
+<span id="cb15-4"><a href="#cb15-4"></a>}</span>
+<span id="cb15-5"><a href="#cb15-5"></a></span>
+<span id="cb15-6"><a href="#cb15-6"></a><span class="bu">std::</span>vector&lt;<span class="bu">std::</span>string&gt; vec;</span>
+<span id="cb15-7"><a href="#cb15-7"></a></span>
+<span id="cb15-8"><a href="#cb15-8"></a>vec.push_back(func());</span></code></pre></div>
+</div><div class="column">
+<div class="sourceCode" id="cb16"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb16-1"><a href="#cb16-1"></a><span class="bu">std::</span>string x{<span class="st">&quot;Steal me!&quot;</span>};</span>
+<span id="cb16-2"><a href="#cb16-2"></a></span>
+<span id="cb16-3"><a href="#cb16-3"></a><span class="bu">std::</span>vector&lt;<span class="bu">std::</span>string&gt; vec;</span>
+<span id="cb16-4"><a href="#cb16-4"></a></span>
+<span id="cb16-5"><a href="#cb16-5"></a>vec.push_back(<span class="bu">std::</span>move(x));</span></code></pre></div>
+</div>
+</div>
+<aside class="notes">
+<p>The result of expression <code>func()</code> is marked as ‘can safely steal the resources from’, as it will end its lifetime after being returned.</p>
+<p>In the second example, the local variable <code>x</code> is explicitly marked for ‘can steal its resources’.</p>
+</aside>
+</section>
+<section id="lets-get-organized" class="slide level2">
+<h2>Let’s get organized!</h2>
+<aside class="notes">
+<p>Now let’s get organized and create an overview of all five value categories and the relations among them. When we’re done, we’ll get into some more examples.</p>
+</aside>
+</section>
+<section id="section-5" class="slide level2">
+<h2></h2>
+<p><img data-src="images/value-categories-table1.png" style="width:90.0%" /></p>
+<aside class="notes">
+<p>First, let’s take a table of two by two cells.</p>
+</aside>
+</section>
+<section id="section-6" class="slide level2">
+<h2></h2>
+<p><img data-src="images/value-categories-table2.png" style="width:90.0%" /></p>
+<aside class="notes">
+<p>The columns indicate whether or not an expression evaluates to an identity or not.</p>
+</aside>
+</section>
+<section id="section-7" class="slide level2">
+<h2></h2>
+<p><img data-src="images/value-categories-table3.png" style="width:90.0%" /></p>
+<aside class="notes">
+<p>The rows will indicate if the expression result resources can be stolen.</p>
+<p>Now looking at this table, there’s one location that doesn’t make much sense. An object without an identity whose resources cannot be used is a bit of a useless concept. So we’re going to leave that one out.</p>
+</aside>
+</section>
+<section id="section-8" class="slide level2">
+<h2></h2>
+<p><img data-src="images/value-categories-table4.png" style="width:90.0%" /></p>
+<aside class="notes">
+<p>In this table we’re now going to fill in all the possible expression value categories. You might wonder how are we going to fit five value categories into three cells? That’s because the cells themselves will hold only the primary value categories, the two leftovers are spanning categories. Let’s start with the first one, glvalue.</p>
+</aside>
+</section>
+<section id="section-9" class="slide level2">
+<h2></h2>
+<p><img data-src="images/value-categories-table5.png" style="width:90.0%" /></p>
+<aside class="notes">
+<p>The glvalue category spans the whole left column simply indicating ‘has identity’.</p>
+</aside>
+</section>
+<section id="section-10" class="slide level2">
+<h2></h2>
+<p><img data-src="images/value-categories-table6.png" style="width:90.0%" /></p>
+<aside class="notes">
+<p>The prvalue category sits in the spot of identity-less objects whose resources can safely be stolen.</p>
+<p>This one’s a bit more involved. It’s evaluation initializes an object or computes a value. There’s some subtle meaning and implication here to which we’ll get back in the second part of this presentation. For now it’s fine to identify a prvalue as a ID-less temporary.</p>
+<p>The next one we’re going to write down is the xvalue.</p>
+</aside>
+</section>
+<section id="section-11" class="slide level2">
+<h2></h2>
+<p><img data-src="images/value-categories-table7.png" style="width:90.0%" /></p>
+<aside class="notes">
+<p>An xvalue sits in an interesting spot; it has an identity and its resources can be stolen.</p>
+<p>Next one; lvalue.</p>
+</aside>
+</section>
+<section id="section-12" class="slide level2">
+<h2></h2>
+<p><img data-src="images/value-categories-table8.png" style="width:90.0%" /></p>
+<aside class="notes">
+<p>An lvalue has an identity, but its resources cannot be stolen.</p>
+<p>Last one to finalize the set: rvalue.</p>
+</aside>
+</section>
+<section id="section-13" class="slide level2">
+<h2></h2>
+<p><img data-src="images/value-categories-table9.png" style="width:90.0%" /></p>
+<aside class="notes">
+<p>The rvalue category is another spanning category, like glvalue. But in this case it basically describes any expression whose result resources can be stolen.</p>
+<p>Now all value categories have been filled in. There’s three primary categories, inside the cells, and two spanning categories describing the expression properties in general.</p>
+<p>Take a short moment to absorb this diagram.</p>
+<p>…</p>
+<p>OK, now let’s go and look at some examples!</p>
+</aside>
+</section>
+<section id="examples-1" class="slide level2">
+<h2>Examples (1)</h2>
+<div class="columns">
+<div class="column">
+<div class="sourceCode" id="cb17"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb17-1"><a href="#cb17-1"></a><span class="dv">42</span>  <span class="co">// prvalue</span></span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb18-1"><a href="#cb18-1"></a><span class="kw">nullptr</span>  <span class="co">// prvalue</span></span></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb19-1"><a href="#cb19-1"></a><span class="st">&quot;Hi there!&quot;</span>  <span class="co">// lvalue</span></span></code></pre></div>
+</div><div class="column">
+<p><img data-src="images/value-categories-table.png" style="width:90.0%" /></p>
+</div>
+</div>
+<aside class="notes">
+<p>As integer literals or <code>nullptr</code> don’t have an identity, they must be prvalues. Remember a string literal has static storage duration, meaning it has an identity. And in this example there’s no reason to assume its resources can be safely stolen, so it’s an lvalue.</p>
+</aside>
+</section>
+<section id="examples-2" class="slide level2">
+<h2>Examples (2)</h2>
+<div class="columns">
+<div class="column">
+<div class="sourceCode" id="cb20"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb20-1"><a href="#cb20-1"></a><span class="dt">int</span> x = <span class="dv">42</span>;</span></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb21-1"><a href="#cb21-1"></a>++x  <span class="co">// lvalue</span></span></code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb22-1"><a href="#cb22-1"></a>x++  <span class="co">// prvalue</span></span></code></pre></div>
+</div><div class="column">
+<p><img data-src="images/value-categories-table.png" style="width:90.0%" /></p>
+</div>
+</div>
+<aside class="notes">
+<p>The increment operators again.</p>
+<p>Pre-increment will first increment, and then return a reference to <code>x</code>, so this is an lvalue. Post-increment will return a temporary copy to the unincremented <code>x</code>, and then increment, so this is a prvalue.</p>
+</aside>
+</section>
+<section id="examples-3" class="slide level2">
+<h2>Examples (3)</h2>
+<div class="columns">
+<div class="column">
+<div class="sourceCode" id="cb23"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb23-1"><a href="#cb23-1"></a><span class="dt">int</span> x = <span class="dv">42</span>;</span></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb24-1"><a href="#cb24-1"></a>x   <span class="co">// lvalue</span></span></code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb25-1"><a href="#cb25-1"></a><span class="bu">std::</span>move(x)  <span class="co">// xvalue</span></span></code></pre></div>
+</div><div class="column">
+<p><img data-src="images/value-categories-table.png" style="width:90.0%" /></p>
+</div>
+</div>
+<aside class="notes">
+<p>Here we have a local variable <code>x</code>, which when used as-is, will be classified as an lvalue. However when we call the <code>std::move</code> operator on it, we will explicitly mark this lvalue as ‘resources can be stolen’. That’s when an lvalue changes into an xvalue.</p>
+</aside>
+</section>
+<section id="examples-4" class="slide level2">
+<h2>Examples (4)</h2>
+<div class="columns">
+<div class="column">
+<div class="sourceCode" id="cb26"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb26-1"><a href="#cb26-1"></a><span class="dt">void</span> func(<span class="dt">int</span> &amp;&amp;arg)</span>
+<span id="cb26-2"><a href="#cb26-2"></a>{</span>
+<span id="cb26-3"><a href="#cb26-3"></a>  <span class="co">// &#39;arg&#39; is an lvalue</span></span>
+<span id="cb26-4"><a href="#cb26-4"></a></span>
+<span id="cb26-5"><a href="#cb26-5"></a>  <span class="co">// &#39;std::move(arg)&#39; is an xvalue</span></span>
+<span id="cb26-6"><a href="#cb26-6"></a>  other_func(<span class="bu">std::</span>move(arg));</span>
+<span id="cb26-7"><a href="#cb26-7"></a>}</span>
+<span id="cb26-8"><a href="#cb26-8"></a></span>
+<span id="cb26-9"><a href="#cb26-9"></a>func(<span class="dv">42</span>);  <span class="co">// &#39;42&#39; is a prvalue</span></span></code></pre></div>
+</div><div class="column">
+<p><img data-src="images/value-categories-table.png" style="width:90.0%" /></p>
+</div>
+</div>
+<aside class="notes">
+<p>A slightly more practical example then.</p>
+<p>We have a function <code>func</code>, taking an rvalue reference, which calls another function. In the bottom is the call to the <code>func</code> function.</p>
+<p>The initial call is done with a prvalue which is integer literal 42. Then locally, inside <code>func</code>, the argument is an lvalue. And lastly, the function <code>other_func</code> is called with an xvalue.</p>
+</aside>
+</section>
+<section id="examples-5" class="slide level2">
+<h2>Examples (5)</h2>
+<div class="columns">
+<div class="column">
+<div class="sourceCode" id="cb27"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb27-1"><a href="#cb27-1"></a><span class="dt">void</span> func(<span class="dt">int</span> &amp;arg);   <span class="co">// #1</span></span>
+<span id="cb27-2"><a href="#cb27-2"></a><span class="dt">void</span> func(<span class="dt">int</span> &amp;&amp;arg);  <span class="co">// #2</span></span></code></pre></div>
+<div class="sourceCode" id="cb28"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb28-1"><a href="#cb28-1"></a><span class="dt">int</span> &amp;&amp;x = <span class="dv">42</span>;</span>
+<span id="cb28-2"><a href="#cb28-2"></a></span>
+<span id="cb28-3"><a href="#cb28-3"></a>func(x);  <span class="co">// Which overload is called?</span></span></code></pre></div>
+</div><div class="column">
+<p><img data-src="images/value-categories-table.png" style="width:90.0%" /></p>
+</div>
+</div>
+<div class="fragment">
+<p>Expression <code>x</code> is an <span style="color:#cc0000"><strong><code>lvalue</code></strong></span>; so overload #1 is called</p>
+<aside class="notes">
+<p>One last example, in the form of a quiz: which function overload is called?</p>
+<p>…</p>
+<p>The answer is: number 1. The argument used to call function <code>func</code> in this case is an lvalue, resulting in a call to the first function declaration.</p>
+<p>Many make the mistake here to think that value categories are about class types, but they’re about expressions. Right?</p>
+<p>Before we get into the next part of this talk, I want to quickly tell you someting about the history of value categories. They have been subject to a lot of change over the years.</p>
+</aside>
+</div>
+</section>
+<section id="a-little-side-step-history" class="slide level2">
+<h2>A little side step: history</h2>
+<ul>
+<li class="fragment">CPL (1963) first introduced <code>lvalue</code> and <code>rvalue</code> concepts,</li>
+<li class="fragment">Via BCPL and B came along C, keeping the definitions,</li>
+<li class="fragment">C++ first followed the C definition up until C++03,</li>
+<li class="fragment">C++11 introduced move semantics, changing it again.</li>
+</ul>
+<div class="fragment">
+<p>Please forget the right-/left-hand notion for today’s definition.</p>
+<aside class="notes">
+<p>First, value categories were described in the language CPL or ‘Combined Programming Language’ from 1963. It defined lvalues and rvalues by their respective position w.r.t. the assignment operator, either as a left-hand value or a right-hand value. Out of CPL came BCPL, or ‘Basic CPL’, then B and then C, all keeping the definitions for value categories. C++ first also followed these definitions, up until C++03. Then lastly in C++11 move semantics were added and the value categories were extended.</p>
+<p>For modern C++ usage, please forget about this notion of left-hand and right-hand side. It’s outdated.</p>
+</aside>
+</div>
+</section>
+<section id="ok-then.-now-what" class="slide level2">
+<h2>OK then. Now what?</h2>
+<ul>
+<li class="fragment">Communication: learn and be literate!</li>
+<li class="fragment">Reading compiler errors effectively,</li>
+<li class="fragment">In-depth knowledge on C++ is generally beneficial,</li>
+<li class="fragment">Useful for understanding move semantics,</li>
+<li class="fragment">Understanding copy elision and implicit conversions.</li>
+</ul>
+<aside class="notes">
+<p>Congratulations! You’re now the proud owner of this newly acquired knowledge on expression value categories! Now what?</p>
+<p>Now you can use this information to read more about C++, read articles, books, study! Value categories are often used in prose about C++. Also, when consulting reference websites like CppReference or MSDN.</p>
+<p>Compiler errors also tell you about illegal usage of value categories, now you’re able to better understand them – making you a more effective programmer.</p>
+<p>Again, I find that learning more about your programming language of choice will make you a better programmer in the long run.</p>
+<p>Also it can be quite useful to get a good understanding of move semantics, copy elision and implicit conversions.</p>
+<p>In the second part of this talk I’m going to tell about copy elision. But first, we’re going to revisit our example.</p>
+</aside>
+</section>
+<section id="quiz-revisited" class="slide level2">
+<h2>Quiz revisited</h2>
+<div class="columns">
+<div class="column">
+<div class="sourceCode" id="cb29"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb29-1"><a href="#cb29-1"></a><span class="kw">struct</span> Number {</span>
+<span id="cb29-2"><a href="#cb29-2"></a>  <span class="dt">int</span> <span class="va">value_</span> = {};</span>
+<span id="cb29-3"><a href="#cb29-3"></a>};</span>
+<span id="cb29-4"><a href="#cb29-4"></a></span>
+<span id="cb29-5"><a href="#cb29-5"></a><span class="kw">class</span> T {</span>
+<span id="cb29-6"><a href="#cb29-6"></a><span class="kw">public</span>:</span>
+<span id="cb29-7"><a href="#cb29-7"></a>  T(<span class="at">const</span> Number &amp;n) : <span class="va">n_</span>{n} {}</span>
+<span id="cb29-8"><a href="#cb29-8"></a></span>
+<span id="cb29-9"><a href="#cb29-9"></a>  T(<span class="at">const</span> T &amp;) { puts(<span class="st">&quot;Copy c&#39;tor&quot;</span>); }</span>
+<span id="cb29-10"><a href="#cb29-10"></a></span>
+<span id="cb29-11"><a href="#cb29-11"></a>  Number get() { <span class="cf">return</span> <span class="va">n_</span>; }</span>
+<span id="cb29-12"><a href="#cb29-12"></a></span>
+<span id="cb29-13"><a href="#cb29-13"></a><span class="kw">private</span>:</span>
+<span id="cb29-14"><a href="#cb29-14"></a>  Number <span class="va">n_</span>;</span>
+<span id="cb29-15"><a href="#cb29-15"></a>};</span></code></pre></div>
+</div><div class="column">
+<div class="sourceCode" id="cb30"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb30-1"><a href="#cb30-1"></a><span class="at">static</span> T create(Number &amp;&amp;n) {</span>
+<span id="cb30-2"><a href="#cb30-2"></a>  <span class="cf">return</span> T{<span class="bu">std::</span>move(n)};</span>
+<span id="cb30-3"><a href="#cb30-3"></a>}</span>
+<span id="cb30-4"><a href="#cb30-4"></a></span>
+<span id="cb30-5"><a href="#cb30-5"></a><span class="dt">int</span> main() {</span>
+<span id="cb30-6"><a href="#cb30-6"></a>  T x = T{create(Number{<span class="dv">42</span>})};</span>
+<span id="cb30-7"><a href="#cb30-7"></a></span>
+<span id="cb30-8"><a href="#cb30-8"></a>  <span class="cf">return</span> x.get().<span class="va">value_</span>;</span>
+<span id="cb30-9"><a href="#cb30-9"></a>}</span></code></pre></div>
+<p>What’s the output?</p>
+</div>
+</div>
+<aside class="notes">
+<p>Now we should be able to determine all the value categories that are used here.</p>
+<p>…</p>
+<p>So now that we know what value categories actually are, let’s see what they are used for!</p>
+</aside>
+</section></section>
+<section id="questions" class="title-slide slide level1">
+<h1>Questions?</h1>
+<p><img data-src="images/em-left_speech_bubble.svg" style="width:8.0%" /> <img data-src="images/em-question.svg" style="width:7.0%" /></p>
+<aside class="notes">
+<p>This is the end of the first part – so we’re about half way, are there any questions at this point?</p>
+</aside>
+</section>
+
+<section>
+<section id="value-categories-in-the-wild" class="title-slide slide level1">
+<h1>Value categories in the wild</h1>
+
+</section>
+<section id="copy-elision" class="slide level2">
+<h2>Copy elision</h2>
+<blockquote>
+<p>A section in the C++ standard that describes the elision (i.e. <strong>omission</strong>) of copy/move operations, resulting in zero-copy pass-by-value semantics.</p>
+</blockquote>
+<p>Restrictions apply <img data-src="images/em-disappointed.svg" style="width:4.0%" /></p>
+<aside class="notes">
+<p>One aspect every somewhat experienced C++ programmer has dealt with is type design and object propagation through function calls. When a function is called that takes an argument or returns a value, it will propagate in some form or another. In one situation it’s better to use reference semantics, but in some other situation value semantics are fine. You might save some expensive copies in the process! When to use what is a bit of art to find out when you’re first starting out to program. This unlimited flexibilty and control comes at the cost of language complexity.</p>
+<p>What you might know or not, is that the C++ language itself and tools like compilers actually do all kinds of nifty tricks to help you. One of these tricks is copy elision. Which is what we’re going to look at now.</p>
+<p>…</p>
+<p>Copy elision is better to be called “copy and move elision”. Let’s dive in!</p>
+</aside>
+</section>
+<section id="copy-elision-1" class="slide level2">
+<h2>Copy elision</h2>
+<blockquote>
+<p><strong>Permits</strong> elisions, it does not <strong>guarantee</strong>!</p>
+</blockquote>
+<div class="fragment">
+<p>Actual results depend on compiler and compiler settings.</p>
+<aside class="notes">
+<p>Copy elision is a part of the C++ standard, but it only permits the compiler to elide copies or moves, it does not guarantee them. The compiler and its configuration therefore have a possible influence on the results. Most compilers even have command flags to fully disable copy elision.</p>
+<p>Let’s take a look at some examples.</p>
+</aside>
+</div>
+</section>
+<section id="section-14" class="slide level2">
+<h2></h2>
+<h3 id="copy-elision-in-action">Copy elision in action</h3>
+<div class="columns">
+<div class="column">
+<p>C++ code:</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb31-1"><a href="#cb31-1"></a>T func()</span>
+<span id="cb31-2"><a href="#cb31-2"></a>{</span>
+<span id="cb31-3"><a href="#cb31-3"></a>  <span class="cf">return</span> T{};  <span class="co">// Create temporary</span></span>
+<span id="cb31-4"><a href="#cb31-4"></a>}</span>
+<span id="cb31-5"><a href="#cb31-5"></a></span>
+<span id="cb31-6"><a href="#cb31-6"></a>T x = func();  <span class="co">// Create temporary</span></span></code></pre></div>
+</div><div class="column">
+<p>Possible output (1):</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb32-1"><a href="#cb32-1"></a>T()</span>
+<span id="cb32-2"><a href="#cb32-2"></a>T(<span class="at">const</span> &amp;)</span>
+<span id="cb32-3"><a href="#cb32-3"></a>~T()</span>
+<span id="cb32-4"><a href="#cb32-4"></a>T(<span class="at">const</span> &amp;)</span>
+<span id="cb32-5"><a href="#cb32-5"></a>~T()</span>
+<span id="cb32-6"><a href="#cb32-6"></a>~T()</span></code></pre></div>
+</div>
+</div>
+<p>No copy elision.</p>
+<aside class="notes">
+<p>Here we declare and initialize an object ‘x’ from the return value of a function. Without any form of copy elision there will be one default construction of an object T, and two copy constructions. One copy construction upon function returning, and one copy construction in the initialization of x.</p>
+</aside>
+</section>
+<section id="section-15" class="slide level2">
+<h2></h2>
+<h3 id="copy-elision-in-action-1">Copy elision in action</h3>
+<div class="columns">
+<div class="column">
+<p>C++ code:</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb33-1"><a href="#cb33-1"></a>T func()</span>
+<span id="cb33-2"><a href="#cb33-2"></a>{</span>
+<span id="cb33-3"><a href="#cb33-3"></a>  <span class="cf">return</span> T{};  <span class="co">// Create temporary?</span></span>
+<span id="cb33-4"><a href="#cb33-4"></a>}</span>
+<span id="cb33-5"><a href="#cb33-5"></a></span>
+<span id="cb33-6"><a href="#cb33-6"></a>T x = func();  <span class="co">// Create temporary?</span></span></code></pre></div>
+</div><div class="column">
+<p>Possible output (2):</p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb34-1"><a href="#cb34-1"></a>T()</span>
+<span id="cb34-2"><a href="#cb34-2"></a>T(<span class="at">const</span> &amp;)</span>
+<span id="cb34-3"><a href="#cb34-3"></a>~T()</span>
+<span id="cb34-4"><a href="#cb34-4"></a>~T()</span></code></pre></div>
+</div>
+</div>
+<p>Partial copy elision.</p>
+<aside class="notes">
+<p>When copy elision is enabled for either a function return or an object initialization, we could possibly see only one copy being made.</p>
+</aside>
+</section>
+<section id="section-16" class="slide level2">
+<h2></h2>
+<h3 id="copy-elision-in-action-2">Copy elision in action</h3>
+<div class="columns">
+<div class="column">
+<p>C++ code:</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb35-1"><a href="#cb35-1"></a>T func()</span>
+<span id="cb35-2"><a href="#cb35-2"></a>{</span>
+<span id="cb35-3"><a href="#cb35-3"></a>  <span class="cf">return</span> T{};</span>
+<span id="cb35-4"><a href="#cb35-4"></a>}</span>
+<span id="cb35-5"><a href="#cb35-5"></a></span>
+<span id="cb35-6"><a href="#cb35-6"></a>T x = func();</span></code></pre></div>
+</div><div class="column">
+<p>Possible output (3):</p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb36-1"><a href="#cb36-1"></a>T()</span>
+<span id="cb36-2"><a href="#cb36-2"></a>~T()</span></code></pre></div>
+</div>
+</div>
+<p>Full copy elision.</p>
+<aside class="notes">
+<p>When copy elision is enabled for both a function return and an object initialization, there are no copies left! There is only one default construction of a T. That’s great!</p>
+<p>Note that copy elision rules are not guaranteed and all presented scenarios are valid output.</p>
+</aside>
+</section>
+<section id="where-can-elisions-occur" class="slide level2">
+<h2>Where can elisions occur?</h2>
+<ul>
+<li class="fragment">In the initialization of an object,</li>
+<li class="fragment">In a <code>return</code> statement,</li>
+<li class="fragment">In a <code>throw</code> expression,</li>
+<li class="fragment">In a <code>catch</code> clause.</li>
+</ul>
+<aside class="notes">
+<p>Where can copy/move elisions occur? As we just saw, they can occur the initialization of an object, and in a return statement. Other places they can occur are in throw expressions and the catch clause.</p>
+<p>That’s great!</p>
+</aside>
+</section>
+<section id="great-stuff" class="slide level2">
+<h2>Great stuff!</h2>
+<div class="fragment">
+<p>Truth is; compilers have been doing it for years.. <img data-src="images/em-smirk.svg" style="width:4.0%" /></p>
+<aside class="notes">
+<p>Give it to me! What’s the magic key to turn this on?</p>
+<p>…</p>
+<p>In fact, in most cases the elision even occurs with compiler optimizations turned off!</p>
+<p>That’s a bit of a let-down eh. So basically it’s old-skool technology applied for years. Isn’t there anything new in the latest few versions of C++? Actually there is!</p>
+</aside>
+</div>
+</section>
+<section id="copy-elision-since-c17" class="slide level2">
+<h2>Copy elision since C++17</h2>
+<p>C++17 added <strong>mandates</strong> to the standard, informally known as:</p>
+<ul>
+<li class="fragment">“Guaranteed copy elision”,</li>
+<li class="fragment">“Guaranteed return value optimization”,</li>
+<li class="fragment">“Copy evasion”.</li>
+</ul>
+<div class="fragment">
+<p>A set of special rules for <span style="color:#0066cc"><strong><code>prvalue</code></strong></span> expressions.</p>
+<aside class="notes">
+<p>C++17 added some rules to the standard that guarantee copy elision to occur in some situations. Which is great, because now we don’t only have the compilers performing copy elision in practice, we also have the theory to back it up. Before this, it was just the compiler implementers having to identify the elision scenarios themselves, and as an end user you were dependent on the compiler and its configuration for copy elision to be performed.</p>
+<p>What are these cases for guaranteed copy elision?</p>
+</aside>
+</div>
+</section>
+<section id="guaranteed-copy-elision-1" class="slide level2">
+<h2>Guaranteed copy elision (1)</h2>
+<blockquote>
+<p>If, in an initialization of an object, when the initializer expression is a <span style="color:#0066cc"><strong><code>prvalue</code></strong></span> of the same class type as the variable type.</p>
+</blockquote>
+<div class="sourceCode" id="cb37"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb37-1"><a href="#cb37-1"></a>T x{T{}}; <span class="co">// Only one (default) construction of T allowed here</span></span></code></pre></div>
+<aside class="notes">
+<p>The first case is when an object is initialized by an expression that is of the same class type as the object. Makes sense.</p>
+</aside>
+</section>
+<section id="guaranteed-copy-elision-2" class="slide level2">
+<h2>Guaranteed copy elision (2)</h2>
+<blockquote>
+<p>If, in a <code>return</code> statement the operand is a <span style="color:#0066cc"><strong><code>prvalue</code></strong></span> of the same class type as the function return type.</p>
+</blockquote>
+<div class="sourceCode" id="cb38"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb38-1"><a href="#cb38-1"></a>T func()</span>
+<span id="cb38-2"><a href="#cb38-2"></a>{</span>
+<span id="cb38-3"><a href="#cb38-3"></a>  <span class="cf">return</span> T{};</span>
+<span id="cb38-4"><a href="#cb38-4"></a>}</span>
+<span id="cb38-5"><a href="#cb38-5"></a></span>
+<span id="cb38-6"><a href="#cb38-6"></a>T x{func()}; <span class="co">// Only one (default) construction of T allowed here</span></span></code></pre></div>
+<aside class="notes">
+<p>The second case is when a function returns a same class type as the function return type. Here in the initialization of x there is only one construction of T allowed. And note that only one is allowed – if this is not the case, there is a bug in your compiler.</p>
+<p>All of this goodness is made possible by some clever mechanisms built on top of the value category concepts. In fact, let’s dive in a bit deeper and see what’s there!</p>
+</aside>
+</section>
+<section id="under-the-hood" class="slide level2">
+<h2>Under the hood</h2>
+<blockquote>
+<p>Under the rules of C++17, a <span style="color:#0066cc"><strong><code>prvalue</code></strong></span> will be used only as an <strong>unmaterialized recipe</strong> of an object, until actual <em>materialization</em> is required.</p>
+</blockquote>
+<div class="fragment">
+<blockquote>
+<p>A <span style="color:#0066cc"><strong><code>prvalue</code></strong></span> is an expression whose <strong>evaluation initializes/materializes</strong> an object.</p>
+</blockquote>
+</div>
+<div class="fragment">
+<p>This is called a <em>temporary materialization conversion</em>.</p>
+<aside class="notes">
+<p>…</p>
+<p>Some expensive words here. Materialization here simply means coming into being. So this means a prvalue is an object not really into existence until it’s necessary to. When is that then?</p>
+<p>…</p>
+<p>Aha! A prvalue is an object that is used in an unmaterialized form, until it’s evaluated, upon which it materializes.</p>
+<p>This conversion from unmaterialized to materialized form is called a temporary materialization conversion. Such a great name, it makes for great birthday conversation material!</p>
+</aside>
+</div>
+</section>
+<section id="temporary-materialization" class="slide level2">
+<h2>Temporary materialization</h2>
+<div class="sourceCode" id="cb39"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb39-1"><a href="#cb39-1"></a><span class="kw">struct</span> Person {</span>
+<span id="cb39-2"><a href="#cb39-2"></a>  <span class="bu">std::</span>string <span class="va">name_</span>;</span>
+<span id="cb39-3"><a href="#cb39-3"></a>  <span class="dt">unsigned</span> <span class="dt">int</span> <span class="va">age_</span> = {};</span>
+<span id="cb39-4"><a href="#cb39-4"></a>};</span>
+<span id="cb39-5"><a href="#cb39-5"></a></span>
+<span id="cb39-6"><a href="#cb39-6"></a>Person createPerson() {</span>
+<span id="cb39-7"><a href="#cb39-7"></a>  <span class="bu">std::</span>string name;</span>
+<span id="cb39-8"><a href="#cb39-8"></a>  <span class="dt">unsigned</span> <span class="dt">int</span> age = <span class="dv">0</span>;</span>
+<span id="cb39-9"><a href="#cb39-9"></a></span>
+<span id="cb39-10"><a href="#cb39-10"></a>  <span class="co">// Get data from somewhere in runtime..</span></span>
+<span id="cb39-11"><a href="#cb39-11"></a></span>
+<span id="cb39-12"><a href="#cb39-12"></a>  <span class="cf">return</span> Person{name, age};    <span class="co">// 1. Initial prvalue expression</span></span>
+<span id="cb39-13"><a href="#cb39-13"></a>}</span>
+<span id="cb39-14"><a href="#cb39-14"></a></span>
+<span id="cb39-15"><a href="#cb39-15"></a><span class="dt">int</span> main() {</span>
+<span id="cb39-16"><a href="#cb39-16"></a>  <span class="cf">return</span> createPerson().<span class="va">age_</span>;  <span class="co">// 2. Temporary materialization: xvalue</span></span>
+<span id="cb39-17"><a href="#cb39-17"></a>}</span></code></pre></div>
+<aside class="notes">
+<p>An example:</p>
+<p>Here we have a struct Person comprising of a name and an age data member. Then we have some sort of factory function to create a function from data from somewhere, be it user input, be it a database, doesn’t matter, but it creates a Person data. Then in the main function we create a Person data from which we use the age value to return. It’s a bit of a silly example, but it serves the purpose of demonstration.</p>
+<p>Here in main it all starts, we call the create function, which builds a Person data and returns a prvalue. So the result of the function call expression in main is a prvalue. At this point, there is still no materialized version of this Person data. The next thing that is done is that the data member age_ is accessed on the result of the prvalue, which forces an evaluation of the prvalue and there we have our temporary materialization. In order for this age_ data member to be read, there must be an actual Person data somewhere. What’s interesting is that the value category of a temporary materialization conversion result is an xvalue.</p>
+</aside>
+</section>
+<section id="temporary-materialization-1" class="slide level2">
+<h2>Temporary materialization</h2>
+<blockquote>
+<p>An implicit <span style="color:#0066cc"><strong><code>prvalue</code></strong></span> to <span style="color:#cc00cc"><strong><code>xvalue</code></strong></span> conversion.</p>
+</blockquote>
+<div class="fragment">
+<p>Remember: <span style="color:#0066cc"><strong><code>prvalue</code></strong></span>s are not moved from!</p>
+<aside class="notes">
+<p>As we’ve seen from the example: temporary materialization is a prvalue to xvalue conversion.</p>
+<p>Also, prvalues are not moved from. This is an important observation, as often the ‘can resources be safely stolen’ property of an expression is described as ‘can be moved from’. But a prvalue is not moved from! It materializes upon evaluation.</p>
+</aside>
+</div>
+</section>
+<section id="temporary-materialization-2" class="slide level2">
+<h2>Temporary materialization</h2>
+<p>Occurs when:</p>
+<ul>
+<li class="fragment">Accessing a member of a <span style="color:#0066cc"><strong><code>prvalue</code></strong></span>,</li>
+<li class="fragment">Binding a reference to a <span style="color:#0066cc"><strong><code>prvalue</code></strong></span>,</li>
+<li class="fragment">Applying <code>sizeof</code> or <code>typeid</code> to a <span style="color:#0066cc"><strong><code>prvalue</code></strong></span>,</li>
+<li class="fragment">Etc.</li>
+</ul>
+<aside class="notes">
+<p>So when will this conversion happen? As we’ve just seen: it happens when the prvalue is evaluated, which can be many situations.</p>
+<p>…</p>
+<p>Let’s look at a few more examples.</p>
+</aside>
+</section>
+<section id="section-17" class="slide level2">
+<h2></h2>
+<h3 id="temporary-materialization-in-action">Temporary materialization in action</h3>
+<div class="sourceCode" id="cb40"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb40-1"><a href="#cb40-1"></a><span class="kw">struct</span> T { <span class="dt">int</span> value; };</span>
+<span id="cb40-2"><a href="#cb40-2"></a></span>
+<span id="cb40-3"><a href="#cb40-3"></a>T{}        <span class="co">// prvalue</span></span>
+<span id="cb40-4"><a href="#cb40-4"></a>T{}.value  <span class="co">// xvalue</span></span></code></pre></div>
+<div class="fragment">
+<div class="sourceCode" id="cb41"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb41-1"><a href="#cb41-1"></a><span class="kw">auto</span> x = <span class="bu">std::</span>string(<span class="st">&quot;Guaca&quot;</span>) + <span class="bu">std::</span>string(<span class="st">&quot;mole&quot;</span>).c_str();</span>
+<span id="cb41-2"><a href="#cb41-2"></a><span class="co">//     ^                      ^                    ^</span></span>
+<span id="cb41-3"><a href="#cb41-3"></a><span class="co">//     3                      2                    1</span></span></code></pre></div>
+<aside class="notes">
+<p>Again, the most basic example where a data member is accessed, changing a prvalue into an xvalue.</p>
+<p>In the bottom example, there are three temporary materializations happening:</p>
+<ul>
+<li>In the member function access of the second string,</li>
+<li>When the operator plus is evaluated,</li>
+<li>When the result of the operator plus is evaluated to initialize object x.</li>
+</ul>
+</aside>
+</div>
+</section>
+<section id="c17-copymove-elision" class="slide level2">
+<h2>C++17 copy/move elision</h2>
+<h3 id="copy-elision-temporary-materialization">= Copy elision + temporary materialization</h3>
+<p><img data-src="images/em-sunglasses.svg" style="width:6.0%" /></p>
+<aside class="notes">
+<p>And that’s how modern-day C++ employs the value categories to define rules for copy/move elision optimizations.</p>
+<p>There is however a bit more interesting stuff to talk about. And that’s the topic of return value optimization.</p>
+</aside>
+</section>
+<section id="return-value-optimization" class="slide level2">
+<h2>Return Value Optimization</h2>
+<h3 id="aka-rvo">AKA ‘RVO’</h3>
+<p>A variant of copy elision.</p>
+<aside class="notes">
+<p>Return value optimization, or RVO, is a variant of copy elision in that it specifically deals with return values of functions. Whereas copy elision in general deals with any form of elision.</p>
+</aside>
+</section>
+<section id="return-value-optimization-1" class="slide level2">
+<h2>Return Value Optimization</h2>
+<p>Two forms:</p>
+<ol type="1">
+<li class="fragment"><span style="color:#ea6b66">Unnamed</span> RVO (<span style="color:#ea6b66">U</span>RVO or simply RVO),</li>
+<li class="fragment"><span style="color:#7ea6e0">Named</span> RVO (<span style="color:#7ea6e0">N</span>RVO).</li>
+</ol>
+<aside class="notes">
+<p>There are two variants of return value optimization: unnamed and named RVO.</p>
+</aside>
+</section>
+<section id="return-value-optimization-2" class="slide level2">
+<h2>Return Value Optimization</h2>
+<p><img data-src="images/rvo-urvo-nrvo.png" style="width:70.0%" /></p>
+<p>These terms live outside the standard.</p>
+<aside class="notes">
+<p>The unnamed/named part refers to the type of object that is being returned, be it an anonymous temporary, or a named object.</p>
+<p>The term return value optimization lives outside of the standard and forms a collection of rules throughout the standard.</p>
+<p>Let’s first take a look at unnamed RVO.</p>
+</aside>
+</section>
+<section id="unnamed-rvo-urvo" class="slide level2">
+<h2><span style="color:#ea6b66">Unnamed</span> RVO (<span style="color:#ea6b66">U</span>RVO)</h2>
+<p>Refers to the returning of temporary objects from a function.</p>
+<p> </p>
+<div class="fragment">
+<blockquote>
+<p><strong>Guaranteed</strong> by C++17 rules.</p>
+</blockquote>
+<aside class="notes">
+<p>We can be short about unnamed RVO, because it is guaranteed in C++17, great! So there’s nothing to talk about here really, it’s a done deal.</p>
+<p>Let’s look at named RVO then!</p>
+</aside>
+</div>
+</section>
+<section id="named-rvo-nrvo" class="slide level2">
+<h2><span style="color:#7ea6e0">Named</span> RVO (<span style="color:#7ea6e0">N</span>RVO)</h2>
+<p>Refers to the returning of named objects from a function.</p>
+<aside class="notes">
+<p>The best way to demonstrate NVRO is using an example.</p>
+</aside>
+</section>
+<section id="nrvo-in-action" class="slide level2">
+<h2><span style="color:#7ea6e0">N</span>RVO in action</h2>
+<p>The most simple example</p>
+<div class="columns">
+<div class="column">
+<div class="sourceCode" id="cb42"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb42-1"><a href="#cb42-1"></a>T func()</span>
+<span id="cb42-2"><a href="#cb42-2"></a>{</span>
+<span id="cb42-3"><a href="#cb42-3"></a>  T result;</span>
+<span id="cb42-4"><a href="#cb42-4"></a></span>
+<span id="cb42-5"><a href="#cb42-5"></a>  <span class="cf">return</span> result;</span>
+<span id="cb42-6"><a href="#cb42-6"></a>}</span>
+<span id="cb42-7"><a href="#cb42-7"></a></span>
+<span id="cb42-8"><a href="#cb42-8"></a>T x = func();</span></code></pre></div>
+</div><div class="column">
+<div class="sourceCode" id="cb43"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb43-1"><a href="#cb43-1"></a>T()</span>
+<span id="cb43-2"><a href="#cb43-2"></a>~T()</span></code></pre></div>
+</div>
+</div>
+<aside class="notes">
+<p>On the left side we have a function func, that declares a local variable which is then returned. Note that this is different from all the previous examples for copy elision in that in this case an object with an identity is returned.</p>
+<p>The right side shows the special member functions that are called. Just a single default construction and a destruction.</p>
+<p>This example can be extended to become slightly more complex.</p>
+</aside>
+</section>
+<section id="nrvo-in-action-1" class="slide level2">
+<h2><span style="color:#7ea6e0">N</span>RVO in action</h2>
+<p>Slightly more involved</p>
+<div class="columns">
+<div class="column">
+<div class="sourceCode" id="cb44"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb44-1"><a href="#cb44-1"></a>T func()</span>
+<span id="cb44-2"><a href="#cb44-2"></a>{</span>
+<span id="cb44-3"><a href="#cb44-3"></a>  T result;</span>
+<span id="cb44-4"><a href="#cb44-4"></a></span>
+<span id="cb44-5"><a href="#cb44-5"></a>  <span class="cf">if</span> (something)</span>
+<span id="cb44-6"><a href="#cb44-6"></a>    <span class="cf">return</span> result;</span>
+<span id="cb44-7"><a href="#cb44-7"></a></span>
+<span id="cb44-8"><a href="#cb44-8"></a>  <span class="co">// ...</span></span>
+<span id="cb44-9"><a href="#cb44-9"></a></span>
+<span id="cb44-10"><a href="#cb44-10"></a>  <span class="cf">return</span> result;</span>
+<span id="cb44-11"><a href="#cb44-11"></a>}</span>
+<span id="cb44-12"><a href="#cb44-12"></a></span>
+<span id="cb44-13"><a href="#cb44-13"></a>T x = func();</span></code></pre></div>
+</div><div class="column">
+<div class="sourceCode" id="cb45"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb45-1"><a href="#cb45-1"></a>T()</span>
+<span id="cb45-2"><a href="#cb45-2"></a>~T()</span></code></pre></div>
+<p>It still works</p>
+</div>
+</div>
+<aside class="notes">
+<p>Now the function func has two exit points, both returning the same local object.</p>
+<p>And this is great! Many functions fit to this very format, and NRVO is applied to simplify the generated code. However..</p>
+</aside>
+</section>
+<section id="nrvo-is-finicky-though" class="slide level2">
+<h2><span style="color:#7ea6e0">N</span>RVO is finicky though</h2>
+<aside class="notes">
+<p>…</p>
+<p>There are many reasons for NRVO to break. Which is sad. And in order to explain these situations, I’d like us all to brush up on some background information. Namely: function call mechanics, or calling conventions.</p>
+</aside>
+</section>
+<section id="quick-re-hash" class="slide level2">
+<h2>Quick re-hash</h2>
+<h3 id="function-call-mechanics">Function call mechanics</h3>
+<p> </p>
+<p><img data-src="images/em-wrench.svg" style="width:10.0%" /></p>
+<aside class="notes">
+<p>A little disclaimer: there are various different calling conventions, this is merely a global example. Also: compilers are smart and use loads of tricks for optimisations in the real world. However, for the purpose of explaining NRVO, the examples are fine.</p>
+<p>Let’s go!</p>
+</aside>
+</section>
+<section id="section-18" class="slide level2">
+<h2></h2>
+<h3 id="no-parameters-no-return-value">No parameters, no return value</h3>
+<div class="columns">
+<div class="column">
+<div class="sourceCode" id="cb46"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb46-1"><a href="#cb46-1"></a><span class="dt">void</span> func()</span>
+<span id="cb46-2"><a href="#cb46-2"></a>{</span>
+<span id="cb46-3"><a href="#cb46-3"></a>  <span class="co">// ...</span></span>
+<span id="cb46-4"><a href="#cb46-4"></a>}</span>
+<span id="cb46-5"><a href="#cb46-5"></a></span>
+<span id="cb46-6"><a href="#cb46-6"></a>func();</span></code></pre></div>
+</div><div class="column">
+<p>Stack when inside <code>func()</code></p>
+<p><img data-src="images/stack-frames1.png" style="width:85.0%" /></p>
+</div>
+</div>
+<aside class="notes">
+<p>On the left: your C/C++ code with an example function call. On the right: the stack, when we’re entering the function.</p>
+<p>Here’s the most simple example ever: calling a function without any parameters or a return value. The stack will only contain the return address.</p>
+</aside>
+</section>
+<section id="section-19" class="slide level2">
+<h2></h2>
+<h3 id="single-parameter">Single parameter</h3>
+<div class="columns">
+<div class="column">
+<div class="sourceCode" id="cb47"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb47-1"><a href="#cb47-1"></a><span class="dt">void</span> func(T arg)</span>
+<span id="cb47-2"><a href="#cb47-2"></a>{</span>
+<span id="cb47-3"><a href="#cb47-3"></a>  <span class="co">// ...</span></span>
+<span id="cb47-4"><a href="#cb47-4"></a>}</span>
+<span id="cb47-5"><a href="#cb47-5"></a></span>
+<span id="cb47-6"><a href="#cb47-6"></a>func(t);</span></code></pre></div>
+</div><div class="column">
+<p>Stack when inside <code>func()</code></p>
+<p><img data-src="images/stack-frames2.png" style="width:85.0%" /></p>
+</div>
+</div>
+<aside class="notes">
+<p>What if we have a single function parameter?</p>
+<p>Now, the caller will push the function argument on the stack, right before the return address. This value can now be used when inside the function.</p>
+</aside>
+</section>
+<section id="section-20" class="slide level2">
+<h2></h2>
+<h3 id="multiple-parameters">Multiple parameters</h3>
+<div class="columns">
+<div class="column">
+<div class="sourceCode" id="cb48"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb48-1"><a href="#cb48-1"></a><span class="dt">void</span> func(T arg1, T arg2)</span>
+<span id="cb48-2"><a href="#cb48-2"></a>{</span>
+<span id="cb48-3"><a href="#cb48-3"></a>  <span class="co">// ...</span></span>
+<span id="cb48-4"><a href="#cb48-4"></a>}</span>
+<span id="cb48-5"><a href="#cb48-5"></a></span>
+<span id="cb48-6"><a href="#cb48-6"></a>func(t1, t2);</span></code></pre></div>
+</div><div class="column">
+<p>Stack when inside <code>func()</code></p>
+<p><img data-src="images/stack-frames3.png" style="width:85.0%" /></p>
+</div>
+</div>
+<aside class="notes">
+<p>What if we have multiple function parameters?</p>
+<p>The same really. The caller will now push all function arguments on the stack, one before the other, most often in reverse order.</p>
+</aside>
+</section>
+<section id="section-21" class="slide level2">
+<h2></h2>
+<h3 id="return-value">Return value</h3>
+<div class="columns">
+<div class="column">
+<div class="sourceCode" id="cb49"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb49-1"><a href="#cb49-1"></a>T func()</span>
+<span id="cb49-2"><a href="#cb49-2"></a>{</span>
+<span id="cb49-3"><a href="#cb49-3"></a>  <span class="co">// ...</span></span>
+<span id="cb49-4"><a href="#cb49-4"></a>}</span>
+<span id="cb49-5"><a href="#cb49-5"></a></span>
+<span id="cb49-6"><a href="#cb49-6"></a>T result = func();</span></code></pre></div>
+</div><div class="column">
+<p>Stack when inside <code>func()</code></p>
+<p><img data-src="images/stack-frames4.png" style="width:85.0%" /></p>
+</div>
+</div>
+<aside class="notes">
+<p>What about a return value? This one’s more interesting. For the return value, a so-called return slot is allocated. Here as well as for function parameters, the caller reserves space for the return slot. It is as though the function takes an extra output parameter in the beginning of the list. Now inside the function, the return value will be written to the return slot, and that’s that really.</p>
+</aside>
+</section>
+<section id="section-22" class="slide level2">
+<h2></h2>
+<h3 id="parameters-return-value-combined">Parameters + return value combined</h3>
+<div class="columns">
+<div class="column">
+<div class="sourceCode" id="cb50"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb50-1"><a href="#cb50-1"></a>T func(T arg1, T arg2)</span>
+<span id="cb50-2"><a href="#cb50-2"></a>{</span>
+<span id="cb50-3"><a href="#cb50-3"></a>  <span class="co">// ...</span></span>
+<span id="cb50-4"><a href="#cb50-4"></a>}</span>
+<span id="cb50-5"><a href="#cb50-5"></a></span>
+<span id="cb50-6"><a href="#cb50-6"></a>T result = func(t1, t2);</span></code></pre></div>
+</div><div class="column">
+<p>Stack when inside <code>func()</code></p>
+<p><img data-src="images/stack-frames5.png" style="width:85.0%" /></p>
+</div>
+</div>
+<aside class="notes">
+<p>For one last example: let’s combine function parameters and a return value. Now it’s really clear how the return slot just seems like a function parameter.</p>
+<p>The takeaway from this quick function call mechanics brush-up, is that you should see that there are technically different slots allocated for the return value and the function arguments. Right?</p>
+</aside>
+</section>
+<section id="back-to-nrvo" class="slide level2">
+<h2>Back to <span style="color:#7ea6e0">N</span>RVO</h2>
+<aside class="notes">
+<p>Let’s get back to NRVO.</p>
+<p>We where talking about how NRVO sometimes breaks. The four most common cases.</p>
+</aside>
+</section>
+<section id="section-23" class="slide level2">
+<h2></h2>
+<h3 id="nrvo-is-not-always-possible-1"><span style="color:#7ea6e0">N</span>RVO is not always possible (1)</h3>
+<div class="columns">
+<div class="column">
+<div class="sourceCode" id="cb51"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb51-1"><a href="#cb51-1"></a>T func()</span>
+<span id="cb51-2"><a href="#cb51-2"></a>{</span>
+<span id="cb51-3"><a href="#cb51-3"></a>  T result;</span>
+<span id="cb51-4"><a href="#cb51-4"></a></span>
+<span id="cb51-5"><a href="#cb51-5"></a>  <span class="cf">if</span> (something)</span>
+<span id="cb51-6"><a href="#cb51-6"></a>    <span class="cf">return</span> {};  <span class="co">// prvalue</span></span>
+<span id="cb51-7"><a href="#cb51-7"></a></span>
+<span id="cb51-8"><a href="#cb51-8"></a>  <span class="cf">return</span> result; <span class="co">// lvalue</span></span>
+<span id="cb51-9"><a href="#cb51-9"></a>}</span>
+<span id="cb51-10"><a href="#cb51-10"></a></span>
+<span id="cb51-11"><a href="#cb51-11"></a>T x = func();</span></code></pre></div>
+</div><div class="column">
+<p><img data-src="images/stack-frames4.png" style="width:75.0%" /></p>
+</div>
+</div>
+<p>Not possible to allocate the return value into the return slot</p>
+<aside class="notes">
+<p>In this example, there are two possibilities:</p>
+<ul>
+<li>The function returns from inside the if-statement, using a prvalue in this case.</li>
+<li>The function returns at the end, using the local result variable.</li>
+</ul>
+<p>Note that this example is almost the same as the one we saw before, except that this time from the if-statement, we return a temporary.</p>
+<p>Now if the compiler would want to do NRVO, it would need to know in advance what the result of the if-statement will be, otherwise it cannot preallocate either result value into the return slot. So NRVO is disabled here.</p>
+</aside>
+</section>
+<section id="section-24" class="slide level2">
+<h2></h2>
+<h3 id="nrvo-is-not-always-possible-2"><span style="color:#7ea6e0">N</span>RVO is not always possible (2)</h3>
+<div class="columns">
+<div class="column">
+<div class="sourceCode" id="cb52"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb52-1"><a href="#cb52-1"></a><span class="at">static</span> T result;</span>
+<span id="cb52-2"><a href="#cb52-2"></a></span>
+<span id="cb52-3"><a href="#cb52-3"></a>T func()</span>
+<span id="cb52-4"><a href="#cb52-4"></a>{</span>
+<span id="cb52-5"><a href="#cb52-5"></a>  <span class="cf">return</span> result;</span>
+<span id="cb52-6"><a href="#cb52-6"></a>}</span>
+<span id="cb52-7"><a href="#cb52-7"></a></span>
+<span id="cb52-8"><a href="#cb52-8"></a>T x = func();</span></code></pre></div>
+</div><div class="column">
+<p><img data-src="images/stack-frames4.png" style="width:75.0%" /></p>
+</div>
+</div>
+<p>Returning an object of static storage duration</p>
+<aside class="notes">
+<p>In this next example, the object that is going to be returned is already allocated somewhere else, using static storage duration. So the compiler cannot allocate the result in the return slot, and again, NRVO is disabled.</p>
+</aside>
+</section>
+<section id="section-25" class="slide level2">
+<h2></h2>
+<h3 id="nrvo-is-not-always-possible-3"><span style="color:#7ea6e0">N</span>RVO is not always possible (3)</h3>
+<div class="columns">
+<div class="column">
+<div class="sourceCode" id="cb53"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb53-1"><a href="#cb53-1"></a><span class="kw">struct</span> U : T { <span class="co">/* Additional members */</span> };</span>
+<span id="cb53-2"><a href="#cb53-2"></a></span>
+<span id="cb53-3"><a href="#cb53-3"></a>T func()</span>
+<span id="cb53-4"><a href="#cb53-4"></a>{</span>
+<span id="cb53-5"><a href="#cb53-5"></a>  U result;</span>
+<span id="cb53-6"><a href="#cb53-6"></a></span>
+<span id="cb53-7"><a href="#cb53-7"></a>  <span class="cf">return</span> result;</span>
+<span id="cb53-8"><a href="#cb53-8"></a>}</span>
+<span id="cb53-9"><a href="#cb53-9"></a></span>
+<span id="cb53-10"><a href="#cb53-10"></a>T x = func();</span></code></pre></div>
+</div><div class="column">
+<p><img data-src="images/stack-frames4.png" style="width:75.0%" /></p>
+</div>
+</div>
+<p>Slicing <img data-src="images/em-pizza.svg" style="width:4.0%" /></p>
+<aside class="notes">
+<p>Next example. What if the type to be returned U is a derived type from T which is specified in the function return value? This is completely legal and is a situation called slicing. It is called slicing, as the derived type is of a larger footprint than the base type. And the return slot is allocated for the base type. So the compiler cannot directly allocate this local result value into the return slot. And again, sadly, NRVO is disabled.</p>
+</aside>
+</section>
+<section id="section-26" class="slide level2">
+<h2></h2>
+<h3 id="nrvo-is-not-always-possible-4"><span style="color:#7ea6e0">N</span>RVO is not always possible (4)</h3>
+<div class="columns">
+<div class="column">
+<div class="sourceCode" id="cb54"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb54-1"><a href="#cb54-1"></a>T func(T arg)</span>
+<span id="cb54-2"><a href="#cb54-2"></a>{</span>
+<span id="cb54-3"><a href="#cb54-3"></a>  <span class="cf">return</span> arg;</span>
+<span id="cb54-4"><a href="#cb54-4"></a>}</span>
+<span id="cb54-5"><a href="#cb54-5"></a></span>
+<span id="cb54-6"><a href="#cb54-6"></a>T x = func(T{});</span></code></pre></div>
+</div><div class="column">
+<p><img data-src="images/stack-frames6.png" style="width:75.0%" /></p>
+</div>
+</div>
+<p>Returning a function argument</p>
+<aside class="notes">
+<p>One last example: returning a function argument. As we’ve seen from the function call mechanics crash course, function arguments are stored on the stack alongside the return slot. So the compiler cannot do NRVO, because the slots don’t overlap. And by calling conventions it cannot make them do so. Right?</p>
+<p>A side-note though: C++11 and onwards will try to perform a move, which could be the next best optimization in this case. I will briefly touch upon this moving behavior in a moment.</p>
+<p>First let’s summarize RVO.</p>
+</aside>
+</section>
+<section id="summarizing-rvo" class="slide level2">
+<h2>Summarizing RVO</h2>
+<blockquote>
+<p>RVO does not work when <strong>there’s no control over the physical location of the object to be elided</strong>.</p>
+</blockquote>
+<aside class="notes">
+<p>Again, that’s:</p>
+<ul>
+<li>Objects with static storage duration,</li>
+<li>Sliced objects,</li>
+<li>Function arguments.</li>
+</ul>
+</aside>
+</section>
+<section id="implicit-move" class="slide level2">
+<h2>Implicit move</h2>
+<p>When even <span style="color:#7ea6e0">N</span>RVO is not possible..</p>
+<div class="columns">
+<div class="column">
+<div class="sourceCode" id="cb55"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb55-1"><a href="#cb55-1"></a>T func(T arg)</span>
+<span id="cb55-2"><a href="#cb55-2"></a>{</span>
+<span id="cb55-3"><a href="#cb55-3"></a>  <span class="cf">return</span> arg;</span>
+<span id="cb55-4"><a href="#cb55-4"></a>}</span>
+<span id="cb55-5"><a href="#cb55-5"></a></span>
+<span id="cb55-6"><a href="#cb55-6"></a>T x = func(T{});</span></code></pre></div>
+</div><div class="column">
+<div class="sourceCode" id="cb56"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb56-1"><a href="#cb56-1"></a>T()</span>
+<span id="cb56-2"><a href="#cb56-2"></a>T(&amp;&amp;)</span>
+<span id="cb56-3"><a href="#cb56-3"></a>~T()</span>
+<span id="cb56-4"><a href="#cb56-4"></a>~T()</span></code></pre></div>
+</div>
+</div>
+<div class="fragment">
+<p>Implicit <span style="color:#0066cc"><strong><code>rvalue</code></strong></span> conversion!</p>
+<aside class="notes">
+<p>In the last example about NRVO, when returning the function argument, I mentioned that C++11 and onwards will try to move the return value. This is a behavior unofficially called ‘implicit move’ and looks like this.</p>
+<p>In this example we use a default constructed T as a prvalue argument to the function, which will directly return it. Because the compiler cannot do NRVO, it will attempt a move. This is an implicit rvalue conversion.</p>
+<p>This is nice, as it possibly optimizes the function data transaction still, even though there is no NVRO – which is the best scenario. Note that because of situations like this, it is useful for your own designed types to be move-enabled.</p>
+<p>One more thing I’d like to mention around implicit move: don’t be too clever.</p>
+</aside>
+</div>
+</section>
+<section id="section-27" class="slide level2">
+<h2></h2>
+<h3 id="inadvertently-disabling-nrvo">Inadvertently disabling <span style="color:#7ea6e0">N</span>RVO</h3>
+<div class="columns">
+<div class="column">
+<p><span style="color:#7ea6e0">N</span>RVO</p>
+<div class="sourceCode" id="cb57"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb57-1"><a href="#cb57-1"></a>T func()</span>
+<span id="cb57-2"><a href="#cb57-2"></a>{</span>
+<span id="cb57-3"><a href="#cb57-3"></a>  T result;</span>
+<span id="cb57-4"><a href="#cb57-4"></a></span>
+<span id="cb57-5"><a href="#cb57-5"></a>  <span class="cf">return</span> result;</span>
+<span id="cb57-6"><a href="#cb57-6"></a>}</span>
+<span id="cb57-7"><a href="#cb57-7"></a></span>
+<span id="cb57-8"><a href="#cb57-8"></a>T x = func();</span></code></pre></div>
+</div><div class="column">
+<p>No <span style="color:#7ea6e0">N</span>RVO</p>
+<div class="sourceCode" id="cb58"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb58-1"><a href="#cb58-1"></a>T func()</span>
+<span id="cb58-2"><a href="#cb58-2"></a>{</span>
+<span id="cb58-3"><a href="#cb58-3"></a>  T result;</span>
+<span id="cb58-4"><a href="#cb58-4"></a></span>
+<span id="cb58-5"><a href="#cb58-5"></a>  <span class="cf">return</span> <span class="bu">std::</span>move(result);</span>
+<span id="cb58-6"><a href="#cb58-6"></a>}</span>
+<span id="cb58-7"><a href="#cb58-7"></a></span>
+<span id="cb58-8"><a href="#cb58-8"></a>T x = func();</span></code></pre></div>
+</div>
+</div>
+<p>Don’t try to be too clever.. <img data-src="images/em-nerd_face.svg" style="width:3.0%" /></p>
+<aside class="notes">
+<p>Here’s two examples, the one on the left has NRVO enabled just fine, on the right, it’s not possible.</p>
+<p>Because what some misguided souls do, is try to anticipate on the possible move and use a std::move for the return object. This is a pessimization however, as the compiler now cannot employ NRVO anymore and is forced to fall back on a move operation. And a move operation, however cheap is not as cheap as no operation at all – which would be the case for NRVO.</p>
+<p>Right. I’d like to provide you some guidelines before we finish off with the conclusions.</p>
+</aside>
+</section>
+<section id="guidelines" class="slide level2">
+<h2>Guidelines</h2>
+<ul>
+<li class="fragment">Don’t be afraid to return a non-POD type by value,</li>
+<li class="fragment">Don’t be too smart, let the compiler do the work for you,</li>
+<li class="fragment">Implement your move constructor/<code>operator=</code>,</li>
+<li class="fragment">Use compile-time programming if possible,</li>
+<li class="fragment">Keep your functions short.</li>
+</ul>
+<aside class="notes">
+<p>Don’t be afraid to return a non-POD type by value. More than often, there will be an optimization such as the ones we’ve seen and it will cost you nothing. And when it comes to reasoning about code during design or reviewing, reasoning about values is easier than reasoning about references.</p>
+<p>Don’t be too smart, let the compiler handle the heavy lifting. It has all the rules built into it, it’s up to you to build something that works. But it doesn’t hurt to know something about the internals.</p>
+<p>Then, make your types move enabled if possible. In case the compiler is not able to perform NRVO, it’ll try a move on your type, which is potentially cheaper than a copy.</p>
+<p>Fourth point: use compile-time programming constructs if possible. If you’re able to have the compiler sort out parts of your code at compile-time, it will possibly omit a lot of runtime code. Meaning you don’t even have to rely on any further optimization mechanism.</p>
+<p>Then finally: keep your functions short. Now this might seem a little off-topic, but it isn’t really. You do yourself and your reviewing co-workers a favor by implementing short, simple functions. Not only will it force you to name subroutines, making your code more readable and maintainable, it will also allow the compiler to see through the code better, and apply the aforementioned optimizations such as copy elision and RVO in general.</p>
+<p>That concludes the theory for today. Before we jump into the conclusions, let’s take one last look at the quiz example!</p>
+</aside>
+</section>
+<section id="quiz-revisited-1" class="slide level2">
+<h2>Quiz revisited</h2>
+<div class="columns">
+<div class="column">
+<div class="sourceCode" id="cb59"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb59-1"><a href="#cb59-1"></a><span class="kw">struct</span> Number {</span>
+<span id="cb59-2"><a href="#cb59-2"></a>  <span class="dt">int</span> <span class="va">value_</span> = {};</span>
+<span id="cb59-3"><a href="#cb59-3"></a>};</span>
+<span id="cb59-4"><a href="#cb59-4"></a></span>
+<span id="cb59-5"><a href="#cb59-5"></a><span class="kw">class</span> T {</span>
+<span id="cb59-6"><a href="#cb59-6"></a><span class="kw">public</span>:</span>
+<span id="cb59-7"><a href="#cb59-7"></a>  T(<span class="at">const</span> Number &amp;n) : <span class="va">n_</span>{n} {}</span>
+<span id="cb59-8"><a href="#cb59-8"></a></span>
+<span id="cb59-9"><a href="#cb59-9"></a>  T(<span class="at">const</span> T &amp;) { puts(<span class="st">&quot;Copy c&#39;tor&quot;</span>); }</span>
+<span id="cb59-10"><a href="#cb59-10"></a></span>
+<span id="cb59-11"><a href="#cb59-11"></a>  Number get() { <span class="cf">return</span> <span class="va">n_</span>; }</span>
+<span id="cb59-12"><a href="#cb59-12"></a></span>
+<span id="cb59-13"><a href="#cb59-13"></a><span class="kw">private</span>:</span>
+<span id="cb59-14"><a href="#cb59-14"></a>  Number <span class="va">n_</span>;</span>
+<span id="cb59-15"><a href="#cb59-15"></a>};</span></code></pre></div>
+</div><div class="column">
+<div class="sourceCode" id="cb60"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb60-1"><a href="#cb60-1"></a><span class="at">static</span> T create(Number &amp;&amp;n) {</span>
+<span id="cb60-2"><a href="#cb60-2"></a>  <span class="cf">return</span> T{<span class="bu">std::</span>move(n)};</span>
+<span id="cb60-3"><a href="#cb60-3"></a>}</span>
+<span id="cb60-4"><a href="#cb60-4"></a></span>
+<span id="cb60-5"><a href="#cb60-5"></a><span class="dt">int</span> main() {</span>
+<span id="cb60-6"><a href="#cb60-6"></a>  T x = T{create(Number{<span class="dv">42</span>})};</span>
+<span id="cb60-7"><a href="#cb60-7"></a></span>
+<span id="cb60-8"><a href="#cb60-8"></a>  <span class="cf">return</span> x.get().<span class="va">value_</span>;</span>
+<span id="cb60-9"><a href="#cb60-9"></a>}</span></code></pre></div>
+<p>What’s the output?</p>
+</div>
+</div>
+<aside class="notes">
+<p>In the previous iteration we were able to name the value categories, now we should also be able to spot the optimizations!</p>
+<p>…</p>
+<p>We can see that the factory function and the initialization are completely optimized away by copy elision. This means the copy constructor of T isn’t used.</p>
+</aside>
+</section>
+<section id="quiz-revisited-2" class="slide level2">
+<h2>Quiz revisited</h2>
+<div class="columns">
+<div class="column">
+<div class="sourceCode" id="cb61"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb61-1"><a href="#cb61-1"></a><span class="kw">struct</span> Number {</span>
+<span id="cb61-2"><a href="#cb61-2"></a>  <span class="dt">int</span> <span class="va">value_</span> = {};</span>
+<span id="cb61-3"><a href="#cb61-3"></a>};</span>
+<span id="cb61-4"><a href="#cb61-4"></a></span>
+<span id="cb61-5"><a href="#cb61-5"></a><span class="kw">class</span> T {</span>
+<span id="cb61-6"><a href="#cb61-6"></a><span class="kw">public</span>:</span>
+<span id="cb61-7"><a href="#cb61-7"></a>  T(<span class="at">const</span> Number &amp;n) : <span class="va">n_</span>{n} {}</span>
+<span id="cb61-8"><a href="#cb61-8"></a></span>
+<span id="cb61-9"><a href="#cb61-9"></a>  Number get() { <span class="cf">return</span> <span class="va">n_</span>; }</span>
+<span id="cb61-10"><a href="#cb61-10"></a></span>
+<span id="cb61-11"><a href="#cb61-11"></a><span class="kw">private</span>:</span>
+<span id="cb61-12"><a href="#cb61-12"></a>  Number <span class="va">n_</span>;</span>
+<span id="cb61-13"><a href="#cb61-13"></a>};</span></code></pre></div>
+</div><div class="column">
+<div class="sourceCode" id="cb62"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb62-1"><a href="#cb62-1"></a><span class="dt">int</span> main() {</span>
+<span id="cb62-2"><a href="#cb62-2"></a>  T x = T{Number{<span class="dv">42</span>}};</span>
+<span id="cb62-3"><a href="#cb62-3"></a></span>
+<span id="cb62-4"><a href="#cb62-4"></a>  <span class="cf">return</span> x.get().<span class="va">value_</span>;</span>
+<span id="cb62-5"><a href="#cb62-5"></a>}</span></code></pre></div>
+<p>What’s the output?</p>
+</div>
+</div>
+<aside class="notes">
+<p>Now let’s take a look at what the output really is.</p>
+</aside>
+</section>
+<section id="section-28" class="slide level2">
+<h2></h2>
+<p><img data-src="images/quiz-output.png" style="width:85.0%" /></p>
+<aside class="notes">
+<p><a href="https://www.godbolt.org/z/aehqns">CE</a></p>
+<p>This is the quiz code on the left, and here on the right is the generated assembly output by GCC. Two instructions, the main function will just directly return 42. The compiler completely removed the rest of the code. And notice this is not after some aggressive optimization, the code is build with -O1.</p>
+<p>By the way, this screenshot is from a website called Compiler Explorer, which is awesome. I really recommend you to check it out.</p>
+<p>The conclusions for today then!</p>
+</aside>
+</section></section>
+<section>
+<section id="conclusions" class="title-slide slide level1">
+<h1>Conclusions</h1>
+
+</section>
+<section id="c-value-categories" class="slide level2">
+<h2>C++ value categories</h2>
+<p><img data-src="images/value-categories-venn.png" style="width:85.0%" /></p>
+<aside class="notes">
+<p>Conclusions on value categories:</p>
+<ul>
+<li>Value categories are a property of expressions,</li>
+<li>There are five value categories in total,</li>
+<li>Primary categories: prvalue, xvalue and lvalue,</li>
+<li>Spanning categories: glvalue and rvalue.</li>
+</ul>
+</aside>
+</section>
+<section id="copymove-elision-1" class="slide level2">
+<h2>Copy/move elision (1)</h2>
+<ul>
+<li class="fragment">Copy elision: part of the standard,</li>
+<li class="fragment">Temporary materialization: part of the standard,</li>
+<li class="fragment"><span style="color:#ea6b66">U</span>RVO and <span style="color:#7ea6e0">N</span>RVO: unofficial terms,</li>
+<li class="fragment">Copy elision: allows, does not guarantee,</li>
+<li class="fragment">Temporary materialization: mandates.</li>
+</ul>
+<aside class="notes">
+<p>…</p>
+</aside>
+</section>
+<section id="copymove-elision-2" class="slide level2">
+<h2>Copy/move elision (2)</h2>
+<ul>
+<li class="fragment">Temporary materialization: <span style="color:#0066cc"><strong><code>prvalue</code></strong></span> to <span style="color:#cc00cc"><strong><code>xvalue</code></strong></span> conversion,</li>
+<li class="fragment"><span style="color:#0066cc"><strong><code>prvalue</code></strong></span>s are <strong>not</strong> moved from,</li>
+<li class="fragment">Implicit move: a RVO that happens even without copy elision.</li>
+</ul>
+<aside class="notes">
+<p>…</p>
+<p>A prvalue is a recipe for an object, it materializes when evaluated, which is called the temporary materialization conversion.</p>
+<p>…</p>
+<p>That’s it for the conclusions. One more more thing: there will be a workshop accompanying this talk.</p>
+</aside>
+</section></section>
+<section id="end" class="title-slide slide level1">
+<h1>End</h1>
+<p>Thank you <img data-src="images/em-grinning.svg" style="width:3.0%" /></p>
+<aside class="notes">
+<p>Thank you!</p>
+<p>Are there any questions?</p>
+</aside>
+</section>
+
+<section>
+<section id="extra-slides" class="title-slide slide level1">
+<h1>Extra slides</h1>
+
+</section>
+<section id="value-category-taxonomy" class="slide level2">
+<h2>Value category taxonomy</h2>
+<p><img data-src="images/value-categories-taxonomy.png" /></p>
+</section>
+<section id="value-category-summary" class="slide level2">
+<h2>Value category summary</h2>
+<p>Primary categories: <span style="color:#0066cc"><strong><code>prvalue</code></strong></span>, <span style="color:#cc00cc"><strong><code>xvalue</code></strong></span> and <span style="color:#cc0000"><strong><code>lvalue</code></strong></span>.</p>
+<p>A <span style="color:#cc0000"><strong><code>glvalue</code></strong></span> is either an <span style="color:#cc0000"><strong><code>lvalue</code></strong></span> or an <span style="color:#cc00cc"><strong><code>xvalue</code></strong></span>.</p>
+<p>An <span style="color:#0066cc"><strong><code>rvalue</code></strong></span> is either a <span style="color:#0066cc"><strong><code>prvalue</code></strong></span> or an <span style="color:#cc00cc"><strong><code>xvalue</code></strong></span>.</p>
+</section>
+<section id="definition-glvalue" class="slide level2">
+<h2>Definition: <span style="color:#cc0000"><strong><code>glvalue</code></strong></span></h2>
+<blockquote>
+<p>A <span style="color:#cc0000"><strong><code>glvalue</code></strong></span> is an expression whose evaluation determines the identity of an object, bit-field, or function.</p>
+</blockquote>
+<p><em>§basic.lval</em></p>
+</section>
+<section id="definition-prvalue" class="slide level2">
+<h2>Definition: <span style="color:#0066cc"><strong><code>prvalue</code></strong></span></h2>
+<blockquote>
+<p>A <span style="color:#0066cc"><strong><code>prvalue</code></strong></span> is an expression whose evaluation initializes an object or a bit-field, or computes the value of an operand of an operator, as specified by the context in which it appears.</p>
+</blockquote>
+<p><em>§basic.lval</em></p>
+</section>
+<section id="definition-xvalue" class="slide level2">
+<h2>Definition: <span style="color:#cc00cc"><strong><code>xvalue</code></strong></span></h2>
+<blockquote>
+<p>An <span style="color:#cc00cc"><strong><code>xvalue</code></strong></span> is a <span style="color:#cc0000"><strong><code>glvalue</code></strong></span> that denotes an object or bit-field whose resources can be reused (usually because it is near the end of its lifetime).</p>
+</blockquote>
+<p><em>§basic.lval</em></p>
+</section>
+<section id="definition-lvalue" class="slide level2">
+<h2>Definition: <span style="color:#cc0000"><strong><code>lvalue</code></strong></span></h2>
+<blockquote>
+<p>An <span style="color:#cc0000"><strong><code>lvalue</code></strong></span> is a <span style="color:#cc0000"><strong><code>glvalue</code></strong></span> that is not an <span style="color:#cc00cc"><strong><code>xvalue</code></strong></span>.</p>
+</blockquote>
+<p><em>§basic.lval</em></p>
+</section>
+<section id="definition-rvalue" class="slide level2">
+<h2>Definition: <span style="color:#0066cc"><strong><code>rvalue</code></strong></span></h2>
+<blockquote>
+<p>An <span style="color:#0066cc"><strong><code>rvalue</code></strong></span> is a <span style="color:#0066cc"><strong><code>prvalue</code></strong></span> or an <span style="color:#cc00cc"><strong><code>xvalue</code></strong></span>.</p>
+</blockquote>
+<p><em>§basic.lval</em></p>
+</section>
+<section id="special-member-functions" class="slide level2">
+<h2>Special member functions</h2>
+<p><img data-src="images/special-member-functions.png" style="width:60.0%" /></p>
+</section>
+<section id="random-question" class="slide level2">
+<h2>Random question</h2>
+<table>
+<colgroup>
+<col style="width: 2%" />
+<col style="width: 95%" />
+<col style="width: 1%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td>Q:</td>
+<td>Why is copy/move elision performed for even the lowest optimization levels in most compilers?</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<div class="fragment">
+<table>
+<colgroup>
+<col style="width: 2%" />
+<col style="width: 95%" />
+<col style="width: 1%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td>A:</td>
+<td><em>Because it is the syntax parsing phase early in the compilation that detects when a copy/move can be elided.</em> <em>It does not make sense to generate a copy/move operation for the optimizer to remove it again later.</em></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="copymove-constructors-1" class="slide level2">
+<h2>Copy/move constructors (1)</h2>
+<blockquote>
+<p>Due to temporary materialization in C++17, a type does not require a copy/move constructor when a copy/move is elided.</p>
+</blockquote>
+</section>
+<section id="copymove-constructors-2" class="slide level2">
+<h2>Copy/move constructors (2)</h2>
+<div class="sourceCode" id="cb63"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb63-1"><a href="#cb63-1"></a><span class="kw">struct</span> T  <span class="co">// Non-copyable</span></span>
+<span id="cb63-2"><a href="#cb63-2"></a>{</span>
+<span id="cb63-3"><a href="#cb63-3"></a>  T()          = <span class="cf">default</span>;</span>
+<span id="cb63-4"><a href="#cb63-4"></a>  T(<span class="at">const</span> T &amp;) = <span class="kw">delete</span>;</span>
+<span id="cb63-5"><a href="#cb63-5"></a>};</span>
+<span id="cb63-6"><a href="#cb63-6"></a></span>
+<span id="cb63-7"><a href="#cb63-7"></a><span class="dt">int</span> main() {</span>
+<span id="cb63-8"><a href="#cb63-8"></a>  T x = T{};</span>
+<span id="cb63-9"><a href="#cb63-9"></a>}</span></code></pre></div>
+<p>This code fails to compile before C++17</p>
+</section>
+<section id="copy-elision-2" class="slide level2">
+<h2>Copy elision</h2>
+<blockquote>
+<p>An exception to the <strong>as-if rule</strong>; it applies even when there are side-effects to object copying/moving.</p>
+</blockquote>
+<aside class="notes">
+<p>The as-if rule, is a rule in the C++ standard that basically says the compiler is allowed to do anything with the code instructions for optimizations, as long as the observable behavior of the program is equal to the original version. And the compiler may sometimes go to great lengths to try to prove a certain assumption holds and code can be optimized away for example.</p>
+<p>Now, the as-if rule states that side-effects have to be taken into account when applying the rule. This is not so for copy elision. Copy elision may be applied even when the copying or moving operation has side-effects.</p>
+</aside>
+</section>
+<section id="copy-elision-3" class="slide level2">
+<h2>Copy elision</h2>
+<blockquote>
+<p>Multiple elisions may be chained.</p>
+</blockquote>
+</section>
+<section id="more-copy-elision-wisdom" class="slide level2">
+<h2>More copy elision wisdom</h2>
+<blockquote>
+<p>Another way to describe C++17 mechanics for copy elision is “unmaterialized value passing”: <span style="color:#0066cc"><strong><code>prvalue</code></strong></span>s are returned and used without ever materializing a temporary.</p>
+</blockquote>
+</section>
+<section id="copy-elision-and-side-effects" class="slide level2">
+<h2>Copy elision and side-effects</h2>
+<blockquote>
+<p>Copy elision is one of the two allowed forms of optimization, …, that can change the observable side-effects (of copy/move constructors and destructors, red.).</p>
+</blockquote>
+<div class="fragment">
+<blockquote>
+<p>Programs relying on the side-effects of copy/move constructors and destructors are not portable.</p>
+</blockquote>
+</div>
+</section>
+<section id="temporary-materialization-3" class="slide level2">
+<h2>Temporary materialization</h2>
+<blockquote>
+<p>Temporary materialization does <strong>not</strong> occur when initializing an object from a <span style="color:#0066cc"><strong><code>prvalue</code></strong></span> of the same type! Such an object is <strong>directly initialized</strong>.</p>
+</blockquote>
+<p>Strictly speaking..</p>
+</section>
+<section id="trivially-copyable-types" class="slide level2">
+<h2>Trivially copyable types</h2>
+<p>The type is a <em>trivially copyable</em> class type:</p>
+<ul>
+<li class="fragment">All <em>trivial</em> types (‘POD’ types):
+<ul>
+<li class="fragment">Scalar types (e.g. <code>int</code>/<code>bool</code>/etc.),</li>
+<li class="fragment">A <code>class</code>/<code>struct</code>/<code>union</code> with some constraints.</li>
+</ul></li>
+<li class="fragment">Arrays of trivial types.</li>
+</ul>
+</section>
+<section id="noisy-type" class="slide level2">
+<h2>Noisy type</h2>
+<p>We’ll use the following type throughout:</p>
+<div class="sourceCode" id="cb64"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb64-1"><a href="#cb64-1"></a><span class="pp">#include </span><span class="im">&lt;cstdio&gt;</span></span>
+<span id="cb64-2"><a href="#cb64-2"></a></span>
+<span id="cb64-3"><a href="#cb64-3"></a><span class="pp">#define LOG </span>puts(<span class="ot">__PRETTY_FUNCTION__</span>)</span>
+<span id="cb64-4"><a href="#cb64-4"></a></span>
+<span id="cb64-5"><a href="#cb64-5"></a><span class="kw">struct</span> T</span>
+<span id="cb64-6"><a href="#cb64-6"></a>{</span>
+<span id="cb64-7"><a href="#cb64-7"></a>  T()                     { LOG; }</span>
+<span id="cb64-8"><a href="#cb64-8"></a>  ~T()                    { LOG; }</span>
+<span id="cb64-9"><a href="#cb64-9"></a>  T(<span class="at">const</span> T &amp;)            { LOG; }</span>
+<span id="cb64-10"><a href="#cb64-10"></a>  T &amp;<span class="kw">operator</span>=(<span class="at">const</span> T &amp;) { LOG; <span class="cf">return</span> *<span class="kw">this</span>; }</span>
+<span id="cb64-11"><a href="#cb64-11"></a>  T(T &amp;&amp;)                 { LOG; }</span>
+<span id="cb64-12"><a href="#cb64-12"></a>  T &amp;<span class="kw">operator</span>=(T &amp;&amp;)      { LOG; <span class="cf">return</span> *<span class="kw">this</span>; }</span>
+<span id="cb64-13"><a href="#cb64-13"></a>};</span></code></pre></div>
+</section>
+<section id="printing-the-value-category" class="slide level2">
+<h2>Printing the value category</h2>
+<div class="sourceCode" id="cb65"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb65-1"><a href="#cb65-1"></a><span class="co">// From: https://medium.com/@barryrevzin/value-categories-in-c-17-f56ae54bccbe</span></span>
+<span id="cb65-2"><a href="#cb65-2"></a><span class="kw">namespace</span> detail {</span>
+<span id="cb65-3"><a href="#cb65-3"></a>  <span class="kw">template</span> &lt;<span class="kw">class</span> T&gt; <span class="kw">struct</span> value_category      {</span>
+<span id="cb65-4"><a href="#cb65-4"></a>    <span class="at">static</span> <span class="kw">constexpr</span> <span class="dt">char</span> <span class="at">const</span> * value = <span class="st">&quot;prvalue&quot;</span>; };</span>
+<span id="cb65-5"><a href="#cb65-5"></a></span>
+<span id="cb65-6"><a href="#cb65-6"></a>  <span class="kw">template</span> &lt;<span class="kw">class</span> T&gt; <span class="kw">struct</span> value_category&lt;T&amp;&gt;i {</span>
+<span id="cb65-7"><a href="#cb65-7"></a>    <span class="at">static</span> <span class="kw">constexpr</span> <span class="dt">char</span> <span class="at">const</span> * value = <span class="st">&quot;lvalue&quot;</span>;  };</span>
+<span id="cb65-8"><a href="#cb65-8"></a></span>
+<span id="cb65-9"><a href="#cb65-9"></a>  <span class="kw">template</span> &lt;<span class="kw">class</span> T&gt; <span class="kw">struct</span> value_category&lt;T&amp;&amp;&gt; {</span>
+<span id="cb65-10"><a href="#cb65-10"></a>    <span class="at">static</span> <span class="kw">constexpr</span> <span class="dt">char</span> <span class="at">const</span> * value = <span class="st">&quot;xvalue&quot;</span>;  };</span>
+<span id="cb65-11"><a href="#cb65-11"></a>}</span>
+<span id="cb65-12"><a href="#cb65-12"></a></span>
+<span id="cb65-13"><a href="#cb65-13"></a><span class="pp">#define PRINT_VALUE_CAT</span>(expr)<span class="pp">    </span>\</span>
+<span id="cb65-14"><a href="#cb65-14"></a><span class="pp">  </span><span class="bu">std::</span>cout &lt;&lt;<span class="pp"> #</span>expr<span class="pp"> </span>&lt;&lt;<span class="pp"> </span><span class="st">&quot; is a &quot;</span><span class="pp"> </span>\</span>
+<span id="cb65-15"><a href="#cb65-15"></a><span class="pp">            </span>&lt;&lt;<span class="pp"> </span>::detail::value_category&lt;<span class="kw">decltype</span>((expr))&gt;::value<span class="pp"> </span>&lt;&lt;<span class="pp"> </span><span class="ch">&#39;</span><span class="sc">\n</span><span class="ch">&#39;</span></span></code></pre></div>
+</section></section>
+    </div>
+  </div>
+
+  <script src="reveal.js/js/reveal.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        // Display the page number of the current slide
+        slideNumber: true,
+        // Push each slide change to the browser history
+        history: true,
+        // Transition style
+        transition: 'fade', // none/fade/slide/convex/concave/zoom
+
+        // Optional reveal.js plugins
+        dependencies: [
+          { src: 'reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: 'reveal.js/plugin/zoom-js/zoom.js', async: true },
+          { src: 'reveal.js/plugin/notes/notes.js', async: true }
+        ]
+      });
+    </script>
+    </body>
+</html>
