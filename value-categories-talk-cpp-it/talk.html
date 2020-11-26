@@ -816,6 +816,10 @@
 <p>All of this goodness is made possible by some clever mechanisms built on top of the value category concepts. In fact, let’s dive in a bit deeper and see what’s there!</p>
 </aside>
 </section>
+<section id="section-17" class="slide level2">
+<h2></h2>
+<p><img data-src="images/copy-elision-ce.png" style="width:85.0%" /></p>
+</section>
 <section id="under-the-hood" class="slide level2">
 <h2>Under the hood</h2>
 <blockquote>
@@ -868,7 +872,7 @@
 <p>An implicit <span style="color:#0066cc"><strong><code>prvalue</code></strong></span> to <span style="color:#cc00cc"><strong><code>xvalue</code></strong></span> conversion.</p>
 </blockquote>
 <div class="fragment">
-<p>Remember: <span style="color:#0066cc"><strong><code>prvalue</code></strong></span>s are not moved from!</p>
+<p><span style="color:#0066cc"><strong><code>prvalue</code></strong></span>s are not moved from!</p>
 <aside class="notes">
 <p>As we’ve seen from the example: temporary materialization is a prvalue to xvalue conversion.</p>
 <p>Also, prvalues are not moved from. This is an important observation, as often the ‘can resources be safely stolen’ property of an expression is described as ‘can be moved from’. But a prvalue is not moved from! It materializes upon evaluation.</p>
@@ -890,7 +894,7 @@
 <p>Let’s look at a few more examples.</p>
 </aside>
 </section>
-<section id="section-17" class="slide level2">
+<section id="section-18" class="slide level2">
 <h2></h2>
 <h3 id="temporary-materialization-in-action">Temporary materialization in action</h3>
 <div class="sourceCode" id="cb40"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true"></a><span class="kw">struct</span> T { <span class="dt">int</span> value; };</span>
@@ -1031,11 +1035,12 @@
 <p>There are many reasons for NRVO to break. Which is sad. And in order to explain these situations, I’d like us all to brush up on some background information. Namely: function call mechanics, or calling conventions.</p>
 </aside>
 </section>
-<section id="section-18" class="slide level2">
+<section id="section-19" class="slide level2">
 <h2></h2>
 <h3 id="nrvo-is-not-always-possible-1"><span style="color:#7ea6e0">N</span>RVO is not always possible (1)</h3>
 <div class="columns">
 <div class="column">
+<p>Multiple outputs</p>
 <div class="sourceCode" id="cb46"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true"></a>T func()</span>
 <span id="cb46-2"><a href="#cb46-2" aria-hidden="true"></a>{</span>
 <span id="cb46-3"><a href="#cb46-3" aria-hidden="true"></a>  T result;</span>
@@ -1048,25 +1053,7 @@
 <span id="cb46-10"><a href="#cb46-10" aria-hidden="true"></a></span>
 <span id="cb46-11"><a href="#cb46-11" aria-hidden="true"></a>T x = func();</span></code></pre></div>
 </div><div class="column">
-<p><img data-src="images/stack-frames4.png" style="width:75.0%" /></p>
-</div>
-</div>
-<p>Not possible to allocate the return value into the return slot</p>
-<aside class="notes">
-<p>In this example, there are two possibilities:</p>
-<ul>
-<li>The function returns from inside the if-statement, using a prvalue in this case.</li>
-<li>The function returns at the end, using the local result variable.</li>
-</ul>
-<p>Note that this example is almost the same as the one we saw before, except that this time from the if-statement, we return a temporary.</p>
-<p>Now if the compiler would want to do NRVO, it would need to know in advance what the result of the if-statement will be, otherwise it cannot preallocate either result value into the return slot. So NRVO is disabled here.</p>
-</aside>
-</section>
-<section id="section-19" class="slide level2">
-<h2></h2>
-<h3 id="nrvo-is-not-always-possible-2"><span style="color:#7ea6e0">N</span>RVO is not always possible (2)</h3>
-<div class="columns">
-<div class="column">
+<p>Output stored elsewhere</p>
 <div class="sourceCode" id="cb47"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true"></a><span class="at">static</span> T result;</span>
 <span id="cb47-2"><a href="#cb47-2" aria-hidden="true"></a></span>
 <span id="cb47-3"><a href="#cb47-3" aria-hidden="true"></a>T func()</span>
@@ -1075,20 +1062,25 @@
 <span id="cb47-6"><a href="#cb47-6" aria-hidden="true"></a>}</span>
 <span id="cb47-7"><a href="#cb47-7" aria-hidden="true"></a></span>
 <span id="cb47-8"><a href="#cb47-8" aria-hidden="true"></a>T x = func();</span></code></pre></div>
-</div><div class="column">
-<p><img data-src="images/stack-frames4.png" style="width:75.0%" /></p>
 </div>
 </div>
-<p>Returning an object of static storage duration</p>
 <aside class="notes">
-<p>In this next example, the object that is going to be returned is already allocated somewhere else, using static storage duration. So the compiler cannot allocate the result in the return slot, and again, NRVO is disabled.</p>
+<p>In the left example, there are two possibilities:</p>
+<ul>
+<li>The function returns from inside the if-statement, using a prvalue in this case.</li>
+<li>The function returns at the end, using the local result variable.</li>
+</ul>
+<p>Note that this example is almost the same as the one we saw before, except that this time from the if-statement, we return a temporary.</p>
+<p>Now if the compiler would want to do NRVO, it would need to know in advance what the result of the if-statement will be, otherwise it cannot preallocate either result value into the return slot. So NRVO is disabled here.</p>
+<p>In the right example, the object that is going to be returned is already allocated somewhere else, using static storage duration. So the compiler cannot allocate the result in the return slot, and again, NRVO is disabled.</p>
 </aside>
 </section>
 <section id="section-20" class="slide level2">
 <h2></h2>
-<h3 id="nrvo-is-not-always-possible-3"><span style="color:#7ea6e0">N</span>RVO is not always possible (3)</h3>
+<h3 id="nrvo-is-not-always-possible-2"><span style="color:#7ea6e0">N</span>RVO is not always possible (2)</h3>
 <div class="columns">
 <div class="column">
+<p>Slicing <img data-src="images/em-pizza.svg" style="width:4.0%" /></p>
 <div class="sourceCode" id="cb48"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true"></a><span class="kw">struct</span> U : T { <span class="co">/* Additional members */</span> };</span>
 <span id="cb48-2"><a href="#cb48-2" aria-hidden="true"></a></span>
 <span id="cb48-3"><a href="#cb48-3" aria-hidden="true"></a>T func()</span>
@@ -1100,32 +1092,18 @@
 <span id="cb48-9"><a href="#cb48-9" aria-hidden="true"></a></span>
 <span id="cb48-10"><a href="#cb48-10" aria-hidden="true"></a>T x = func();</span></code></pre></div>
 </div><div class="column">
-<p><img data-src="images/stack-frames4.png" style="width:75.0%" /></p>
-</div>
-</div>
-<p>Slicing <img data-src="images/em-pizza.svg" style="width:4.0%" /></p>
-<aside class="notes">
-<p>Next example. What if the type to be returned U is a derived type from T which is specified in the function return value? This is completely legal and is a situation called slicing. It is called slicing, as the derived type is of a larger footprint than the base type. And the return slot is allocated for the base type. So the compiler cannot directly allocate this local result value into the return slot. And again, sadly, NRVO is disabled.</p>
-</aside>
-</section>
-<section id="section-21" class="slide level2">
-<h2></h2>
-<h3 id="nrvo-is-not-always-possible-4"><span style="color:#7ea6e0">N</span>RVO is not always possible (4)</h3>
-<div class="columns">
-<div class="column">
+<p>Returning a function argument</p>
 <div class="sourceCode" id="cb49"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true"></a>T func(T arg)</span>
 <span id="cb49-2"><a href="#cb49-2" aria-hidden="true"></a>{</span>
 <span id="cb49-3"><a href="#cb49-3" aria-hidden="true"></a>  <span class="cf">return</span> arg;</span>
 <span id="cb49-4"><a href="#cb49-4" aria-hidden="true"></a>}</span>
 <span id="cb49-5"><a href="#cb49-5" aria-hidden="true"></a></span>
 <span id="cb49-6"><a href="#cb49-6" aria-hidden="true"></a>T x = func(T{});</span></code></pre></div>
-</div><div class="column">
-<p><img data-src="images/stack-frames6.png" style="width:75.0%" /></p>
 </div>
 </div>
-<p>Returning a function argument</p>
 <aside class="notes">
-<p>One last example: returning a function argument. As we’ve seen from the function call mechanics crash course, function arguments are stored on the stack alongside the return slot. So the compiler cannot do NRVO, because the slots don’t overlap. And by calling conventions it cannot make them do so. Right?</p>
+<p>Next example on the left. What if the type to be returned U is a derived type from T which is specified in the function return value? This is completely legal and is a situation called slicing. It is called slicing, as the derived type is of a larger footprint than the base type. And the return slot is allocated for the base type. So the compiler cannot directly allocate this local result value into the return slot. And again, sadly, NRVO is disabled.</p>
+<p>One right and last example: returning a function argument. As we’ve seen from the function call mechanics crash course, function arguments are stored on the stack alongside the return slot. So the compiler cannot do NRVO, because the slots don’t overlap. And by calling conventions it cannot make them do so. Right?</p>
 <p>A side-note though: C++11 and onwards will try to perform a move, which could be the next best optimization in this case. I will briefly touch upon this moving behavior in a moment.</p>
 <p>First let’s summarize RVO.</p>
 </aside>
@@ -1172,7 +1150,7 @@
 </aside>
 </div>
 </section>
-<section id="section-22" class="slide level2">
+<section id="section-21" class="slide level2">
 <h2></h2>
 <h3 id="inadvertently-disabling-nrvo">Inadvertently disabling <span style="color:#7ea6e0">N</span>RVO</h3>
 <div class="columns">
@@ -1291,7 +1269,7 @@
 <p>Now let’s take a look at what the output really is.</p>
 </aside>
 </section>
-<section id="section-23" class="slide level2">
+<section id="section-22" class="slide level2">
 <h2></h2>
 <p><img data-src="images/quiz-output.png" style="width:85.0%" /></p>
 <aside class="notes">
@@ -1349,7 +1327,8 @@
 <section id="end" class="title-slide slide level1">
 <h1>End</h1>
 <p>Thank you <img data-src="images/em-grinning.svg" style="width:3.0%" /></p>
-<p><a href="https://github.com/krisvanrens/">github.com/krisvanrens</a></p>
+<p> </p>
+<p><img data-src="images/em-link.svg" style="width:3.0%" /> <a href="https://github.com/krisvanrens/">github.com/krisvanrens</a></p>
 <aside class="notes">
 <p>Thank you!</p>
 <p>Are there any questions?</p>
