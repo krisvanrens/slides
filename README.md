@@ -2,7 +2,8 @@
 
 ## Long talks
 
-* [Understanding value categories in C++](https://krisvanrens.github.io/slides/value-categories-talk/talk.html)
+* [Understanding value categories in C++ (full talk)](https://krisvanrens.github.io/slides/value-categories-talk/talk.html)
+* [Understanding value categories in C++ for C++ Day 2020 (shortened version for C++ Italy)](https://krisvanrens.github.io/slides/value-categories-talk-cpp-it/talk.html)
 
 ## Lightning talks
 
