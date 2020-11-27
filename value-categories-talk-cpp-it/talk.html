@@ -1140,53 +1140,17 @@
 <span id="cb51-4"><a href="#cb51-4" aria-hidden="true"></a>~T()</span></code></pre></div>
 </div>
 </div>
-<div class="fragment">
 <p>Implicit <span style="color:#0066cc"><strong><code>rvalue</code></strong></span> conversion!</p>
 <aside class="notes">
 <p>In the last example about NRVO, when returning the function argument, I mentioned that C++11 and onwards will try to move the return value. This is a behavior unofficially called ‘implicit move’ and looks like this.</p>
 <p>In this example we use a default constructed T as a prvalue argument to the function, which will directly return it. Because the compiler cannot do NRVO, it will attempt a move. This is an implicit rvalue conversion.</p>
 <p>This is nice, as it possibly optimizes the function data transaction still, even though there is no NVRO – which is the best scenario. Note that because of situations like this, it is useful for your own designed types to be move-enabled.</p>
-<p>One more thing I’d like to mention around implicit move: don’t be too clever.</p>
-</aside>
-</div>
-</section>
-<section id="section-21" class="slide level2">
-<h2></h2>
-<h3 id="inadvertently-disabling-nrvo">Inadvertently disabling <span style="color:#7ea6e0">N</span>RVO</h3>
-<div class="columns">
-<div class="column">
-<p><span style="color:#7ea6e0">N</span>RVO</p>
-<div class="sourceCode" id="cb52"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true"></a>T func()</span>
-<span id="cb52-2"><a href="#cb52-2" aria-hidden="true"></a>{</span>
-<span id="cb52-3"><a href="#cb52-3" aria-hidden="true"></a>  T result;</span>
-<span id="cb52-4"><a href="#cb52-4" aria-hidden="true"></a></span>
-<span id="cb52-5"><a href="#cb52-5" aria-hidden="true"></a>  <span class="cf">return</span> result;</span>
-<span id="cb52-6"><a href="#cb52-6" aria-hidden="true"></a>}</span>
-<span id="cb52-7"><a href="#cb52-7" aria-hidden="true"></a></span>
-<span id="cb52-8"><a href="#cb52-8" aria-hidden="true"></a>T x = func();</span></code></pre></div>
-</div><div class="column">
-<p>No <span style="color:#7ea6e0">N</span>RVO</p>
-<div class="sourceCode" id="cb53"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true"></a>T func()</span>
-<span id="cb53-2"><a href="#cb53-2" aria-hidden="true"></a>{</span>
-<span id="cb53-3"><a href="#cb53-3" aria-hidden="true"></a>  T result;</span>
-<span id="cb53-4"><a href="#cb53-4" aria-hidden="true"></a></span>
-<span id="cb53-5"><a href="#cb53-5" aria-hidden="true"></a>  <span class="cf">return</span> <span class="bu">std::</span>move(result);</span>
-<span id="cb53-6"><a href="#cb53-6" aria-hidden="true"></a>}</span>
-<span id="cb53-7"><a href="#cb53-7" aria-hidden="true"></a></span>
-<span id="cb53-8"><a href="#cb53-8" aria-hidden="true"></a>T x = func();</span></code></pre></div>
-</div>
-</div>
-<p>Don’t try to be too clever.. <img data-src="images/em-nerd_face.svg" style="width:3.0%" /></p>
-<aside class="notes">
-<p>Here’s two examples, the one on the left has NRVO enabled just fine, on the right, it’s not possible.</p>
-<p>Because what some misguided souls do, is try to anticipate on the possible move and use a std::move for the return object. This is a pessimization however, as the compiler now cannot employ NRVO anymore and is forced to fall back on a move operation. And a move operation, however cheap is not as cheap as no operation at all – which would be the case for NRVO.</p>
-<p>Right. I’d like to provide you some guidelines before we finish off with the conclusions.</p>
 </aside>
 </section>
 <section id="guidelines" class="slide level2">
 <h2>Guidelines</h2>
 <ul>
-<li class="fragment">Don’t be afraid to return a non-POD type by value,</li>
+<li class="fragment">Don’t be afraid to return an object by value,</li>
 <li class="fragment">Don’t be too smart, let the compiler do the work for you,</li>
 <li class="fragment">Implement your move constructor/<code>operator=</code>,</li>
 <li class="fragment">Use compile-time programming if possible,</li>
@@ -1205,31 +1169,31 @@
 <h2>Quiz revisited</h2>
 <div class="columns">
 <div class="column">
-<div class="sourceCode" id="cb54"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true"></a><span class="kw">struct</span> Number {</span>
-<span id="cb54-2"><a href="#cb54-2" aria-hidden="true"></a>  <span class="dt">int</span> <span class="va">value_</span> = {};</span>
-<span id="cb54-3"><a href="#cb54-3" aria-hidden="true"></a>};</span>
-<span id="cb54-4"><a href="#cb54-4" aria-hidden="true"></a></span>
-<span id="cb54-5"><a href="#cb54-5" aria-hidden="true"></a><span class="kw">class</span> T {</span>
-<span id="cb54-6"><a href="#cb54-6" aria-hidden="true"></a><span class="kw">public</span>:</span>
-<span id="cb54-7"><a href="#cb54-7" aria-hidden="true"></a>  T(<span class="at">const</span> Number &amp;n) : <span class="va">n_</span>{n} {}</span>
-<span id="cb54-8"><a href="#cb54-8" aria-hidden="true"></a></span>
-<span id="cb54-9"><a href="#cb54-9" aria-hidden="true"></a>  T(<span class="at">const</span> T &amp;) { puts(<span class="st">&quot;Copy c&#39;tor&quot;</span>); }</span>
-<span id="cb54-10"><a href="#cb54-10" aria-hidden="true"></a></span>
-<span id="cb54-11"><a href="#cb54-11" aria-hidden="true"></a>  Number get() { <span class="cf">return</span> <span class="va">n_</span>; }</span>
-<span id="cb54-12"><a href="#cb54-12" aria-hidden="true"></a></span>
-<span id="cb54-13"><a href="#cb54-13" aria-hidden="true"></a><span class="kw">private</span>:</span>
-<span id="cb54-14"><a href="#cb54-14" aria-hidden="true"></a>  Number <span class="va">n_</span>;</span>
-<span id="cb54-15"><a href="#cb54-15" aria-hidden="true"></a>};</span></code></pre></div>
+<div class="sourceCode" id="cb52"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true"></a><span class="kw">struct</span> Number {</span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true"></a>  <span class="dt">int</span> <span class="va">value_</span> = {};</span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true"></a>};</span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true"></a></span>
+<span id="cb52-5"><a href="#cb52-5" aria-hidden="true"></a><span class="kw">class</span> T {</span>
+<span id="cb52-6"><a href="#cb52-6" aria-hidden="true"></a><span class="kw">public</span>:</span>
+<span id="cb52-7"><a href="#cb52-7" aria-hidden="true"></a>  T(<span class="at">const</span> Number &amp;n) : <span class="va">n_</span>{n} {}</span>
+<span id="cb52-8"><a href="#cb52-8" aria-hidden="true"></a></span>
+<span id="cb52-9"><a href="#cb52-9" aria-hidden="true"></a>  T(<span class="at">const</span> T &amp;) { puts(<span class="st">&quot;Copy c&#39;tor&quot;</span>); }</span>
+<span id="cb52-10"><a href="#cb52-10" aria-hidden="true"></a></span>
+<span id="cb52-11"><a href="#cb52-11" aria-hidden="true"></a>  Number get() { <span class="cf">return</span> <span class="va">n_</span>; }</span>
+<span id="cb52-12"><a href="#cb52-12" aria-hidden="true"></a></span>
+<span id="cb52-13"><a href="#cb52-13" aria-hidden="true"></a><span class="kw">private</span>:</span>
+<span id="cb52-14"><a href="#cb52-14" aria-hidden="true"></a>  Number <span class="va">n_</span>;</span>
+<span id="cb52-15"><a href="#cb52-15" aria-hidden="true"></a>};</span></code></pre></div>
 </div><div class="column">
-<div class="sourceCode" id="cb55"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true"></a><span class="at">static</span> T create(Number &amp;&amp;n) {</span>
-<span id="cb55-2"><a href="#cb55-2" aria-hidden="true"></a>  <span class="cf">return</span> T{<span class="bu">std::</span>move(n)};</span>
-<span id="cb55-3"><a href="#cb55-3" aria-hidden="true"></a>}</span>
-<span id="cb55-4"><a href="#cb55-4" aria-hidden="true"></a></span>
-<span id="cb55-5"><a href="#cb55-5" aria-hidden="true"></a><span class="dt">int</span> main() {</span>
-<span id="cb55-6"><a href="#cb55-6" aria-hidden="true"></a>  T x = T{create(Number{<span class="dv">42</span>})};</span>
-<span id="cb55-7"><a href="#cb55-7" aria-hidden="true"></a></span>
-<span id="cb55-8"><a href="#cb55-8" aria-hidden="true"></a>  <span class="cf">return</span> x.get().<span class="va">value_</span>;</span>
-<span id="cb55-9"><a href="#cb55-9" aria-hidden="true"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb53"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true"></a><span class="at">static</span> T create(Number &amp;&amp;n) {</span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true"></a>  <span class="cf">return</span> T{<span class="bu">std::</span>move(n)};</span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true"></a>}</span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true"></a></span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true"></a><span class="dt">int</span> main() {</span>
+<span id="cb53-6"><a href="#cb53-6" aria-hidden="true"></a>  T x = T{create(Number{<span class="dv">42</span>})};</span>
+<span id="cb53-7"><a href="#cb53-7" aria-hidden="true"></a></span>
+<span id="cb53-8"><a href="#cb53-8" aria-hidden="true"></a>  <span class="cf">return</span> x.get().<span class="va">value_</span>;</span>
+<span id="cb53-9"><a href="#cb53-9" aria-hidden="true"></a>}</span></code></pre></div>
 <p>What’s the output?</p>
 </div>
 </div>
@@ -1243,25 +1207,25 @@
 <h2>Quiz revisited</h2>
 <div class="columns">
 <div class="column">
-<div class="sourceCode" id="cb56"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true"></a><span class="kw">struct</span> Number {</span>
-<span id="cb56-2"><a href="#cb56-2" aria-hidden="true"></a>  <span class="dt">int</span> <span class="va">value_</span> = {};</span>
-<span id="cb56-3"><a href="#cb56-3" aria-hidden="true"></a>};</span>
-<span id="cb56-4"><a href="#cb56-4" aria-hidden="true"></a></span>
-<span id="cb56-5"><a href="#cb56-5" aria-hidden="true"></a><span class="kw">class</span> T {</span>
-<span id="cb56-6"><a href="#cb56-6" aria-hidden="true"></a><span class="kw">public</span>:</span>
-<span id="cb56-7"><a href="#cb56-7" aria-hidden="true"></a>  T(<span class="at">const</span> Number &amp;n) : <span class="va">n_</span>{n} {}</span>
-<span id="cb56-8"><a href="#cb56-8" aria-hidden="true"></a></span>
-<span id="cb56-9"><a href="#cb56-9" aria-hidden="true"></a>  Number get() { <span class="cf">return</span> <span class="va">n_</span>; }</span>
-<span id="cb56-10"><a href="#cb56-10" aria-hidden="true"></a></span>
-<span id="cb56-11"><a href="#cb56-11" aria-hidden="true"></a><span class="kw">private</span>:</span>
-<span id="cb56-12"><a href="#cb56-12" aria-hidden="true"></a>  Number <span class="va">n_</span>;</span>
-<span id="cb56-13"><a href="#cb56-13" aria-hidden="true"></a>};</span></code></pre></div>
+<div class="sourceCode" id="cb54"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true"></a><span class="kw">struct</span> Number {</span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true"></a>  <span class="dt">int</span> <span class="va">value_</span> = {};</span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true"></a>};</span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true"></a></span>
+<span id="cb54-5"><a href="#cb54-5" aria-hidden="true"></a><span class="kw">class</span> T {</span>
+<span id="cb54-6"><a href="#cb54-6" aria-hidden="true"></a><span class="kw">public</span>:</span>
+<span id="cb54-7"><a href="#cb54-7" aria-hidden="true"></a>  T(<span class="at">const</span> Number &amp;n) : <span class="va">n_</span>{n} {}</span>
+<span id="cb54-8"><a href="#cb54-8" aria-hidden="true"></a></span>
+<span id="cb54-9"><a href="#cb54-9" aria-hidden="true"></a>  Number get() { <span class="cf">return</span> <span class="va">n_</span>; }</span>
+<span id="cb54-10"><a href="#cb54-10" aria-hidden="true"></a></span>
+<span id="cb54-11"><a href="#cb54-11" aria-hidden="true"></a><span class="kw">private</span>:</span>
+<span id="cb54-12"><a href="#cb54-12" aria-hidden="true"></a>  Number <span class="va">n_</span>;</span>
+<span id="cb54-13"><a href="#cb54-13" aria-hidden="true"></a>};</span></code></pre></div>
 </div><div class="column">
-<div class="sourceCode" id="cb57"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true"></a><span class="dt">int</span> main() {</span>
-<span id="cb57-2"><a href="#cb57-2" aria-hidden="true"></a>  T x = T{Number{<span class="dv">42</span>}};</span>
-<span id="cb57-3"><a href="#cb57-3" aria-hidden="true"></a></span>
-<span id="cb57-4"><a href="#cb57-4" aria-hidden="true"></a>  <span class="cf">return</span> x.get().<span class="va">value_</span>;</span>
-<span id="cb57-5"><a href="#cb57-5" aria-hidden="true"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb55"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true"></a><span class="dt">int</span> main() {</span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true"></a>  T x = T{Number{<span class="dv">42</span>}};</span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true"></a></span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true"></a>  <span class="cf">return</span> x.get().<span class="va">value_</span>;</span>
+<span id="cb55-5"><a href="#cb55-5" aria-hidden="true"></a>}</span></code></pre></div>
 <p>What’s the output?</p>
 </div>
 </div>
@@ -1269,7 +1233,7 @@
 <p>Now let’s take a look at what the output really is.</p>
 </aside>
 </section>
-<section id="section-22" class="slide level2">
+<section id="section-21" class="slide level2">
 <h2></h2>
 <p><img data-src="images/quiz-output.png" style="width:85.0%" /></p>
 <aside class="notes">
@@ -1297,22 +1261,12 @@
 </ul>
 </aside>
 </section>
-<section id="copymove-elision-1" class="slide level2">
-<h2>Copy/move elision (1)</h2>
+<section id="copymove-elision-rvo" class="slide level2">
+<h2>Copy/move elision / RVO</h2>
 <ul>
-<li class="fragment">Copy elision: part of the standard,</li>
-<li class="fragment">Temporary materialization: part of the standard,</li>
-<li class="fragment"><span style="color:#ea6b66">U</span>RVO and <span style="color:#7ea6e0">N</span>RVO: unofficial terms,</li>
-<li class="fragment">Copy elision: allows, does not guarantee,</li>
-<li class="fragment">Temporary materialization: mandates.</li>
-</ul>
-<aside class="notes">
-<p>…</p>
-</aside>
-</section>
-<section id="copymove-elision-2" class="slide level2">
-<h2>Copy/move elision (2)</h2>
-<ul>
+<li class="fragment"><strong>Copy elision</strong>: part of the standard; permits,</li>
+<li class="fragment"><strong>Temporary materialization</strong>: part of the standard; mandates,</li>
+<li class="fragment"><span style="color:#ea6b66">U</span>RVO and <span style="color:#7ea6e0">N</span>RVO: unofficial terms.</li>
 <li class="fragment">Temporary materialization: <span style="color:#0066cc"><strong><code>prvalue</code></strong></span> to <span style="color:#cc00cc"><strong><code>xvalue</code></strong></span> conversion,</li>
 <li class="fragment"><span style="color:#0066cc"><strong><code>prvalue</code></strong></span>s are <strong>not</strong> moved from,</li>
 <li class="fragment">Implicit move: a RVO that happens even without copy elision.</li>
@@ -1321,7 +1275,7 @@
 <p>…</p>
 <p>A prvalue is a recipe for an object, it materializes when evaluated, which is called the temporary materialization conversion.</p>
 <p>…</p>
-<p>That’s it for the conclusions. One more more thing: there will be a workshop accompanying this talk.</p>
+<p>That’s it for the conclusions.</p>
 </aside>
 </section></section>
 <section id="end" class="title-slide slide level1">
