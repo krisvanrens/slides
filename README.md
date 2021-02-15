@@ -4,6 +4,7 @@
 
 * [Understanding value categories in C++ (full talk)](https://krisvanrens.github.io/slides/value-categories-talk/talk.html)
 * [Understanding value categories in C++ (shortened version for C++ Day 2020, C++ Italy)](https://krisvanrens.github.io/slides/value-categories-talk-cpp-it/talk.html)
+* [Special member functions in C++ (full talk)](https://krisvanrens.github.io/slides/special-member-functions-talk/talk.html)
 
 ## Lightning talks
 
