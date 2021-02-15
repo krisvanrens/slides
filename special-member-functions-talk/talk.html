@@ -1,0 +1,2381 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Kris van Rens">
+  <title>Special member functions in  </title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="reveal.js/css/reset.css">
+  <link rel="stylesheet" href="reveal.js/css/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="reveal.js/css/theme/solarized.css" id="theme">
+  <link rel="stylesheet" href="pandoc-overrides.css"/>
+  <!-- Printing and PDF exports -->
+  <script>
+    var link = document.createElement( 'link' );
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match( /print-pdf/gi ) ? 'reveal.js/css/print/pdf.css' : 'reveal.js/css/print/paper.css';
+    document.getElementsByTagName( 'head' )[0].appendChild( link );
+  </script>
+  <!--[if lt IE 9]>
+  <script src="reveal.js/lib/js/html5shiv.js"></script>
+  <![endif]-->
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Special member functions in <br/><img src='images/cpp-logo.png' width='15%' style='margin-top:2%;margin-bottom:-2%'/></h1>
+  <p class="author">Kris van Rens</p>
+</section>
+
+<section>
+<section id="whats-ahead" class="title-slide slide level1">
+<h1>What’s ahead?</h1>
+<ul>
+<li class="fragment"><strong>Special member function <span style="color:crimson"><strong>fundamentals</strong></span></strong></li>
+<li class="fragment"><strong><span style="color:crimson"><strong>Declaration rules</strong></span></strong></li>
+<li class="fragment"><strong>Implementation <span style="color:crimson"><strong>guidelines</strong></span></strong></li>
+<li class="fragment"><strong>Conclusions</strong></li>
+</ul>
+<div class="fragment">
+<p>Extra: <strong>Tooling and <span style="color:crimson"><strong>best practices</strong></span></strong></p>
+<aside class="notes">
+<p>Hi and welcome to this session on special member functions in C++!</p>
+<p>Let me start out by providing you an overview of the next hour. I split up this talk in five parts, starting out with some of the fundamentals, to make sure we’re all on the same page. Then, I will dive into the mystical labyrinth of declaration rules (psst, don’t tell on; it’s not a labyrinth and they’re not mystical at all..). Then, for good measure we will look into some good practices for implementing special member functions. To finish, I’m going to touch upon some fringe subjects regarding special member functions, and provide those still awake with some conclusions.</p>
+<p>As you can see, we’re going to cover a lot of ground in a mere hour. But fear not, you will be provided with the PDF version of this presentation, accompanied with a hefty list of resources I used to conduct my research.</p>
+<p>As for questions: I will take questions at the end, and somewhere halfway to accomodate for the online setup.</p>
+</aside>
+</div>
+</section>
+<section id="a-little-bit-about-me" class="slide level2">
+<h2>A little bit about me</h2>
+<p><img data-src="images/em-nerd_face.svg" style="width:7.0%" /> <img data-src="images/em-man-woman-girl-boy.svg" style="width:7.0%" /> <img data-src="images/em-guitar.svg" style="width:7.0%" /> <img data-src="images/em-running.svg" style="width:7.0%" /> <img data-src="images/em-man_climbing.svg" style="width:7.0%" /></p>
+<p><a href="">kris@vanrens.org</a></p>
+<aside class="notes">
+<p>A little bit about me: I’m Kris. Perhaps some of you might still remember me from the session about C++ value categories I did last year.</p>
+<p>I’m a software developer at ViNotion, a computer vision company here in Eindhoven. We make products that use video data to perform automated analysis such as multimodal traffic counting. We exploit machine learning algorithms on GPUs for our vision processing, and build our product software in C++. Outside of work I’m a husband, father of two, guitarist in a metal band and an avid runner and occasional climber. For any questions or comments, don’t hesitate to reach out to me by e-mail or LinkedIn.</p>
+</aside>
+</section>
+<section id="the-premise-and-goals" class="slide level2">
+<h2>The premise and goals</h2>
+<div class="fragment">
+<table style="width:62%;">
+<colgroup>
+<col style="width: 12%" />
+<col style="width: 6%" />
+<col style="width: 43%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td>SMF</td>
+<td>==</td>
+<td>Special member function</td>
+</tr>
+<tr class="even">
+<td>c’tor</td>
+<td>==</td>
+<td>Constructor</td>
+</tr>
+<tr class="odd">
+<td>d’tor</td>
+<td>==</td>
+<td>Destructor</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="fragment">
+<p><img data-src="images/cpp-classic.png" style="width:10.0%" /> <img data-src="images/cpp-modern.png" style="width:10.0%" /></p>
+<aside class="notes">
+<p>Obviously, all topics on special member functions are about C++ class data structures. I will briefly touch on inheritance/composition here and there, but this talk will focus on special member functions.</p>
+<p>Also, you will sometimes hear or see me use the abbreviated term “SMF”, which of course stands for “special member function”. Then there’s c’tor, or constructor, and d’tor, or destructor. These are not established terms as such, but they saved me some precious slide real-estate and perhaps win me some time trying to cover all the topics of this presentation.</p>
+<p>On another note: I annotated each slide with C++ version information if applicable. Then I tried to write modern C++ in the rest of the examples.</p>
+<p>In order to explain the goal of this session, let me tell you why I chose this topic in the first place. C++ is a flexible, advanced and sometimes quite complex programming language. Class data structures are at the heart of the language and are probably one of the first things any programmer will come up with as a characteristic of C++. Especially in the light of its predecessor: C. Classes and like data structures are an important part of the language to understand. Yet I’ve noticed that for many people classes are shrouded in mystery, especially the rules and principles regarding special member functions. I myself was also slightly confused, and got even more confused when in C++11 the move operations were added.</p>
+<p>The truth is, however, that the rules aren’t all that complicated as they might seem, and build on common sense mostly. And it’s this common sense in each of you that I want to address today.</p>
+<p>I hope at the end of this talk you will have a clear overview of what the special member functions are, when they are defined, called and how to use and implement them!</p>
+<p>Let’s start!</p>
+</aside>
+</div>
+</section></section>
+<section>
+<section id="special-member-function-fundamentals" class="title-slide slide level1">
+<h1>Special member function <span style="color:crimson"><strong>fundamentals</strong></span></h1>
+
+</section>
+<section id="define-special.." class="slide level2">
+<h2>Define ‘special’..</h2>
+<blockquote>
+<p>Some member functions are <strong>special</strong>: under certain circumstances they are defined by the compiler even if not defined by the user.</p>
+</blockquote>
+<p><em><a href="https://en.cppreference.com/w/cpp/language/member_functions">cppreference.com</a> § Non-static member functions</em></p>
+<aside class="notes">
+<p>Before we get into any details and code examples, I’d like to review the actual meaning of ‘special member function’. In fact, what is special? Does it mean you get mayonaise and unions with it when you order one? Well no.</p>
+<p>As much as I’d like to talk about food here today, it simply means we’re talking about functions in a class type that are possibly defined by the compiler even if we don’t.</p>
+<p>Alright, but then what does ‘define’ mean?</p>
+</aside>
+</section>
+<section id="then-what-is-define" class="slide level2">
+<h2>Then what is ‘define’?</h2>
+<div class="fragment">
+<p>Let’s first look at ‘declare’:</p>
+<blockquote>
+<p>Declarations introduce (or re-introduce) names into the C++ program. Each kind of entity is declared differently.</p>
+</blockquote>
+<p><a href="https://en.cppreference.com/w/cpp/language/declarations">cppreference.com</a> § Declarations</p>
+<aside class="notes">
+<p>This might seem like a nonsensical question, but it actually makes sense in a programming literal sense. There’s another term that is sometimes used in a wrong way interchangeably, and that is: declare.</p>
+<p>So let’s first look at declare, because there is a clear difference.</p>
+<p>…</p>
+<p>So a declaration gives a thing a name, but nothing more.</p>
+</aside>
+</div>
+</section>
+<section id="the-definition-of-a-definition" class="slide level2">
+<h2>The definition of a definition</h2>
+<blockquote>
+<p>Definitions are declarations that fully define the entity introduced by the declaration.</p>
+</blockquote>
+<p><a href="https://en.cppreference.com/w/cpp/language/definition">cppreference.com</a> § Definitions and ODR</p>
+<aside class="notes">
+<p>Ah, so a definition is a declaration <em>and</em> and a full description of the value or contents. So that’s a introduction or re-introduction and the description at the same time.</p>
+<p>Let’s check out some examples of declarations and definitions..</p>
+</aside>
+</section>
+<section id="section" class="slide level2">
+<h2></h2>
+<div class="columns">
+<div class="column">
+<p><strong>Declarations</strong>:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb1-1"><a href="#cb1-1"></a><span class="dt">int</span> i;</span>
+<span id="cb1-2"><a href="#cb1-2"></a></span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="dt">float</span> array[<span class="dv">2</span>];</span>
+<span id="cb1-4"><a href="#cb1-4"></a></span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="kw">auto</span>&amp; [x, y] = array;</span>
+<span id="cb1-6"><a href="#cb1-6"></a></span>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="dt">void</span> func();</span>
+<span id="cb1-8"><a href="#cb1-8"></a></span>
+<span id="cb1-9"><a href="#cb1-9"></a><span class="kw">using</span> Func = <span class="bu">std::</span>function&lt;<span class="dt">void</span>()&gt;;</span>
+<span id="cb1-10"><a href="#cb1-10"></a></span>
+<span id="cb1-11"><a href="#cb1-11"></a><span class="kw">enum</span> <span class="kw">class</span> E;</span>
+<span id="cb1-12"><a href="#cb1-12"></a></span>
+<span id="cb1-13"><a href="#cb1-13"></a><span class="kw">template</span>&lt;<span class="kw">typename</span> T&gt;</span>
+<span id="cb1-14"><a href="#cb1-14"></a><span class="kw">struct</span> Y;</span></code></pre></div>
+</div><div class="column">
+<p><strong>Definitions</strong>:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb2-1"><a href="#cb2-1"></a><span class="dt">int</span> i = <span class="dv">42</span>;</span>
+<span id="cb2-2"><a href="#cb2-2"></a></span>
+<span id="cb2-3"><a href="#cb2-3"></a><span class="dt">float</span> array[<span class="dv">2</span>] = {};</span>
+<span id="cb2-4"><a href="#cb2-4"></a></span>
+<span id="cb2-5"><a href="#cb2-5"></a><span class="dt">void</span> func() { <span class="co">/* ... */</span>  }</span>
+<span id="cb2-6"><a href="#cb2-6"></a></span>
+<span id="cb2-7"><a href="#cb2-7"></a><span class="kw">enum</span> <span class="kw">class</span> E { Zero, One };</span>
+<span id="cb2-8"><a href="#cb2-8"></a></span>
+<span id="cb2-9"><a href="#cb2-9"></a><span class="kw">template</span>&lt;<span class="kw">typename</span> T&gt; <span class="co">// A.K.A. &#39;temploid&#39;.</span></span>
+<span id="cb2-10"><a href="#cb2-10"></a><span class="kw">struct</span> Y {</span>
+<span id="cb2-11"><a href="#cb2-11"></a>  <span class="kw">auto</span> size() {</span>
+<span id="cb2-12"><a href="#cb2-12"></a>    <span class="kw">sizeof</span>(T);</span>
+<span id="cb2-13"><a href="#cb2-13"></a>  }</span>
+<span id="cb2-14"><a href="#cb2-14"></a>};</span></code></pre></div>
+</div>
+</div>
+<aside class="notes">
+<p>On the left are the declarations, where only names are introduced, on the right are the definitions, that introduce names and provide a full description. Just take a couple of seconds to look at them.</p>
+<p>Going back to the special member function definition; this means the compiler is able to define a special member function even if we don’t provide one. That is, introduce its name, and provide the full contents of it.</p>
+<p>To demonstrate what the compiler will do with a simple bit of code, take a look at a simple example.</p>
+</aside>
+</section>
+<section id="magic" class="slide level2">
+<h2>Magic! <img data-src="images/cpp-classic.png" style="width:8.0%" /></h2>
+<div class="columns">
+<div class="column" style="width:28%;">
+<p>Original code:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb3-1"><a href="#cb3-1"></a><span class="kw">class</span> X {};</span>
+<span id="cb3-2"><a href="#cb3-2"></a></span>
+<span id="cb3-3"><a href="#cb3-3"></a><span class="dt">int</span> main() {</span>
+<span id="cb3-4"><a href="#cb3-4"></a>  X x1;</span>
+<span id="cb3-5"><a href="#cb3-5"></a>  X x2(x1);</span>
+<span id="cb3-6"><a href="#cb3-6"></a>  x2 = x1;</span>
+<span id="cb3-7"><a href="#cb3-7"></a>}</span></code></pre></div>
+</div><div class="column" style="width:72%;">
+<p>What the compiler <img data-src="images/em-mage.svg" style="width:5.0%" /> will define for <code class="sourceCode cpp">X</code>:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb4-1"><a href="#cb4-1"></a><span class="kw">class</span> X {</span>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="kw">public</span>: </span>
+<span id="cb4-3"><a href="#cb4-3"></a>  <span class="kw">inline</span> X() = <span class="cf">default</span>;</span>
+<span id="cb4-4"><a href="#cb4-4"></a>  <span class="co">// inline ~X() = default;</span></span>
+<span id="cb4-5"><a href="#cb4-5"></a></span>
+<span id="cb4-6"><a href="#cb4-6"></a>  <span class="kw">inline</span> X(<span class="at">const</span> X&amp;) = <span class="cf">default</span>;</span>
+<span id="cb4-7"><a href="#cb4-7"></a>  <span class="kw">inline</span> X&amp; <span class="kw">operator</span>=(<span class="at">const</span> X&amp;) = <span class="cf">default</span>;</span>
+<span id="cb4-8"><a href="#cb4-8"></a>};</span></code></pre></div>
+</div>
+</div>
+<aside class="notes">
+<p>First we’re going to look at the situation pre-C++11. That is, no move operations and some other such fancy stuff.</p>
+<p>Each of the lines in this bit of example code on the left will require the presence of a special member function, each of which is generated on the right by the compiler. Magic! Right?</p>
+<p>As you can see, it will generate default implementation for each of these functions with a standard set of attributes. That is: <code>public</code>, <code>inline</code> and they will always be there.</p>
+<p>You might be wondering why the destructor is commented out in this example. Well, actually for such a simple class as this one it’s not needed, but I put it there for completeness as it will be generated if necessary.</p>
+<p>But what happens if we would time-travel back to the future and use a more modern implementation?</p>
+</aside>
+</section>
+<section id="magic-1" class="slide level2">
+<h2>Magic! <img data-src="images/cpp-modern.png" style="width:6.0%" /></h2>
+<div class="columns">
+<div class="column" style="width:28%;">
+<p>Original code:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb5-1"><a href="#cb5-1"></a><span class="kw">class</span> X {};</span>
+<span id="cb5-2"><a href="#cb5-2"></a></span>
+<span id="cb5-3"><a href="#cb5-3"></a><span class="dt">int</span> main() {</span>
+<span id="cb5-4"><a href="#cb5-4"></a>  X x1;</span>
+<span id="cb5-5"><a href="#cb5-5"></a>  X x2(x1);</span>
+<span id="cb5-6"><a href="#cb5-6"></a>  x2 = x1;</span>
+<span id="cb5-7"><a href="#cb5-7"></a></span>
+<span id="cb5-8"><a href="#cb5-8"></a>  X x3{<span class="bu">std::</span>move(x1)};</span>
+<span id="cb5-9"><a href="#cb5-9"></a>  x4 = <span class="bu">std::</span>move(x2);</span>
+<span id="cb5-10"><a href="#cb5-10"></a>}</span></code></pre></div>
+</div><div class="column" style="width:72%;">
+<p>What the compiler <img data-src="images/em-mage.svg" style="width:5.0%" /> will define for <code class="sourceCode cpp">X</code>:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb6-1"><a href="#cb6-1"></a><span class="kw">class</span> X {</span>
+<span id="cb6-2"><a href="#cb6-2"></a><span class="kw">public</span>: </span>
+<span id="cb6-3"><a href="#cb6-3"></a>  <span class="kw">inline</span> <span class="kw">constexpr</span> X() <span class="kw">noexcept</span> = <span class="cf">default</span>;</span>
+<span id="cb6-4"><a href="#cb6-4"></a>  <span class="co">// inline ~X() noexcept = default;</span></span>
+<span id="cb6-5"><a href="#cb6-5"></a></span>
+<span id="cb6-6"><a href="#cb6-6"></a>  <span class="kw">inline</span> <span class="kw">constexpr</span> X(<span class="at">const</span> X&amp;) <span class="kw">noexcept</span> = <span class="cf">default</span>;</span>
+<span id="cb6-7"><a href="#cb6-7"></a>  <span class="kw">inline</span> <span class="kw">constexpr</span> X&amp; <span class="kw">operator</span>=(<span class="at">const</span> X&amp;) <span class="kw">noexcept</span> = <span class="cf">default</span>;</span>
+<span id="cb6-8"><a href="#cb6-8"></a></span>
+<span id="cb6-9"><a href="#cb6-9"></a>  <span class="kw">inline</span> <span class="kw">constexpr</span> X(X&amp;&amp;) <span class="kw">noexcept</span> = <span class="cf">default</span>;</span>
+<span id="cb6-10"><a href="#cb6-10"></a>  <span class="kw">inline</span> <span class="kw">constexpr</span> X&amp; <span class="kw">operator</span>=(X&amp;&amp;) <span class="kw">noexcept</span> = <span class="cf">default</span>;</span>
+<span id="cb6-11"><a href="#cb6-11"></a>};</span></code></pre></div>
+</div>
+</div>
+<aside class="notes">
+<p>Again, the example code is on the left, what the compiler will generate is on the right. Even more magic!</p>
+<p>That is: again, the keywords <code>public</code> and <code>inline</code> will always be there, the other keywords <code>constexpr</code> and <code>noexcept</code> will be there if they can be. I’m not going to discuss the meaning of each of these specifiers, that is out of the scope of this talk. Perhaps some other time?</p>
+<p>Now, coding life if not always so easy. There are situations in which the compiler is not going to provide us with all these functions for free. Sometimes we actually have to do some work.</p>
+</aside>
+</section>
+<section id="when-the-magic-is-gone" class="slide level2">
+<h2>When the magic is gone</h2>
+<h4 id="well-partly-so..">Well, partly so..</h4>
+<div class="columns">
+<div class="column">
+<div class="sourceCode" id="cb7"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb7-1"><a href="#cb7-1"></a><span class="kw">struct</span> X {</span>
+<span id="cb7-2"><a href="#cb7-2"></a>  <span class="at">const</span> <span class="dt">int</span> <span class="va">value_</span>;</span>
+<span id="cb7-3"><a href="#cb7-3"></a>};</span>
+<span id="cb7-4"><a href="#cb7-4"></a></span>
+<span id="cb7-5"><a href="#cb7-5"></a><span class="dt">int</span> main() {</span>
+<span id="cb7-6"><a href="#cb7-6"></a>  X x; <span class="co">// Compiler error!</span></span>
+<span id="cb7-7"><a href="#cb7-7"></a>}</span></code></pre></div>
+</div><div class="column">
+<div class="sourceCode" id="cb8"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb8-1"><a href="#cb8-1"></a><span class="kw">struct</span> Y {</span>
+<span id="cb8-2"><a href="#cb8-2"></a>  <span class="dt">uint8_t</span> &amp;<span class="va">data_</span>;</span>
+<span id="cb8-3"><a href="#cb8-3"></a>};</span>
+<span id="cb8-4"><a href="#cb8-4"></a></span>
+<span id="cb8-5"><a href="#cb8-5"></a><span class="dt">int</span> main() {</span>
+<span id="cb8-6"><a href="#cb8-6"></a>  Y y; <span class="co">// Compiler error!</span></span>
+<span id="cb8-7"><a href="#cb8-7"></a>}</span></code></pre></div>
+</div>
+</div>
+<div class="fragment">
+<p>Examples are ill-formed, and the default constructors are deleted</p>
+<aside class="notes">
+<p>In these two examples, the compiler cannot generate default implementations for some of the special member functions. The examples here are ill-formed. In particular: the default constructors are deleted.</p>
+<p>However, there are actually more functions that are not available. Can you think of which ones?</p>
+<p>…</p>
+<p>Of course that will be the assigment operators. For the left type, const values can not be assigned to, and on the right; in C++ it is not possible to rebind a reference.</p>
+<p>Let’s fix these examples and add a constructor to initialize the const variable and the reference respectively.</p>
+</aside>
+</div>
+</section>
+<section id="having-the-magic-return" class="slide level2">
+<h2>Having the magic return</h2>
+<div class="columns">
+<div class="column">
+<div class="sourceCode" id="cb9"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb9-1"><a href="#cb9-1"></a><span class="kw">struct</span> X {</span>
+<span id="cb9-2"><a href="#cb9-2"></a>  <span class="kw">explicit</span> X(<span class="dt">int</span> arg)</span>
+<span id="cb9-3"><a href="#cb9-3"></a>    : <span class="va">value_</span>{arg} {</span>
+<span id="cb9-4"><a href="#cb9-4"></a>  }</span>
+<span id="cb9-5"><a href="#cb9-5"></a></span>
+<span id="cb9-6"><a href="#cb9-6"></a>  <span class="at">const</span> <span class="dt">int</span> <span class="va">value_</span>;</span>
+<span id="cb9-7"><a href="#cb9-7"></a>};</span>
+<span id="cb9-8"><a href="#cb9-8"></a></span>
+<span id="cb9-9"><a href="#cb9-9"></a><span class="dt">int</span> main() {</span>
+<span id="cb9-10"><a href="#cb9-10"></a>  X x1{<span class="dv">42</span>};</span>
+<span id="cb9-11"><a href="#cb9-11"></a>  X x2{x1};</span>
+<span id="cb9-12"><a href="#cb9-12"></a>  X x3{<span class="bu">std::</span>move(x2)};</span>
+<span id="cb9-13"><a href="#cb9-13"></a>  <span class="co">// Any assignment is impossible..</span></span>
+<span id="cb9-14"><a href="#cb9-14"></a>}</span></code></pre></div>
+</div><div class="column">
+<div class="sourceCode" id="cb10"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb10-1"><a href="#cb10-1"></a><span class="kw">struct</span> Y {</span>
+<span id="cb10-2"><a href="#cb10-2"></a>  <span class="kw">explicit</span> Y(<span class="dt">uint8_t</span>&amp; data)</span>
+<span id="cb10-3"><a href="#cb10-3"></a>    : <span class="va">data_</span>{data} {</span>
+<span id="cb10-4"><a href="#cb10-4"></a>  }</span>
+<span id="cb10-5"><a href="#cb10-5"></a></span>
+<span id="cb10-6"><a href="#cb10-6"></a>  <span class="dt">uint8_t</span> &amp;<span class="va">data_</span>;</span>
+<span id="cb10-7"><a href="#cb10-7"></a>};</span>
+<span id="cb10-8"><a href="#cb10-8"></a></span>
+<span id="cb10-9"><a href="#cb10-9"></a><span class="dt">int</span> main() {</span>
+<span id="cb10-10"><a href="#cb10-10"></a>  <span class="dt">uint8_t</span> data[<span class="dv">8</span>];</span>
+<span id="cb10-11"><a href="#cb10-11"></a></span>
+<span id="cb10-12"><a href="#cb10-12"></a>  Y y1{data[<span class="dv">0</span>]};</span>
+<span id="cb10-13"><a href="#cb10-13"></a>  Y y2{y1};</span>
+<span id="cb10-14"><a href="#cb10-14"></a>  Y y3{<span class="bu">std::</span>move(y2)};</span>
+<span id="cb10-15"><a href="#cb10-15"></a>  <span class="co">// Any assignment is impossible..</span></span>
+<span id="cb10-16"><a href="#cb10-16"></a>}</span></code></pre></div>
+</div>
+</div>
+<aside class="notes">
+<p>Now, the compiler is satisfied again. We have taken on ourselves the hard labour on to implement a constructor that initializes the member variables. The compiler will generate the copy and move constructors for us.</p>
+<p>Assignment is impossible by default, but if we really wanted to, we could implement our own.</p>
+</aside>
+</section>
+<section id="whats-the-magic-made-of" class="slide level2">
+<h2>What’s the magic made of?</h2>
+<blockquote>
+<p>For a <strong>default-defined SMF</strong>: the corresponding action (default construct/copy/move) will be performed on the non-<code class="sourceCode cpp"><span class="at">static</span></code> member variables.</p>
+</blockquote>
+<div class="fragment">
+<blockquote>
+<p>For a <strong>deleted SMF</strong>: the corresponding SMF is defined but may not be used.</p>
+</blockquote>
+</div>
+<div class="fragment">
+<p>There are exceptions.</p>
+<aside class="notes">
+<p>We have seen that the compiler can implicitly define a special member function, and since C++11 we can explicitly have it define or delete a special member function.</p>
+<p>Generally speaking there are two cases: default defined and deleted SMFs.</p>
+<p>There are some exceptions; for example, the default constructor, where sometimes an implicitly defined default constructor may be defined that does nothing. But exceptions like this are out of the scope of this presentation.</p>
+</aside>
+</div>
+</section>
+<section id="smf-prototypes" class="slide level2">
+<h2>SMF prototypes</h2>
+<div class="sourceCode" id="cb11"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb11-1"><a href="#cb11-1"></a><span class="kw">struct</span> T {</span>
+<span id="cb11-2"><a href="#cb11-2"></a>  T();                          <span class="co">// Default constructor.</span></span>
+<span id="cb11-3"><a href="#cb11-3"></a>  ~T();                         <span class="co">// Destructor.</span></span>
+<span id="cb11-4"><a href="#cb11-4"></a></span>
+<span id="cb11-5"><a href="#cb11-5"></a>  T(<span class="at">const</span> T&amp; other);            <span class="co">// Copy constructor.</span></span>
+<span id="cb11-6"><a href="#cb11-6"></a>  T&amp; <span class="kw">operator</span>=(<span class="at">const</span> T&amp; other); <span class="co">// Copy assignment operator.</span></span>
+<span id="cb11-7"><a href="#cb11-7"></a></span>
+<span id="cb11-8"><a href="#cb11-8"></a>  T(T&amp;&amp; other);                 <span class="co">// Move constructor (C++11 and later).</span></span>
+<span id="cb11-9"><a href="#cb11-9"></a>  T&amp; <span class="kw">operator</span>=(T&amp;&amp; other);      <span class="co">// Move assignment operator (C++11 and later).</span></span>
+<span id="cb11-10"><a href="#cb11-10"></a>};</span></code></pre></div>
+<p>Mandatory memory material <img data-src="images/em-m.svg" style="width:3.0%" /></p>
+<aside class="notes">
+<p>We’ve already seen this list in one of the examples before, but for completeness, here it is again.</p>
+<p>…</p>
+<p>I personally think this is quite an important list, and I would suggest you remember it. For example, from my personal experience, it is a very important tool for reviewing. Did the poor soul under review forget the existence or implementation of any of these – if applicable of course?</p>
+<p>Now let’s go over each of these in some more detail.</p>
+</aside>
+</section>
+<section id="a-quick-word-on-staticness" class="slide level2">
+<h2>A quick word on <code class="sourceCode cpp"><span class="at">static</span></code>ness</h2>
+<p>Consider:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb12-1"><a href="#cb12-1"></a><span class="kw">struct</span> T {</span>
+<span id="cb12-2"><a href="#cb12-2"></a>  <span class="at">static</span> <span class="kw">constexpr</span> <span class="dt">uint32_t</span> SERIAL = <span class="bn">0x20061983</span>; <span class="co">// No need for SMFs to deal with.</span></span>
+<span id="cb12-3"><a href="#cb12-3"></a>};</span></code></pre></div>
+<aside class="notes">
+<p>Before we go on to the next section, I’d like to quickly touch upon staticness. Obviously the special member functions we’re talking about today only make sense for non-static member variables.</p>
+<p>Static member variables, have static storage duration which is separate a topic in of itself. Generally they can be considered to “always be around” regardless of object instance lifetimes.</p>
+<p>OK, so now we have this out of the way, we can now focus on the special member functions that are there. Let’s first checkout an overview of all the SFM’s that are there.</p>
+</aside>
+</section>
+<section id="special-member-constructors" class="slide level2">
+<h2>Special member: constructors</h2>
+<p>A constructor is called when initialization of an object takes place.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb13-1"><a href="#cb13-1"></a><span class="kw">struct</span> X { <span class="co">/* ... */</span> };</span>
+<span id="cb13-2"><a href="#cb13-2"></a></span>
+<span id="cb13-3"><a href="#cb13-3"></a>X a;               <span class="co">// Calls default constructor.</span></span>
+<span id="cb13-4"><a href="#cb13-4"></a>X b{};             <span class="co">// Calls default constructor.</span></span>
+<span id="cb13-5"><a href="#cb13-5"></a><span class="kw">auto</span> c = X{};      <span class="co">// Calls default constructor (&#39;copy initialization&#39;).</span></span>
+<span id="cb13-6"><a href="#cb13-6"></a></span>
+<span id="cb13-7"><a href="#cb13-7"></a>X d{<span class="dv">42</span>};           <span class="co">// Calls &#39;some&#39; (non-default) constructor taking an int.</span></span>
+<span id="cb13-8"><a href="#cb13-8"></a></span>
+<span id="cb13-9"><a href="#cb13-9"></a>X e{a};            <span class="co">// Calls copy constructor.</span></span>
+<span id="cb13-10"><a href="#cb13-10"></a></span>
+<span id="cb13-11"><a href="#cb13-11"></a>X f{<span class="bu">std::</span>move(a)}; <span class="co">// Calls move constructor.</span></span></code></pre></div>
+<aside class="notes">
+<p>From this short example alone, we can already sort of categorize four different kinds of constructors. We see: the default constructor, a non-default constructor, the copy constructor and the move constructor.</p>
+<p>If you start reading, you’ll see there’s such a plethora of constructors, we could play bingo!</p>
+</aside>
+</section>
+<section id="lets-play-constructor-bingo" class="slide level2">
+<h2>Let’s play constructor bingo!</h2>
+<p><img data-src="images/bingo-chart.png" style="width:45.0%" /></p>
+</section>
+<section id="lets-play-constructor-bingo-1" class="slide level2">
+<h2>Let’s play constructor bingo!</h2>
+<div class="columns">
+<div class="column">
+<ul>
+<li class="fragment"><strong>Default</strong> c’tor</li>
+<li class="fragment"><strong>Non-default</strong> c’tor(s)</li>
+<li class="fragment"><strong>Copy</strong> c’tor</li>
+<li class="fragment"><strong>Move</strong> c’tor</li>
+</ul>
+</div><div class="column">
+<ul>
+<li class="fragment"><em>Explicit/direct c’tors</em></li>
+<li class="fragment"><em>Converting c’tors</em></li>
+<li class="fragment"><em><code class="sourceCode cpp"><span class="kw">constexpr</span></code> c’tors</em></li>
+<li class="fragment"><em>Delegating c’tors</em></li>
+<li class="fragment"><em>Inheriting c’tors</em></li>
+</ul>
+</div>
+</div>
+<div class="fragment">
+<p><img data-src="images/em-open_mouth.svg" style="width:6.0%" /></p>
+<aside class="notes">
+<p>Let’s play constructor bingo! Everyone got their cards ready?</p>
+<p>…</p>
+<p>Now, not all of these constructors are in fact denotations of actual special member functions. The ones on the left are, the ones on the right aren’t.</p>
+<p>The forms on the right are more like properties of constructors.</p>
+</aside>
+</div>
+</section>
+<section id="default-constructors" class="slide level2">
+<h2>Default constructors</h2>
+<blockquote>
+<p>Constructors that may be called without any argument are default constructors.</p>
+</blockquote>
+<div class="sourceCode" id="cb14"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb14-1"><a href="#cb14-1"></a><span class="kw">struct</span> X { <span class="co">/* ... */</span> };</span>
+<span id="cb14-2"><a href="#cb14-2"></a></span>
+<span id="cb14-3"><a href="#cb14-3"></a>X a;</span>
+<span id="cb14-4"><a href="#cb14-4"></a>X b();</span>
+<span id="cb14-5"><a href="#cb14-5"></a>X c{};</span>
+<span id="cb14-6"><a href="#cb14-6"></a><span class="kw">auto</span> d = X{};</span></code></pre></div>
+<aside class="notes">
+<p>…</p>
+<p>All of the examples below show when this constructor is called. Your type may or may not have a default constructor, and the compiler may or may not implement one for you – more on that later.</p>
+</aside>
+</section>
+<section id="non-default-constructors" class="slide level2">
+<h2>Non-default constructors</h2>
+<p>Any constructor that is not a default constructor.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb15-1"><a href="#cb15-1"></a><span class="kw">struct</span> X { <span class="co">/* ... */</span> };</span>
+<span id="cb15-2"><a href="#cb15-2"></a></span>
+<span id="cb15-3"><a href="#cb15-3"></a>X a{<span class="dv">42</span>};</span>
+<span id="cb15-4"><a href="#cb15-4"></a>X b(<span class="st">&quot;Hi!&quot;</span>, <span class="fl">3.1415</span><span class="bu">f</span>);</span>
+<span id="cb15-5"><a href="#cb15-5"></a>X c{a};</span>
+<span id="cb15-6"><a href="#cb15-6"></a>X d{<span class="bu">std::</span>move(b)};</span></code></pre></div>
+<aside class="notes">
+<p>…</p>
+<p>Let’s support the type X has some non-default constructors defined. Any of the calls in the example below call a non-default constructor. A new identifier is introduced and a corresponding construction function is called.</p>
+<p>There are two special cases, namely the last two lines. The second-to-last line calles the copy constructor, and the last line calls the move constructor (if you’re living in a C++11 or later world). We’re going to discuss each of these later on, but in essence they are just non-default constructors.</p>
+<p>Now, where the constructor deals with the creation of an object, the destructor deals with the removal of an object.</p>
+</aside>
+</section>
+<section id="special-member-destructors" class="slide level2">
+<h2>Special member: destructors</h2>
+<blockquote>
+<p>The destructor is called when object lifetime ends.</p>
+</blockquote>
+<div class="sourceCode" id="cb16"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb16-1"><a href="#cb16-1"></a><span class="kw">struct</span> X { <span class="co">/* ... */</span> };</span>
+<span id="cb16-2"><a href="#cb16-2"></a></span>
+<span id="cb16-3"><a href="#cb16-3"></a>{</span>
+<span id="cb16-4"><a href="#cb16-4"></a>  X a;</span>
+<span id="cb16-5"><a href="#cb16-5"></a></span>
+<span id="cb16-6"><a href="#cb16-6"></a>  {</span>
+<span id="cb16-7"><a href="#cb16-7"></a>    X b;</span>
+<span id="cb16-8"><a href="#cb16-8"></a>  } <span class="co">// Destructor of &#39;b&#39; is called.</span></span>
+<span id="cb16-9"><a href="#cb16-9"></a>}   <span class="co">// Destructor of &#39;a&#39; is called.</span></span></code></pre></div>
+<aside class="notes">
+<p>…</p>
+<p>The lifetime of an object in C++ can be a complex subject we’re not going to discuss in detail here. The example below shows a few typical cases of when a destructor for an object is called. Here object ‘b’ is destructed earlier because it is defined in a nested scope that ends earlier than the one object ‘a’ lives in.</p>
+<p>Next, the copy operations.</p>
+</aside>
+</section>
+<section id="special-member-copy-ops" class="slide level2">
+<h2>Special member: copy ops</h2>
+<table style="width:90%;">
+<colgroup>
+<col style="width: 44%" />
+<col style="width: 45%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td>Copy constructor</td>
+<td><code class="sourceCode cpp">T(<span class="at">const</span> T&amp;)</code></td>
+</tr>
+<tr class="even">
+<td>Copy assignment operator</td>
+<td><code class="sourceCode cpp">T&amp; <span class="kw">operator</span>=(<span class="at">const</span> T&amp;)</code></td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb17"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb17-1"><a href="#cb17-1"></a><span class="kw">struct</span> X { <span class="co">/* ... */</span> };</span>
+<span id="cb17-2"><a href="#cb17-2"></a></span>
+<span id="cb17-3"><a href="#cb17-3"></a>X a;</span>
+<span id="cb17-4"><a href="#cb17-4"></a></span>
+<span id="cb17-5"><a href="#cb17-5"></a>X b{a};  <span class="co">// Calls copy constructor.</span></span>
+<span id="cb17-6"><a href="#cb17-6"></a>X c = a; <span class="co">// Calls copy constructor.</span></span>
+<span id="cb17-7"><a href="#cb17-7"></a></span>
+<span id="cb17-8"><a href="#cb17-8"></a>b = a;   <span class="co">// Calls copy assignment operator.</span></span></code></pre></div>
+<aside class="notes">
+<p>The copy operations are called when dealing with copy operations of the same type as the class itself.</p>
+<p>There are two operations:</p>
+<ul>
+<li>Copy constructor – which deals with newly introduced objects,</li>
+<li>Copy assignment operator – which deals with copying to already existing objects.</li>
+</ul>
+<p>C++11 and later also features move semantics, for which two sibling functions have been introduced, namely the move operations.</p>
+</aside>
+</section>
+<section id="special-member-move-ops" class="slide level2">
+<h2>Special member: move ops</h2>
+<table style="width:83%;">
+<colgroup>
+<col style="width: 44%" />
+<col style="width: 38%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td>Move constructor</td>
+<td><code class="sourceCode cpp">T(&amp;&amp;)</code></td>
+</tr>
+<tr class="even">
+<td>Move assignment operator</td>
+<td><code class="sourceCode cpp">T&amp; <span class="kw">operator</span>=(T&amp;&amp;)</code></td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb18"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb18-1"><a href="#cb18-1"></a><span class="kw">struct</span> X { <span class="co">/* ... */</span> };</span>
+<span id="cb18-2"><a href="#cb18-2"></a></span>
+<span id="cb18-3"><a href="#cb18-3"></a>X a1, a2, a3;</span>
+<span id="cb18-4"><a href="#cb18-4"></a></span>
+<span id="cb18-5"><a href="#cb18-5"></a>X b{<span class="bu">std::</span>move(a1)};  <span class="co">// Calls move constructor.</span></span>
+<span id="cb18-6"><a href="#cb18-6"></a>X c = <span class="bu">std::</span>move(a2); <span class="co">// Calls move constructor.</span></span>
+<span id="cb18-7"><a href="#cb18-7"></a></span>
+<span id="cb18-8"><a href="#cb18-8"></a>b = <span class="bu">std::</span>move(a3);   <span class="co">// Calls move assignment operator.</span></span></code></pre></div>
+<aside class="notes">
+<p>And just like the copy operations: the move operations are called when dealing with move operations of the same type as the class itself.</p>
+<p>Again there are two operations:</p>
+<ul>
+<li>Move constructor – which deals with newly introduced objects,</li>
+<li>Move assignment operator – which deals with moving to already existing objects.</li>
+</ul>
+<p>Now that we know who’s who, we can set the special member functions in perspective. One thing that is very important to understand is object life cycle.</p>
+</aside>
+</section>
+<section id="smfs-and-composition" class="slide level2">
+<h2>SMFs and composition</h2>
+<div class="columns">
+<div class="column">
+<div class="sourceCode" id="cb19"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb19-1"><a href="#cb19-1"></a><span class="kw">struct</span> Member { <span class="co">/* ... */</span> };</span>
+<span id="cb19-2"><a href="#cb19-2"></a></span>
+<span id="cb19-3"><a href="#cb19-3"></a><span class="kw">struct</span> Type { <span class="co">/* ... */</span></span>
+<span id="cb19-4"><a href="#cb19-4"></a>  Member <span class="va">v_</span>;</span>
+<span id="cb19-5"><a href="#cb19-5"></a>};</span>
+<span id="cb19-6"><a href="#cb19-6"></a></span>
+<span id="cb19-7"><a href="#cb19-7"></a><span class="dt">int</span> main() {</span>
+<span id="cb19-8"><a href="#cb19-8"></a>  Type t;</span>
+<span id="cb19-9"><a href="#cb19-9"></a>}</span></code></pre></div>
+</div><div class="column">
+<p>Output:</p>
+<pre><code>Member::Member()
+Type::Type()
+Type::~Type()
+Member::~Member()</code></pre>
+</div>
+</div>
+<aside class="notes">
+<p>If an object is contained within another object, e.g. when an object is composed of another one, what is the order of construction? Well it seems logical, and of course it is logical: first the member variables of any object are constructed, then the object itself. Destruction is right the other way around.</p>
+<p>And the reason why this order is quite obvious: otherwise, how would you be able to safely use member variables in the constructor or destructor?</p>
+</aside>
+</section>
+<section id="smfs-and-inheritance" class="slide level2">
+<h2>SMFs and inheritance</h2>
+<div class="columns">
+<div class="column">
+<div class="sourceCode" id="cb21"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb21-1"><a href="#cb21-1"></a><span class="kw">struct</span> Base { <span class="co">/* ... */</span> };</span>
+<span id="cb21-2"><a href="#cb21-2"></a></span>
+<span id="cb21-3"><a href="#cb21-3"></a><span class="kw">struct</span> Derived : Base { <span class="co">/* ... */</span> };</span>
+<span id="cb21-4"><a href="#cb21-4"></a></span>
+<span id="cb21-5"><a href="#cb21-5"></a><span class="dt">int</span> main() {</span>
+<span id="cb21-6"><a href="#cb21-6"></a>  Derived d;</span>
+<span id="cb21-7"><a href="#cb21-7"></a>}</span></code></pre></div>
+</div><div class="column">
+<p>Output:</p>
+<pre><code>Base::Base()
+Derived::Derived()
+Derived::~Derived()
+Base::~Base()</code></pre>
+</div>
+</div>
+<aside class="notes">
+<p>For inheritance first the base class is constructed, then the derived class. Vice versa for the destruction order.</p>
+<p>Every C++ programmer should know this. Let’s move on.</p>
+</aside>
+</section>
+<section id="smfs-and-inheritance-1" class="slide level2">
+<h2>SMFs and inheritance</h2>
+<div class="columns">
+<div class="column">
+<div class="sourceCode" id="cb23"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb23-1"><a href="#cb23-1"></a><span class="kw">struct</span> Base { <span class="co">/* ... */</span> };</span>
+<span id="cb23-2"><a href="#cb23-2"></a><span class="kw">struct</span> Member { <span class="co">/* ... */</span> };</span>
+<span id="cb23-3"><a href="#cb23-3"></a></span>
+<span id="cb23-4"><a href="#cb23-4"></a><span class="kw">struct</span> Derived : Base { <span class="co">/* ... */</span></span>
+<span id="cb23-5"><a href="#cb23-5"></a>  Member <span class="va">v_</span>;</span>
+<span id="cb23-6"><a href="#cb23-6"></a>};</span>
+<span id="cb23-7"><a href="#cb23-7"></a></span>
+<span id="cb23-8"><a href="#cb23-8"></a><span class="dt">int</span> main() {</span>
+<span id="cb23-9"><a href="#cb23-9"></a>  Derived d;</span>
+<span id="cb23-10"><a href="#cb23-10"></a>}</span></code></pre></div>
+</div><div class="column">
+<p>Output:</p>
+<pre><code>// ?
+// ?
+// ?
+// ?
+// ?
+// ?</code></pre>
+</div>
+</div>
+<aside class="notes">
+<p>Now, lets mix up the previous two examples! What’s the order now? Do YOU know?</p>
+<p>Let’s try to think of a logical order just by reasoning.</p>
+<p>The first one we can take off the list is the derived class, which will obviously be the last one to be constructed, and the first one to be destructed. We frankly need the base class and the member variables to be constructed when it is constructed itself.</p>
+</aside>
+</section>
+<section id="smfs-and-inheritance-2" class="slide level2">
+<h2>SMFs and inheritance</h2>
+<div class="columns">
+<div class="column">
+<div class="sourceCode" id="cb25"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb25-1"><a href="#cb25-1"></a><span class="kw">struct</span> Base { <span class="co">/* ... */</span> };</span>
+<span id="cb25-2"><a href="#cb25-2"></a><span class="kw">struct</span> Member { <span class="co">/* ... */</span> };</span>
+<span id="cb25-3"><a href="#cb25-3"></a></span>
+<span id="cb25-4"><a href="#cb25-4"></a><span class="kw">struct</span> Derived : Base { <span class="co">/* ... */</span></span>
+<span id="cb25-5"><a href="#cb25-5"></a>  Member <span class="va">v_</span>;</span>
+<span id="cb25-6"><a href="#cb25-6"></a>};</span>
+<span id="cb25-7"><a href="#cb25-7"></a></span>
+<span id="cb25-8"><a href="#cb25-8"></a><span class="dt">int</span> main() {</span>
+<span id="cb25-9"><a href="#cb25-9"></a>  Derived d;</span>
+<span id="cb25-10"><a href="#cb25-10"></a>}</span></code></pre></div>
+</div><div class="column">
+<p>Output:</p>
+<pre><code>// ?
+// ?
+Derived::Derived()
+Derived::~Derived()
+// ?
+// ?</code></pre>
+</div>
+</div>
+<aside class="notes">
+<p>OK. But what’s in the other positions? Will the base class be constructed first or a member variable?</p>
+<p>Consider what makes most sense. The base class is a thing in of itself, it is and should be agnostic as to how it is used. The derived class however is written in terms of the base class. This also means, that the derived class member variables may even be initialized in terms of base class elements. So as a conlusion, we can reason that the base class must construct first, then the derived class members, then the derived class.</p>
+</aside>
+</section>
+<section id="smfs-and-inheritance-3" class="slide level2">
+<h2>SMFs and inheritance</h2>
+<div class="columns">
+<div class="column">
+<div class="sourceCode" id="cb27"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb27-1"><a href="#cb27-1"></a><span class="kw">struct</span> Base { <span class="co">/* ... */</span> };</span>
+<span id="cb27-2"><a href="#cb27-2"></a><span class="kw">struct</span> Member { <span class="co">/* ... */</span> };</span>
+<span id="cb27-3"><a href="#cb27-3"></a></span>
+<span id="cb27-4"><a href="#cb27-4"></a><span class="kw">struct</span> Derived : Base { <span class="co">/* ... */</span></span>
+<span id="cb27-5"><a href="#cb27-5"></a>  Member <span class="va">v_</span>;</span>
+<span id="cb27-6"><a href="#cb27-6"></a>};</span>
+<span id="cb27-7"><a href="#cb27-7"></a></span>
+<span id="cb27-8"><a href="#cb27-8"></a><span class="dt">int</span> main() {</span>
+<span id="cb27-9"><a href="#cb27-9"></a>  Derived d;</span>
+<span id="cb27-10"><a href="#cb27-10"></a>}</span></code></pre></div>
+</div><div class="column">
+<p>Output:</p>
+<pre><code>Base::Base()
+Member::Member()
+Derived::Derived()
+Derived::~Derived()
+Member::~Member()
+Base::~Base()</code></pre>
+</div>
+</div>
+<aside class="notes">
+<p>So here it is.</p>
+</aside>
+</section>
+<section id="smfs-and-inheritance-4" class="slide level2">
+<h2>SMFs and inheritance</h2>
+<p>Multiple inheritance and multiple non-<code class="sourceCode cpp"><span class="at">static</span></code> class members:</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb29-1"><a href="#cb29-1"></a><span class="kw">struct</span> Derived</span>
+<span id="cb29-2"><a href="#cb29-2"></a>  : Base1,    <span class="co">// Base class initialization in left-to-right order 1..N</span></span>
+<span id="cb29-3"><a href="#cb29-3"></a>    Base2,</span>
+<span id="cb29-4"><a href="#cb29-4"></a>    <span class="co">// ...</span></span>
+<span id="cb29-5"><a href="#cb29-5"></a>    BaseN</span>
+<span id="cb29-6"><a href="#cb29-6"></a>{</span>
+<span id="cb29-7"><a href="#cb29-7"></a>  Member <span class="va">m1_</span>; <span class="co">// Initialization of non-static members in declaration order 1..M</span></span>
+<span id="cb29-8"><a href="#cb29-8"></a>  Member <span class="va">m2_</span>;</span>
+<span id="cb29-9"><a href="#cb29-9"></a>  <span class="co">// ...</span></span>
+<span id="cb29-10"><a href="#cb29-10"></a>  Member <span class="va">mM_</span>;</span>
+<span id="cb29-11"><a href="#cb29-11"></a>};</span></code></pre></div>
+<aside class="notes">
+<p>Now, we’re not completely done here! Wait a sec! What if we have multiple inheritance or multiple member variables? What’s the order then?</p>
+<p>Also that is fairly logical and simply defined. Multiple inheritance is dealt with in the order of left-to-right. Member variables are initialized in declaration order.</p>
+<p>Nice and logical.</p>
+</aside>
+</section>
+<section id="smfs-and-inheritance-5" class="slide level2">
+<h2>SMFs and inheritance</h2>
+<p><img data-src="images/inheritance-order.png" style="width:90.0%" /></p>
+<ul>
+<li class="fragment">Base class(es),</li>
+<li class="fragment">Non-<code class="sourceCode cpp"><span class="at">static</span></code> member variable(s),</li>
+<li class="fragment">Derived class.</li>
+</ul>
+<div class="fragment">
+<p>Destruction is order is reverse <img data-src="images/em-arrow_right_hook.svg" style="width:3.0%" /></p>
+<aside class="notes">
+<p>To conclude this section: special member functions and inheritance: the order of construction is base/non-static member variables/derived class. Destruction order is reverse.</p>
+<p>I hope now, at the end of this section, everyone is on the same page and perhaps has their memory refreshed? For the next part, we’re going to look at the declaration rules for special member functions.</p>
+</aside>
+</div>
+</section></section>
+<section>
+<section id="declaration-rules" class="title-slide slide level1">
+<h1>Declaration <span style="color:crimson"><strong>rules</strong></span></h1>
+
+</section>
+<section id="when-are-smfs-generated" class="slide level2">
+<h2>When are SMFs generated?</h2>
+<p><img data-src="images/labyrinth.jpg" style="width:75.0%" /></p>
+<aside class="notes">
+<p>This section is all about the questions: when are special member functions generated? And thus implicitly: what should you do to keep your object SMF hygene right?</p>
+<p>This is an important part of this whole session, so watch closely and think along! I going to show you that the declaration rules are not at all mystical.</p>
+</aside>
+</section>
+<section id="section-1" class="slide level2">
+<h2></h2>
+<p><img data-src="images/special-member-functions-table-1.png" style="width:70.0%" /></p>
+<aside class="notes">
+<p>Let’s start out with a table, where on the rows we have the user-declared functions, and on the columns we have the implicitly declared functions by the compiler. As you can see there’s two more rows than there are columns, as we also include the possibility to user-declare nothing or an alternative constructor.</p>
+<p>We can quickly block out all the diagonally overlapping cells – these are obvious.</p>
+<p>Now, let’s take a look at the declaration rules.</p>
+</aside>
+</section>
+<section id="section-2" class="slide level2">
+<h2></h2>
+<p><img data-src="images/special-member-functions-table-7.png" style="width:70.0%" /></p>
+<aside class="notes">
+<p>There’s two kinds of cells: those that say ‘defaulted’, meaning the compiler will provide a default implementation. Then if we see ‘undeclared’ it means the compiler is not going to implement it.</p>
+<p>Take a couple of seconds to absorb this table.</p>
+<p>…</p>
+<p>Now, let’s take a closer look at some remarkable spots in this table. For starters, the destructor is never undeclared – and this makes sense in the light of the essential functionality a destructor brings. Then, another remarkable feat is the sheer amount of casualties when we user-declare the move constructor, nothing but the compiler-declared destructor survives this.</p>
+<p>But even though this is not such a large table, it can be challenging to remember the rules here. That’s why I suggest we look at some selected regions and extract basic rules from those.</p>
+</aside>
+</section>
+<section id="section-3" class="slide level2">
+<h2></h2>
+<p><img data-src="images/special-member-functions-table-7_highlight1.png" style="width:70.0%" /></p>
+<aside class="notes">
+<p>First let’s look at the spots in the table where the default constructor is not compiler-declared anymore. This is quite simple to remember: for every user-declared constructor, the compiler will not declare the default constructor.</p>
+<p>Or, the other way around: if you need a default constructor, you’ll have to user-declare it for every other constructor you user-declare. Right? That’s quite easy to remember.</p>
+<p>Next section!</p>
+</aside>
+</section>
+<section id="section-4" class="slide level2">
+<h2></h2>
+<p><img data-src="images/special-member-functions-table-7_highlight2.png" style="width:70.0%" /></p>
+<aside class="notes">
+<p>That is the compiler-undeclaration of copy operations, if any of the move operations is user-declared. That’s the second rule we’re going to remember. Simple! Right?</p>
+<p>Then the second and last section.</p>
+</aside>
+</section>
+<section id="section-5" class="slide level2">
+<h2></h2>
+<p><img data-src="images/special-member-functions-table-7_highlight3.png" style="width:70.0%" /></p>
+<aside class="notes">
+<p>The last section is about when the move operations are not compiler-declared anymore. As we can see, the move operations will not be compiler-declared when copy operations, move operations or the destructor are user-declared. And that’ll be the third rule.</p>
+<p>Summarizing these three rules, we come to the following table.</p>
+</aside>
+</section>
+<section id="declaration-rules-summary" class="slide level2">
+<h2>Declaration rules summary</h2>
+<p>Compiler-undeclaration rules are simpler to remember <img data-src="images/em-x.svg" style="width:3.0%" /><br/><br/></p>
+<div class="fragment">
+<table style="width:79%;">
+<colgroup>
+<col style="width: 43%" />
+<col style="width: 36%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><strong>When user declares..</strong></td>
+<td><strong>Undeclaration of..</strong></td>
+</tr>
+<tr class="even">
+<td>Any other constructor</td>
+<td>Default constructor</td>
+</tr>
+<tr class="odd">
+<td>Any move operation</td>
+<td>Copy operations</td>
+</tr>
+<tr class="even">
+<td>Any copy/move/destructor</td>
+<td>Move operations</td>
+</tr>
+</tbody>
+</table>
+<aside class="notes">
+<p>To summarize the declaration rules:</p>
+<ol type="1">
+<li><strong>Default constructor</strong> will be undeclared for any other constructor,</li>
+<li><strong>Move operations</strong> will be undeclared for any copy/move/destructor,</li>
+<li><strong>Copy operations</strong> will be undeclared for any move operation.</li>
+</ol>
+</aside>
+</div>
+</section>
+<section id="declaration-rules-summary-1" class="slide level2">
+<h2>Declaration rules summary</h2>
+<p>Compiler-undeclaration rules are simpler to remember <img data-src="images/em-x.svg" style="width:3.0%" /><br/><br/></p>
+<table>
+<colgroup>
+<col style="width: 66%" />
+<col style="width: 33%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><strong>When user declares..</strong></td>
+<td><strong>Undeclaration of..</strong></td>
+</tr>
+<tr class="even">
+<td><code class="sourceCode cpp">T(*)</code></td>
+<td><code class="sourceCode cpp">T()</code></td>
+</tr>
+<tr class="odd">
+<td><code class="sourceCode cpp">*(T&amp;&amp;)</code></td>
+<td><code class="sourceCode cpp">*(<span class="at">const</span> T&amp;)</code></td>
+</tr>
+<tr class="even">
+<td><code class="sourceCode cpp">*(<span class="at">const</span> T&amp;)</code>/<code class="sourceCode cpp">*(T&amp;&amp;)</code>/<code class="sourceCode cpp">~T()</code></td>
+<td><code class="sourceCode cpp">*(T&amp;&amp;)</code></td>
+</tr>
+</tbody>
+</table>
+<aside class="notes">
+<p>Or, if you read C++ code more easily. Whatever you like!</p>
+</aside>
+</section>
+<section id="copy-vs-move-and-fallback" class="slide level2">
+<h2>Copy vs move and fallback</h2>
+<p>Consider this copy-only class:</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb30-1"><a href="#cb30-1"></a><span class="kw">class</span> X { <span class="co">/* Move operations deleted, copy operations implemented. */</span> };</span>
+<span id="cb30-2"><a href="#cb30-2"></a></span>
+<span id="cb30-3"><a href="#cb30-3"></a><span class="dt">int</span> main() {</span>
+<span id="cb30-4"><a href="#cb30-4"></a>  X x;</span>
+<span id="cb30-5"><a href="#cb30-5"></a>  X y{x};            <span class="co">// Will copy-construct.</span></span>
+<span id="cb30-6"><a href="#cb30-6"></a>  X z{<span class="bu">std::</span>move(x)}; <span class="co">// Will copy-construct.</span></span>
+<span id="cb30-7"><a href="#cb30-7"></a>}</span></code></pre></div>
+<p><img data-src="images/em-thinking_face.svg" style="width:6.0%" /></p>
+<aside class="notes">
+<p>Look at this example of a type that is copy-only. This is interesting. I thought you said copy-only Kris, what’s that? Are you lying to us?</p>
+<p>Well no, copy-only, in this example, basically means it is guaranteed that the contents of the original object will never be moved. It is still OK to perform the move operation on it, implicitly and explicitly. The thing is, <code>std::move</code> doesn’t move, at least, not per sé.</p>
+<p>The point I’m trying to address here though, is that even though a class made unmovable, it doesn’t break all the code that previously used this movable ability. This might be a loss in efficiency, but not a loss in code correctness.</p>
+<p>In short: when the move operations of a class type are deleted, the copy fallback is still available and keeps your code working.</p>
+<p>As far as I know, the copy fallback mechanism isn’t really an official thing. I heard Nicolai Josuttis coin the term in one of his C++ trainings.</p>
+<p>What we can do, is use this knowledge to make our table from the previous section more complete.</p>
+</aside>
+</section>
+<section id="section-6" class="slide level2">
+<h2></h2>
+<p><img data-src="images/special-member-functions-table-7.png" style="width:70.0%" /></p>
+<aside class="notes">
+<p>Here’s the table as we built in in the previous section. Lots of red cells, meaning we lose a certain operation, compiler magic and possible breakage of existing code.</p>
+<p>Now if we include the knowledge that for undeclared move operations the copy fallback is available when the copy operations are still there, we arrive at the following table.</p>
+</aside>
+</section>
+<section id="section-7" class="slide level2">
+<h2></h2>
+<p><img data-src="images/special-member-functions-table-8.png" style="width:70.0%" /></p>
+<aside class="notes">
+<p>Now that looks a lot less hostile if you ask me.</p>
+<p>There are two cells still as red as they were. If we user-declare our move operations, we lose the copy operations as well. We knew that.</p>
+<p>The cells that are now purple however, indicate the situations where we lose a move operation, but keep the copy operations! That means we lose potential efficiency, as the compiler cannot perform a potentially more efficient move, but our code will still build, which is nice.</p>
+<p>Especially for legacy code bases that gradually move towards more modern implementations and use modern tools, this is important.</p>
+</aside>
+</section>
+<section id="porting-legacy-code" class="slide level2">
+<h2>Porting legacy code</h2>
+<div class="columns">
+<div class="column" style="width:60%;">
+<div class="sourceCode" id="cb31"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb31-1"><a href="#cb31-1"></a><span class="kw">class</span> X { <span class="co">// Implementation Somewhere Else (tm).</span></span>
+<span id="cb31-2"><a href="#cb31-2"></a><span class="kw">public</span>:</span>
+<span id="cb31-3"><a href="#cb31-3"></a>  X();</span>
+<span id="cb31-4"><a href="#cb31-4"></a>  ~X();</span>
+<span id="cb31-5"><a href="#cb31-5"></a></span>
+<span id="cb31-6"><a href="#cb31-6"></a>  <span class="co">// ...</span></span>
+<span id="cb31-7"><a href="#cb31-7"></a>};</span>
+<span id="cb31-8"><a href="#cb31-8"></a></span>
+<span id="cb31-9"><a href="#cb31-9"></a><span class="bu">std::</span>vector&lt;X&gt; v;</span>
+<span id="cb31-10"><a href="#cb31-10"></a></span>
+<span id="cb31-11"><a href="#cb31-11"></a>v.push_back(X()); <span class="co">// Pre-C++11      : copy</span></span>
+<span id="cb31-12"><a href="#cb31-12"></a>                  <span class="co">// C++11 and later: ????</span></span></code></pre></div>
+</div><div class="column" style="width:40%;">
+<p><br/> <img data-src="images/vector_push_back.png" style="width:100.0%" /></p>
+</div>
+</div>
+<div class="fragment">
+<p>C++11 and later will still copy – due to <code class="sourceCode cpp">~X()</code> and copy fallback</p>
+<aside class="notes">
+<p>Consider this plausible example of a class somewhere in your codebase. It user-declares a destructor, nothing really special.</p>
+<p>Let’s suppose we have a vector onto which we push these anonymous temporary instantiations of X, also called rvalues. Again, not a really strange situation, it might just be your code.</p>
+<p>Now as time progresses your tools are renewed and you move from pre-C++11 into the modern, post-C++11 world. Yay!</p>
+<p>You hurry yourself to the nearest browser and pull up cppreference.com, as one often does. On the page of <code>std::vector</code>, you find this table for member function <code>push_back()</code>.</p>
+<p>Ah! C++11 features a version of <code>push_back</code> that takes an rvalue reference function argument! Awesome, that’ll mean all my rvalue X’s here will be moved instead of copied! Modern C++ for the win!</p>
+<p>Well, yes and no. Let’s start with the good news: your code will still build. The bad news though, is that X’s are still being copied here. Not moved.</p>
+<p>But why?</p>
+<p>Because the destructor is user-declared. This disables the move operations, but enables the copy fallback. The code still builds, but no move.</p>
+<p>In order to fix this, we need to user-declare the move operations. Let’s do that.</p>
+</aside>
+</div>
+</section>
+<section id="porting-legacy-code-1" class="slide level2">
+<h2>Porting legacy code</h2>
+<div class="columns">
+<div class="column" style="width:60%;">
+<div class="sourceCode" id="cb32"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb32-1"><a href="#cb32-1"></a><span class="kw">class</span> X { <span class="co">// Implementation Somewhere Else (tm).</span></span>
+<span id="cb32-2"><a href="#cb32-2"></a><span class="kw">public</span>:</span>
+<span id="cb32-3"><a href="#cb32-3"></a>  X();</span>
+<span id="cb32-4"><a href="#cb32-4"></a>  ~X();</span>
+<span id="cb32-5"><a href="#cb32-5"></a></span>
+<span id="cb32-6"><a href="#cb32-6"></a>  X(X&amp;&amp; other);</span>
+<span id="cb32-7"><a href="#cb32-7"></a>  X&amp; <span class="kw">operator</span>=(X&amp;&amp; other);</span>
+<span id="cb32-8"><a href="#cb32-8"></a></span>
+<span id="cb32-9"><a href="#cb32-9"></a>  <span class="co">// ...</span></span>
+<span id="cb32-10"><a href="#cb32-10"></a>};</span>
+<span id="cb32-11"><a href="#cb32-11"></a></span>
+<span id="cb32-12"><a href="#cb32-12"></a><span class="bu">std::</span>vector&lt;X&gt; v;</span>
+<span id="cb32-13"><a href="#cb32-13"></a></span>
+<span id="cb32-14"><a href="#cb32-14"></a>v.push_back(X()); <span class="co">// Pre-C++11      : copy</span></span>
+<span id="cb32-15"><a href="#cb32-15"></a>                  <span class="co">// C++11 and later: move</span></span></code></pre></div>
+</div><div class="column" style="width:40%;">
+<p><br/> <img data-src="images/vector_push_back.png" style="width:100.0%" /></p>
+</div>
+</div>
+<aside class="notes">
+<p>Now the X’s will be moved into the vector for C++11 and later.</p>
+<p>One could come up with numerous examples like this one, which may happen all over your code base. To get the most out of modern tooling and features like move semantics, a little bit of porting is sometimes required.</p>
+</aside>
+</section>
+<section id="rule-of-x" class="slide level2">
+<h2>Rule of …X?</h2>
+<div class="columns">
+<div class="column">
+<ul>
+<li class="fragment">Rule of zero,</li>
+<li class="fragment">Rule of zero or all,</li>
+<li class="fragment">Rule of three,</li>
+<li class="fragment">Rule of four and a half,</li>
+</ul>
+</div><div class="column">
+<ul>
+<li class="fragment">Rule of five,</li>
+<li class="fragment">Rule of six,</li>
+<li class="fragment">Copy-only,</li>
+<li class="fragment">Move-only.</li>
+</ul>
+</div>
+</div>
+<div class="fragment">
+<p><img data-src="images/em-exploding_head.svg" style="width:6.0%" /></p>
+<aside class="notes">
+<p>In research for this presentation, I have found many special rules to be used.</p>
+<p>…</p>
+<p>Each of the rules has its advantages and disadvantages, and some are outdated if you use a modern C++ style/toolchain. There are a few of these rules however, that make a lot of sense and should be used.</p>
+</aside>
+</div>
+</section>
+<section id="rule-of-zero" class="slide level2">
+<h2>Rule of zero</h2>
+<blockquote>
+<p>If you don’t have to implement SMFs…then don’t!</p>
+</blockquote>
+<div class="sourceCode" id="cb33"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true"></a><span class="kw">struct</span> X {</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true"></a>  <span class="co">// Let the compiler do all the work.</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true"></a>};</span></code></pre></div>
+<aside class="notes">
+<p>First, for most cases, you should try to apply the rule of zero. Let the compiler do the work for you.</p>
+<p>This is a timeless rule. And as the language, compilers and toolchains get more advanced, they will hopefully be able to offload even more of your work. It’s their job to do so!</p>
+<p>So, again, where ever you can, don’t implement any of the special member functions.</p>
+<p>Things change when for some reason you must implement an SMF.</p>
+</aside>
+</section>
+<section id="if-custom-smfs-are-needed" class="slide level2">
+<h2>If custom SMFs are needed</h2>
+<ul>
+<li class="fragment">Container classes,</li>
+<li class="fragment">Resource managing classes,</li>
+<li class="fragment">Immobile classes.</li>
+</ul>
+<div class="fragment">
+<p>Use the rule of zero for everything else.</p>
+<aside class="notes">
+<p>My suggestion, and many agree, that it makes sense to look at the purpose of a class first; then decide upon the SMF policy.</p>
+<p>Generally speaking, there are three cases:</p>
+<p>…</p>
+<p>Otherwise, use the rule of zero.</p>
+<p>Let’s discuss each of these cases.</p>
+</aside>
+</div>
+</section>
+<section id="the-options-we-have.." class="slide level2">
+<h2>The options we have..</h2>
+<ul>
+<li class="fragment"><strong>Do nothing</strong>, let the compiler figure it out,</li>
+<li class="fragment">Provide a <strong>custom implementation</strong>,</li>
+<li class="fragment">Provide <strong>default implementation</strong><sup>†</sup>,</li>
+<li class="fragment"><strong>‘Hide’</strong> an SMF<sup>†</sup>.</li>
+</ul>
+<div class="fragment">
+<p><sup>†</sup> <em>C++-version-dependent procedure.</em></p>
+<aside class="notes">
+<p>…</p>
+</aside>
+</div>
+</section>
+<section id="the-options-we-have..-1" class="slide level2">
+<h2>The options we have.. <img data-src="images/cpp-classic.png" style="width:8.0%" /></h2>
+<ul>
+<li class="fragment">Default implementation: <code class="sourceCode cpp">T(){}</code></li>
+<li class="fragment">‘Hiding’ an SMF: declaration in <code class="sourceCode cpp"><span class="kw">private</span></code> section</li>
+</ul>
+<aside class="notes">
+<p>…</p>
+</aside>
+</section>
+<section id="the-options-we-have..-2" class="slide level2">
+<h2>The options we have.. <img data-src="images/cpp-modern.png" style="width:8.0%" /></h2>
+<ul>
+<li class="fragment">Default implementation: <code class="sourceCode cpp">T() = <span class="cf">default</span>;</code></li>
+<li class="fragment">‘Hiding’ an SMF: <code class="sourceCode cpp">T() = <span class="kw">delete</span>;</code> in <code class="sourceCode cpp"><span class="kw">public</span></code> section</li>
+</ul>
+<aside class="notes">
+<p>…</p>
+</aside>
+</section>
+<section id="container-classes" class="slide level2">
+<h2>Container classes</h2>
+<p>Implement all SMFs, or: ‘rule of six’:</p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb34-1"><a href="#cb34-1"></a><span class="kw">struct</span> Container {</span>
+<span id="cb34-2"><a href="#cb34-2"></a>  Container();</span>
+<span id="cb34-3"><a href="#cb34-3"></a>  ~Container();</span>
+<span id="cb34-4"><a href="#cb34-4"></a></span>
+<span id="cb34-5"><a href="#cb34-5"></a>  Container(<span class="at">const</span> Container&amp; other);</span>
+<span id="cb34-6"><a href="#cb34-6"></a>  Container&amp; <span class="kw">operator</span>=(<span class="at">const</span> Container&amp; other);</span>
+<span id="cb34-7"><a href="#cb34-7"></a></span>
+<span id="cb34-8"><a href="#cb34-8"></a>  Container(Container&amp;&amp; other);</span>
+<span id="cb34-9"><a href="#cb34-9"></a>  Container&amp; <span class="kw">operator</span>=(Container&amp;&amp; other);</span>
+<span id="cb34-10"><a href="#cb34-10"></a>};</span></code></pre></div>
+<aside class="notes">
+<p>Containers are all about versatile usage in combination with the STL and various programming paradigms. We want the type to be complete and useful in as many situations as possible.</p>
+<p>Therefor, we must support all possible operations and we want a default constructor as well. That’s why this rule is called rule of six.</p>
+</aside>
+</section>
+<section id="resource-managing-classes" class="slide level2">
+<h2>Resource managing classes</h2>
+<p>Implement as move-only:</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb35-1"><a href="#cb35-1"></a><span class="kw">struct</span> ResourceManager {</span>
+<span id="cb35-2"><a href="#cb35-2"></a>  ResourceManager();</span>
+<span id="cb35-3"><a href="#cb35-3"></a>  ~ResourceManager();</span>
+<span id="cb35-4"><a href="#cb35-4"></a></span>
+<span id="cb35-5"><a href="#cb35-5"></a>  ResourceManager(ResourceManager&amp;&amp; other);</span>
+<span id="cb35-6"><a href="#cb35-6"></a>  ResourceManager&amp; <span class="kw">operator</span>=(ResourceManager&amp;&amp; other);</span>
+<span id="cb35-7"><a href="#cb35-7"></a>};</span></code></pre></div>
+<p>The rules/compiler will take care of the rest.</p>
+<aside class="notes">
+<p>What about a resource managing class? Resource managing classes hold a resource that is move-only, or in other words non-copyable.</p>
+<p>Because you implement the move operations, the copy operations will be undeclared.</p>
+</aside>
+</section>
+<section id="immobile-classes" class="slide level2">
+<h2>Immobile classes <img data-src="images/em-house.svg" style="width:5.0%" /></h2>
+<p>Implement as non-copyable, non-movable:</p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb36-1"><a href="#cb36-1"></a><span class="kw">struct</span> Immobile {</span>
+<span id="cb36-2"><a href="#cb36-2"></a>  Immobile(<span class="at">const</span> Immobile&amp; other) = <span class="kw">delete</span>;</span>
+<span id="cb36-3"><a href="#cb36-3"></a>  Immobile&amp; <span class="kw">operator</span>=(<span class="at">const</span> Immobile&amp; other) = <span class="kw">delete</span>;</span>
+<span id="cb36-4"><a href="#cb36-4"></a>};</span></code></pre></div>
+<p>The rules/compiler will take care of the rest.</p>
+<aside class="notes">
+<p>…</p>
+</aside>
+</section>
+<section id="the-rule-of-zero-or-all" class="slide level2">
+<h2>The rule of zero or all</h2>
+<blockquote>
+<p>As a general one-rule-only policy the rule of zero or all can be followed.</p>
+</blockquote>
+<p>Trigger for ‘all’ is any non-constructor SMF.</p>
+<aside class="notes">
+<p>…</p>
+<p>Technically, in some of the previous examples, we didn’t have to explicitly mark the some operations as deleted, but as a company-wide rule it makes sense to do so. It explicitly advertises intent without the code reader having to know the declaration rules by heart.</p>
+<p>So in that vein, it makes sense to apply the rule of zero or all.</p>
+<p>If no special member functions are needed, don’t declare any. If any special member function other than a constructor is needed, declare all of them.</p>
+</aside>
+</section>
+<section id="some-last-notes" class="slide level2">
+<h2>Some last notes <img data-src="images/em-point_up.svg" style="width:7.0%" /></h2>
+<ul>
+<li class="fragment">Try to have a default constructor,</li>
+<li class="fragment">Don’t split copy operations and move operations,</li>
+<li class="fragment">Don’t build copy-only types, they are surprising.</li>
+</ul>
+<aside class="notes">
+<p>Some final thoughts before we close this section off.</p>
+<p>First: try to maintain a default constructor if you can. This makes working with a class easier in general, and opens up possibilities for other styles of programming.</p>
+<p>Second: never split up copy operations or move operations. For example only implementing the copy constructor, but not the copy assignment operator. This is surprising for a user, and therefor bad.</p>
+<p>Lastly: don’t build copy-only types with deleted move operations. This breaks code that would otherwise still build, and again, leads to nasty surprises.</p>
+</aside>
+</section></section>
+<section id="questions" class="title-slide slide level1">
+<h1>Questions?</h1>
+<p><img data-src="images/em-left_speech_bubble.svg" style="width:8.0%" /> <img data-src="images/em-question.svg" style="width:7.0%" /></p>
+</section>
+
+<section>
+<section id="implementation-guidelines" class="title-slide slide level1">
+<h1>Implementation <span style="color:crimson"><strong>guidelines</strong></span></h1>
+
+</section>
+<section id="constructor-guidelines" class="slide level2">
+<h2>Constructor guidelines</h2>
+<h3 id="some-general-wisdom">Some general wisdom <img data-src="images/em-point_up.svg" style="width:6.0%" /></h3>
+<ul>
+<li class="fragment">Use the member initialization list,</li>
+<li class="fragment">Never call <code class="sourceCode cpp"><span class="kw">virtual</span></code> functions from <code class="sourceCode cpp">T()</code>/<code class="sourceCode cpp">~T()</code>,</li>
+<li class="fragment">Make sure your object is in a specified state after <code class="sourceCode cpp">T()</code>,</li>
+<li class="fragment">Mark a constructor taking only one argument <code class="sourceCode cpp"><span class="kw">explicit</span></code>.</li>
+</ul>
+<aside class="notes">
+<p>…</p>
+</aside>
+</section>
+<section id="explicit-constructor" class="slide level2">
+<h2>Explicit constructor</h2>
+<blockquote>
+<p>Make any constructor that takes only one argument an <code class="sourceCode cpp"><span class="kw">explicit</span></code> constructor.</p>
+</blockquote>
+<p>Unless you intend to write a converting constructor.</p>
+<aside class="notes">
+<p>…</p>
+</aside>
+</section>
+<section id="explicit-constructor-1" class="slide level2">
+<h2>Explicit constructor</h2>
+<p>Example <img data-src="images/em-hammer_and_wrench.svg" style="width:4.0%" /></p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb37-1"><a href="#cb37-1"></a><span class="kw">struct</span> X {</span>
+<span id="cb37-2"><a href="#cb37-2"></a>  X(<span class="dt">int</span> value) {} <span class="co">// Converting constructor.</span></span>
+<span id="cb37-3"><a href="#cb37-3"></a>};</span>
+<span id="cb37-4"><a href="#cb37-4"></a></span>
+<span id="cb37-5"><a href="#cb37-5"></a><span class="dt">void</span> func(X arg) {</span>
+<span id="cb37-6"><a href="#cb37-6"></a>}</span>
+<span id="cb37-7"><a href="#cb37-7"></a></span>
+<span id="cb37-8"><a href="#cb37-8"></a>func(<span class="dv">42</span>); <span class="co">// Will implicitly convert &#39;42&#39; to X..</span></span></code></pre></div>
+<aside class="notes">
+<p>…</p>
+</aside>
+</section>
+<section id="explicit-constructor-2" class="slide level2">
+<h2>Explicit constructor</h2>
+<p>Example <img data-src="images/em-hammer_and_wrench.svg" style="width:4.0%" /></p>
+<div class="sourceCode" id="cb38"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb38-1"><a href="#cb38-1"></a><span class="kw">struct</span> X {</span>
+<span id="cb38-2"><a href="#cb38-2"></a>  <span class="kw">explicit</span> X(<span class="dt">int</span> value) {} <span class="co">// Explicit constructor.</span></span>
+<span id="cb38-3"><a href="#cb38-3"></a>};</span>
+<span id="cb38-4"><a href="#cb38-4"></a></span>
+<span id="cb38-5"><a href="#cb38-5"></a><span class="dt">void</span> func(X arg) {</span>
+<span id="cb38-6"><a href="#cb38-6"></a>}</span>
+<span id="cb38-7"><a href="#cb38-7"></a></span>
+<span id="cb38-8"><a href="#cb38-8"></a>func(<span class="dv">42</span>); <span class="co">// Compiler error!</span></span></code></pre></div>
+<aside class="notes">
+<p>…</p>
+</aside>
+</section>
+<section id="explicit-constructor-3" class="slide level2">
+<h2>Explicit constructor</h2>
+<p>Example <img data-src="images/em-hammer_and_wrench.svg" style="width:4.0%" /></p>
+<div class="sourceCode" id="cb39"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb39-1"><a href="#cb39-1"></a><span class="kw">struct</span> X {</span>
+<span id="cb39-2"><a href="#cb39-2"></a>  <span class="kw">explicit</span> X(<span class="dt">int</span> value) {} <span class="co">// Explicit constructor.</span></span>
+<span id="cb39-3"><a href="#cb39-3"></a>};</span>
+<span id="cb39-4"><a href="#cb39-4"></a></span>
+<span id="cb39-5"><a href="#cb39-5"></a><span class="dt">void</span> func(X arg) {</span>
+<span id="cb39-6"><a href="#cb39-6"></a>}</span>
+<span id="cb39-7"><a href="#cb39-7"></a></span>
+<span id="cb39-8"><a href="#cb39-8"></a>func(X{<span class="dv">42</span>}); <span class="co">// OK, explicit and safe.</span></span></code></pre></div>
+<aside class="notes">
+<p>…</p>
+</aside>
+</section>
+<section id="member-initializer-list" class="slide level2">
+<h2>Member initializer list</h2>
+<p>Consider this example:</p>
+<div class="sourceCode" id="cb40"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb40-1"><a href="#cb40-1"></a><span class="kw">struct</span> X {</span>
+<span id="cb40-2"><a href="#cb40-2"></a>  X(<span class="at">const</span> <span class="bu">std::</span>string &amp;value) {</span>
+<span id="cb40-3"><a href="#cb40-3"></a>    <span class="va">value_</span> = value;</span>
+<span id="cb40-4"><a href="#cb40-4"></a>  }</span>
+<span id="cb40-5"><a href="#cb40-5"></a></span>
+<span id="cb40-6"><a href="#cb40-6"></a>  <span class="bu">std::</span>string <span class="va">value_</span>;</span>
+<span id="cb40-7"><a href="#cb40-7"></a>};</span></code></pre></div>
+<ol type="1">
+<li class="fragment">Default-constructs <code>value_</code> first,</li>
+<li class="fragment">Calls assignment operator second.</li>
+</ol>
+<aside class="notes">
+<p>From a historical perspective, the constructor is there to initialize an object. Part of this initialization is preparing or setting the non-static member variables.</p>
+<p>This could be done like so.. [see example]</p>
+<p>However, this is an inefficient implementation because the member value will first be default-constructed and then, in a separate operation, assigned. A better approach would be to utilize the member initialization list.</p>
+</aside>
+</section>
+<section id="member-initializer-list-1" class="slide level2">
+<h2>Member initializer list</h2>
+<p>More efficient version:</p>
+<div class="sourceCode" id="cb41"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb41-1"><a href="#cb41-1"></a><span class="kw">struct</span> X {</span>
+<span id="cb41-2"><a href="#cb41-2"></a>  X(<span class="at">const</span> <span class="bu">std::</span>string &amp;value)</span>
+<span id="cb41-3"><a href="#cb41-3"></a>    : <span class="va">value_</span>{value} {</span>
+<span id="cb41-4"><a href="#cb41-4"></a>  }</span>
+<span id="cb41-5"><a href="#cb41-5"></a></span>
+<span id="cb41-6"><a href="#cb41-6"></a>  <span class="bu">std::</span>string <span class="va">value_</span>;</span>
+<span id="cb41-7"><a href="#cb41-7"></a>};</span></code></pre></div>
+<div class="fragment">
+<p>Direct-initializes <code>value_</code>.</p>
+<aside class="notes">
+<p>This implementation, which yields the same result as the previous example, just directly initializes the member variable in one go. So, if possible, use the member initializer list. It is the most efficient way to initialize non-static member variables.</p>
+</aside>
+</div>
+</section>
+<section id="member-variable-initializations" class="slide level2">
+<h2>Member variable initializations</h2>
+<p>What about this example?</p>
+<div class="sourceCode" id="cb42"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb42-1"><a href="#cb42-1"></a><span class="kw">struct</span> X {</span>
+<span id="cb42-2"><a href="#cb42-2"></a>  X()</span>
+<span id="cb42-3"><a href="#cb42-3"></a>    : <span class="va">value_</span>{<span class="dv">0</span>} {}</span>
+<span id="cb42-4"><a href="#cb42-4"></a></span>
+<span id="cb42-5"><a href="#cb42-5"></a>  <span class="dt">int</span> <span class="va">value_</span> = <span class="dv">0</span>;</span>
+<span id="cb42-6"><a href="#cb42-6"></a>};</span>
+<span id="cb42-7"><a href="#cb42-7"></a></span>
+<span id="cb42-8"><a href="#cb42-8"></a>X x;</span></code></pre></div>
+<p><strong>Question</strong>: will <code>value_</code> be initialized twice?</p>
+<div class="fragment">
+<p>No.</p>
+<aside class="notes">
+<p>Let’s look at this example then, using the default member initializer from C++11 and onwards.</p>
+<p>Question: is <code>value_</code> initialized twice due to the default member initializer? The answer is: no.</p>
+<p>The non-static data member already appears in the member initialization list, so the default member initializer is ignored. Nice.</p>
+<p>You might wonder though, this doesn’t make sense: initializing a member variable in two places. Well, it actually does make sense when a default constructor is defined. A compiler-generated default constructor will use the default initializer for non-static member variables.</p>
+<p>Also when your class has multiple members, part of which are initialized in by default initializers, part by a specialized constructor, you can leave out the member variables that are default-initialized from the member initializer list as they’re already taken care of.</p>
+</aside>
+</div>
+</section>
+<section id="member-variable-initializations-1" class="slide level2">
+<h2>Member variable initializations</h2>
+<p>No constructor needed <img data-src="images/cpp-modern.png" style="width:6.0%" /></p>
+<div class="sourceCode" id="cb43"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb43-1"><a href="#cb43-1"></a><span class="kw">struct</span> X {</span>
+<span id="cb43-2"><a href="#cb43-2"></a>  <span class="dt">int</span> <span class="va">value_</span> = <span class="dv">0</span>; <span class="co">// Default member initializer will be used in generated c&#39;tors.</span></span>
+<span id="cb43-3"><a href="#cb43-3"></a>};</span>
+<span id="cb43-4"><a href="#cb43-4"></a></span>
+<span id="cb43-5"><a href="#cb43-5"></a>X x;</span></code></pre></div>
+<aside class="notes">
+<p>Here’s the example fixed, more readable and just as efficient.</p>
+<p>Let’s look at initialization order then.</p>
+</aside>
+</section>
+<section id="member-initializer-list-2" class="slide level2">
+<h2>Member initializer list</h2>
+<p>Strict initialization order is NOT enforced.. <img data-src="images/em-disappointed.svg" style="width:4.0%" /></p>
+<div class="sourceCode" id="cb44"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb44-1"><a href="#cb44-1"></a><span class="kw">struct</span> X {</span>
+<span id="cb44-2"><a href="#cb44-2"></a>  X(<span class="dt">int</span> value1, <span class="dt">int</span> value2)</span>
+<span id="cb44-3"><a href="#cb44-3"></a>    : <span class="va">value2_</span>{value2 + <span class="va">value1_</span>},</span>
+<span id="cb44-4"><a href="#cb44-4"></a>      <span class="va">value1_</span>{value1} {</span>
+<span id="cb44-5"><a href="#cb44-5"></a>  }</span>
+<span id="cb44-6"><a href="#cb44-6"></a></span>
+<span id="cb44-7"><a href="#cb44-7"></a>  <span class="dt">int</span> <span class="va">value1_</span> = {};</span>
+<span id="cb44-8"><a href="#cb44-8"></a>  <span class="dt">int</span> <span class="va">value2_</span> = {};</span>
+<span id="cb44-9"><a href="#cb44-9"></a>};</span></code></pre></div>
+<aside class="notes">
+<p>C++ class initialization order is strict and well-defined; initialization will happen in the order of declaration. However, the order in the initialization list may be random – the code in this example is legal.</p>
+<p>See how <code>value2_</code> is defined in terms of <code>value1_</code>, even though <code>value1_</code> is not initialized yet. Mistakes like this can creep into your code easily, especially when a data structure has many members.</p>
+<p>Compilers are able to detect errors like this, so one must enable compiler warnings or use a proper static code analyser.</p>
+</aside>
+</section>
+<section id="member-initializer-list-3" class="slide level2">
+<h2>Member initializer list</h2>
+<blockquote>
+<p>Use the member initializer list!</p>
+</blockquote>
+<blockquote>
+<p>Turn on compiler warnings: <code>-Wreorder</code> / <code>/w15038</code></p>
+</blockquote>
+<div class="fragment">
+<p>(and look at them..or better even, use <code>-Werror</code>/<code>/WX</code>)</p>
+<aside class="notes">
+<p>So, as a quick summary on the member initializer list in the constructor:</p>
+<ul>
+<li>Use the member initialization list if necessary; it’s the most efficient way to initialize class members.</li>
+<li>Secondly, a general remark: use the compiler and enable compiler warnings.</li>
+</ul>
+<p>And look at the warnings; or perhaps better even, turn on warnings as errors and get them fixed immediately.</p>
+</aside>
+</div>
+</section>
+<section id="destructor-guidelines" class="slide level2">
+<h2>Destructor guidelines</h2>
+<ul>
+<li class="fragment">Never call <code class="sourceCode cpp"><span class="kw">virtual</span></code> functions from <code class="sourceCode cpp">T()</code>/<code class="sourceCode cpp">~T()</code>,</li>
+<li class="fragment"><code class="sourceCode cpp"><span class="kw">virtual</span></code> destructors,</li>
+<li class="fragment">Destructors and exceptions.</li>
+</ul>
+<aside class="notes">
+<p>Again, never call virtual functions from constructors and destructors. Overriding has not happened yet in this context, leading to surprising results.</p>
+<p>For the destructor, there are generally two subtopics that are important: when and how to deal with virtual destructors, and how to deal with exceptions.</p>
+<p>Let’s look at virtual destructors first.</p>
+</aside>
+</section>
+<section id="virtual-destructors" class="slide level2">
+<h2><code class="sourceCode cpp"><span class="kw">virtual</span></code> destructors</h2>
+<blockquote>
+<p>A base class must have a <code class="sourceCode cpp"><span class="kw">virtual</span></code> destructor.</p>
+</blockquote>
+<div class="sourceCode" id="cb45"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb45-1"><a href="#cb45-1"></a><span class="kw">struct</span> Base { <span class="co">/* ... */</span> };</span>
+<span id="cb45-2"><a href="#cb45-2"></a><span class="kw">struct</span> Derived : Base { <span class="co">/* ... */</span> };</span>
+<span id="cb45-3"><a href="#cb45-3"></a></span>
+<span id="cb45-4"><a href="#cb45-4"></a>{</span>
+<span id="cb45-5"><a href="#cb45-5"></a>  <span class="kw">auto</span> ptr = <span class="bu">std::</span>make_unique&lt;Base&gt;(Derived{});</span>
+<span id="cb45-6"><a href="#cb45-6"></a>} <span class="co">// Pointer &#39;ptr&#39; will go out of scope here and destruct via Base-type.</span></span></code></pre></div>
+<aside class="notes">
+<p>…</p>
+<p>When we look at the example, we can see how this works. If the smart pointer object will go out of scope, it will destruct the object it’s holding. But that’s a pointer of type ‘Base’ to an object of type ‘Derived’.</p>
+<p>If Base does not have a virtual destructor, deleting a derived class through a base class pointer is undefined behavior. Your harddrive might be wiped, but most of the time only the ‘Base’ part of the ‘Derived’ object will be destructed – which is pretty bad as well. So use a virtual destructor for any class that is meant to be a base class for polymorphic use.</p>
+<p>In the same vein, a class that is NOT meant for polymorphic usage should NOT have a virtual destructor. This can be inefficient for the compiler could implement vtables which will not be used. Mark your class final if it’s not supposed to be used for polymorphic use.</p>
+</aside>
+</section>
+<section id="virtual-destructors-1" class="slide level2">
+<h2><code class="sourceCode cpp"><span class="kw">virtual</span></code> destructors</h2>
+<div class="sourceCode" id="cb46"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb46-1"><a href="#cb46-1"></a><span class="kw">struct</span> Base {</span>
+<span id="cb46-2"><a href="#cb46-2"></a>  <span class="kw">virtual</span> ~Base();</span>
+<span id="cb46-3"><a href="#cb46-3"></a>};</span>
+<span id="cb46-4"><a href="#cb46-4"></a></span>
+<span id="cb46-5"><a href="#cb46-5"></a><span class="kw">struct</span> Derived : Base {</span>
+<span id="cb46-6"><a href="#cb46-6"></a>  ~Derived() <span class="kw">override</span>; <span class="co">// &#39;override&#39; specifier was added in C++11.</span></span>
+<span id="cb46-7"><a href="#cb46-7"></a>};</span>
+<span id="cb46-8"><a href="#cb46-8"></a></span>
+<span id="cb46-9"><a href="#cb46-9"></a>{</span>
+<span id="cb46-10"><a href="#cb46-10"></a>  <span class="kw">auto</span> ptr = <span class="bu">std::</span>make_unique&lt;Base&gt;(Derived{});</span>
+<span id="cb46-11"><a href="#cb46-11"></a>} <span class="co">// All is safe now.</span></span></code></pre></div>
+<aside class="notes">
+<p>Here’s the example again, with some details.</p>
+<p>Note the ‘override’ specifier on the derived destructor. This might seem a useless thing to do, but it is not. The override specifier will not do anything no, but it only works on virtual functions. So if the base class destructor is not virtual –which should be the case as we just saw– this program will not compile. This adds a nice safeguard to your code.</p>
+<p>This is good advice in general by the way: if you’re in C++11 or later world; use the override specifier for each function that overrides a (supposedly) virtual function.</p>
+</aside>
+</section>
+<section id="destructors-and-exceptions" class="slide level2">
+<h2>Destructors and exceptions</h2>
+<blockquote>
+<p>Don’t throw exceptions from destructors!</p>
+</blockquote>
+<p> </p>
+<p><img data-src="images/em-robot_face.svg" style="width:4.0%" /> <code>terminate()</code> will be called!</p>
+<aside class="notes">
+<p>In destructors, make sure that an exception cannot escape.</p>
+<p>Either terminate will be called, or something else bad will happen.</p>
+</aside>
+</section>
+<section id="copy-operations" class="slide level2">
+<h2>Copy operations</h2>
+<h3 id="some-general-wisdom-1">Some general wisdom <img data-src="images/em-point_up.svg" style="width:6.0%" /></h3>
+<ul>
+<li class="fragment">Always copy all parts of a class,</li>
+<li class="fragment">If applicable and needed, call the base class,</li>
+<li class="fragment">Handle self-assignment,</li>
+<li class="fragment">Return a reference to <code class="sourceCode cpp">*<span class="kw">this</span></code>,</li>
+<li class="fragment">Provide (strong) exception-safety.</li>
+</ul>
+<aside class="notes">
+<p>…</p>
+</aside>
+</section>
+<section id="copy-and-swap-1" class="slide level2">
+<h2>Copy and swap (1)</h2>
+<div class="columns">
+<div class="column">
+<div class="sourceCode" id="cb47"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb47-1"><a href="#cb47-1"></a><span class="kw">class</span> X {</span>
+<span id="cb47-2"><a href="#cb47-2"></a><span class="kw">public</span>:</span>
+<span id="cb47-3"><a href="#cb47-3"></a>  X() { <span class="co">/* ..initialize r_.. */</span> }</span>
+<span id="cb47-4"><a href="#cb47-4"></a></span>
+<span id="cb47-5"><a href="#cb47-5"></a>  <span class="co">// ???</span></span>
+<span id="cb47-6"><a href="#cb47-6"></a></span>
+<span id="cb47-7"><a href="#cb47-7"></a><span class="kw">private</span>:</span>
+<span id="cb47-8"><a href="#cb47-8"></a>  Resource <span class="va">r_</span>;</span>
+<span id="cb47-9"><a href="#cb47-9"></a>}</span></code></pre></div>
+</div><div class="column">
+<div class="sourceCode" id="cb48"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb48-1"><a href="#cb48-1"></a><span class="dt">int</span> main() {</span>
+<span id="cb48-2"><a href="#cb48-2"></a>  X x;</span>
+<span id="cb48-3"><a href="#cb48-3"></a>  X y{x};</span>
+<span id="cb48-4"><a href="#cb48-4"></a>  y = x;</span>
+<span id="cb48-5"><a href="#cb48-5"></a>}</span></code></pre></div>
+</div>
+</div>
+<aside class="notes">
+<p>…</p>
+</aside>
+</section>
+<section id="copy-and-swap-2" class="slide level2">
+<h2>Copy and swap (2)</h2>
+<div class="columns">
+<div class="column">
+<div class="sourceCode" id="cb49"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb49-1"><a href="#cb49-1"></a><span class="kw">class</span> X {</span>
+<span id="cb49-2"><a href="#cb49-2"></a><span class="kw">public</span>:</span>
+<span id="cb49-3"><a href="#cb49-3"></a>  X() { <span class="co">/* ..initialize r_.. */</span> }</span>
+<span id="cb49-4"><a href="#cb49-4"></a></span>
+<span id="cb49-5"><a href="#cb49-5"></a>  X(<span class="at">const</span> X&amp; other) {</span>
+<span id="cb49-6"><a href="#cb49-6"></a>    <span class="va">r_</span> = other.<span class="va">r_</span>;</span>
+<span id="cb49-7"><a href="#cb49-7"></a>  }</span>
+<span id="cb49-8"><a href="#cb49-8"></a></span>
+<span id="cb49-9"><a href="#cb49-9"></a>  <span class="co">// ???</span></span>
+<span id="cb49-10"><a href="#cb49-10"></a></span>
+<span id="cb49-11"><a href="#cb49-11"></a><span class="kw">private</span>:</span>
+<span id="cb49-12"><a href="#cb49-12"></a>  Resource <span class="va">r_</span>;</span>
+<span id="cb49-13"><a href="#cb49-13"></a>}</span></code></pre></div>
+</div><div class="column">
+<div class="sourceCode" id="cb50"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb50-1"><a href="#cb50-1"></a><span class="dt">int</span> main() {</span>
+<span id="cb50-2"><a href="#cb50-2"></a>  X x;</span>
+<span id="cb50-3"><a href="#cb50-3"></a>  X y{x};</span>
+<span id="cb50-4"><a href="#cb50-4"></a>  y = x;</span>
+<span id="cb50-5"><a href="#cb50-5"></a>}</span></code></pre></div>
+</div>
+</div>
+<aside class="notes">
+<p>…</p>
+</aside>
+</section>
+<section id="copy-and-swap-3" class="slide level2">
+<h2>Copy and swap (3)</h2>
+<div class="columns">
+<div class="column">
+<div class="sourceCode" id="cb51"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb51-1"><a href="#cb51-1"></a><span class="kw">class</span> X {</span>
+<span id="cb51-2"><a href="#cb51-2"></a><span class="kw">public</span>:</span>
+<span id="cb51-3"><a href="#cb51-3"></a>  X() { <span class="co">/* ..initialize resource.. */</span> }</span>
+<span id="cb51-4"><a href="#cb51-4"></a></span>
+<span id="cb51-5"><a href="#cb51-5"></a>  X(<span class="at">const</span> X&amp; other) { <span class="co">/* ... */</span> }</span>
+<span id="cb51-6"><a href="#cb51-6"></a></span>
+<span id="cb51-7"><a href="#cb51-7"></a>  X&amp; <span class="kw">operator</span>=(X other) {</span>
+<span id="cb51-8"><a href="#cb51-8"></a>    swap(*<span class="kw">this</span>, other);</span>
+<span id="cb51-9"><a href="#cb51-9"></a>    <span class="cf">return</span> *<span class="kw">this</span>;</span>
+<span id="cb51-10"><a href="#cb51-10"></a>  }</span>
+<span id="cb51-11"><a href="#cb51-11"></a></span>
+<span id="cb51-12"><a href="#cb51-12"></a>  <span class="kw">friend</span> <span class="dt">void</span> swap(X&amp; x1, X&amp; x2);</span>
+<span id="cb51-13"><a href="#cb51-13"></a></span>
+<span id="cb51-14"><a href="#cb51-14"></a><span class="kw">private</span>:</span>
+<span id="cb51-15"><a href="#cb51-15"></a>  Resource <span class="va">r_</span>;</span>
+<span id="cb51-16"><a href="#cb51-16"></a>};</span></code></pre></div>
+</div><div class="column">
+<div class="sourceCode" id="cb52" data-startFrom="17"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp" style="counter-reset: source-line 16;"><span id="cb52-17"><a href="#cb52-17"></a><span class="dt">void</span> X::swap(X&amp; x1, X&amp; x2) {</span>
+<span id="cb52-18"><a href="#cb52-18"></a>  <span class="bu">std::</span>swap(x1.<span class="va">r_</span>, x2.<span class="va">r_</span>);</span>
+<span id="cb52-19"><a href="#cb52-19"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb53"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb53-1"><a href="#cb53-1"></a><span class="dt">int</span> main() {</span>
+<span id="cb53-2"><a href="#cb53-2"></a>  X x;</span>
+<span id="cb53-3"><a href="#cb53-3"></a>  X y{x};</span>
+<span id="cb53-4"><a href="#cb53-4"></a>  y = x;</span>
+<span id="cb53-5"><a href="#cb53-5"></a>}</span></code></pre></div>
+<p>Exception guarantee!</p>
+</div>
+</div>
+<aside class="notes">
+<p>…</p>
+</aside>
+</section>
+<section id="move-operations" class="slide level2">
+<h2>Move operations</h2>
+<h3 id="some-general-wisdom-2">Some general wisdom <img data-src="images/em-point_up.svg" style="width:6.0%" /></h3>
+<ul>
+<li class="fragment">Always move all parts of a class,</li>
+<li class="fragment">If applicable and needed, call the base class,</li>
+<li class="fragment">Handle self-assignment,</li>
+<li class="fragment">Return a reference to <code class="sourceCode cpp">*<span class="kw">this</span></code>,</li>
+<li class="fragment">Provide (strong) exception-safety,</li>
+<li class="fragment">Leave a moved-from object in a valid state.</li>
+</ul>
+<aside class="notes">
+<p>…</p>
+</aside>
+</section>
+<section id="copy-and-swap-4" class="slide level2">
+<h2>Copy and swap (4)</h2>
+<div class="columns">
+<div class="column">
+<div class="sourceCode" id="cb54"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb54-1"><a href="#cb54-1"></a><span class="kw">class</span> X {</span>
+<span id="cb54-2"><a href="#cb54-2"></a><span class="kw">public</span>:</span>
+<span id="cb54-3"><a href="#cb54-3"></a>  X() { <span class="co">/* ..initialize resource.. */</span> }</span>
+<span id="cb54-4"><a href="#cb54-4"></a></span>
+<span id="cb54-5"><a href="#cb54-5"></a>  X(<span class="at">const</span> X&amp; other)     { <span class="co">/* ... */</span> }</span>
+<span id="cb54-6"><a href="#cb54-6"></a>  X&amp; <span class="kw">operator</span>=(X other) { <span class="co">/* ... */</span> }</span>
+<span id="cb54-7"><a href="#cb54-7"></a></span>
+<span id="cb54-8"><a href="#cb54-8"></a>  X(X&amp;&amp; other)</span>
+<span id="cb54-9"><a href="#cb54-9"></a>    : X() {</span>
+<span id="cb54-10"><a href="#cb54-10"></a>    swap(*<span class="kw">this</span>, other);</span>
+<span id="cb54-11"><a href="#cb54-11"></a>  }</span>
+<span id="cb54-12"><a href="#cb54-12"></a></span>
+<span id="cb54-13"><a href="#cb54-13"></a>  <span class="kw">friend</span> <span class="dt">void</span> swap(X&amp; x1, X&amp; x2);</span>
+<span id="cb54-14"><a href="#cb54-14"></a></span>
+<span id="cb54-15"><a href="#cb54-15"></a><span class="kw">private</span>:</span>
+<span id="cb54-16"><a href="#cb54-16"></a>  Resource <span class="va">r_</span>;</span>
+<span id="cb54-17"><a href="#cb54-17"></a>};</span></code></pre></div>
+</div><div class="column">
+<div class="sourceCode" id="cb55" data-startFrom="18"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp" style="counter-reset: source-line 17;"><span id="cb55-18"><a href="#cb55-18"></a><span class="dt">void</span> X::swap(X&amp; x1, X&amp; x2) {</span>
+<span id="cb55-19"><a href="#cb55-19"></a>  <span class="bu">std::</span>swap(x1.<span class="va">r_</span>, x2.<span class="va">r_</span>);</span>
+<span id="cb55-20"><a href="#cb55-20"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb56"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb56-1"><a href="#cb56-1"></a><span class="dt">int</span> main() {</span>
+<span id="cb56-2"><a href="#cb56-2"></a>  X x;</span>
+<span id="cb56-3"><a href="#cb56-3"></a>  X y{x};</span>
+<span id="cb56-4"><a href="#cb56-4"></a>  y = x;</span>
+<span id="cb56-5"><a href="#cb56-5"></a>  X z{<span class="bu">std::</span>move(y)};</span>
+<span id="cb56-6"><a href="#cb56-6"></a>  z = <span class="bu">std::</span>move(x);</span>
+<span id="cb56-7"><a href="#cb56-7"></a>}</span></code></pre></div>
+<p>Exception guarantee!</p>
+</div>
+</div>
+<aside class="notes">
+<p>…</p>
+</aside>
+</section></section>
+<section>
+<section id="conclusions" class="title-slide slide level1">
+<h1>Conclusions</h1>
+
+</section>
+<section id="smf-prototypes-1" class="slide level2">
+<h2>SMF prototypes</h2>
+<div class="sourceCode" id="cb57"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb57-1"><a href="#cb57-1"></a><span class="kw">struct</span> T {</span>
+<span id="cb57-2"><a href="#cb57-2"></a>  T();                          <span class="co">// Default constructor.</span></span>
+<span id="cb57-3"><a href="#cb57-3"></a>  ~T();                         <span class="co">// Destructor.</span></span>
+<span id="cb57-4"><a href="#cb57-4"></a></span>
+<span id="cb57-5"><a href="#cb57-5"></a>  T(<span class="at">const</span> T&amp; other);            <span class="co">// Copy constructor.</span></span>
+<span id="cb57-6"><a href="#cb57-6"></a>  T&amp; <span class="kw">operator</span>=(<span class="at">const</span> T&amp; other); <span class="co">// Copy assignment operator.</span></span>
+<span id="cb57-7"><a href="#cb57-7"></a></span>
+<span id="cb57-8"><a href="#cb57-8"></a>  T(T&amp;&amp; other);                 <span class="co">// Move constructor (C++11 and later).</span></span>
+<span id="cb57-9"><a href="#cb57-9"></a>  T&amp; <span class="kw">operator</span>=(T&amp;&amp; other);      <span class="co">// Move assignment operator (C++11 and later).</span></span>
+<span id="cb57-10"><a href="#cb57-10"></a>};</span></code></pre></div>
+<aside class="notes">
+<p>…</p>
+</aside>
+</section>
+<section id="declaration-rules-1" class="slide level2">
+<h2>Declaration rules</h2>
+<table>
+<colgroup>
+<col style="width: 66%" />
+<col style="width: 33%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><strong>When user declares..</strong></td>
+<td><strong>Undeclaration of..</strong></td>
+</tr>
+<tr class="even">
+<td><code class="sourceCode cpp">T(*)</code></td>
+<td><code class="sourceCode cpp">T()</code></td>
+</tr>
+<tr class="odd">
+<td><code class="sourceCode cpp">*(T&amp;&amp;)</code></td>
+<td><code class="sourceCode cpp">*(<span class="at">const</span> T&amp;)</code></td>
+</tr>
+<tr class="even">
+<td><code class="sourceCode cpp">*(<span class="at">const</span> T&amp;)</code>/<code class="sourceCode cpp">*(T&amp;&amp;)</code>/<code class="sourceCode cpp">~T()</code></td>
+<td><code class="sourceCode cpp">*(T&amp;&amp;)</code></td>
+</tr>
+</tbody>
+</table>
+<aside class="notes">
+<p>First: the undeclaration rules table:</p>
+<p>…</p>
+</aside>
+</section>
+<section id="guidelines" class="slide level2">
+<h2>Guidelines</h2>
+<ul>
+<li class="fragment"><strong>General rules</strong>:
+<ul>
+<li class="fragment">Rule of zero (if possible),</li>
+<li class="fragment">Custom rules for containers/resources/immobiles,</li>
+<li class="fragment">Or: rule of all or zero.</li>
+</ul></li>
+<li class="fragment">Use the <strong>member initialization list</strong>,</li>
+<li class="fragment"><strong>Don’t throw from destructors</strong>,</li>
+<li class="fragment">Use the <strong>copy-and-swap idiom</strong> for copy/move ops.</li>
+</ul>
+<aside class="notes">
+<p>…</p>
+</aside>
+</section></section>
+<section id="end" class="title-slide slide level1">
+<h1>End</h1>
+<p>Thank you <img data-src="images/em-grinning.svg" style="width:3.0%" /></p>
+<p> </p>
+<p><img data-src="images/em-left_speech_bubble.svg" style="width:8.0%" /> <img data-src="images/em-question.svg" style="width:7.0%" /></p>
+<aside class="notes">
+<p>Thank you!</p>
+<p>Are there any questions?</p>
+<p><img data-src="images/em-link.svg" style="width:3.0%" /> <a href="https://github.com/krisvanrens/">github.com/krisvanrens</a></p>
+</aside>
+</section>
+
+<section>
+<section id="tooling-best-practices" class="title-slide slide level1">
+<h1>Tooling <br/><span style="color:crimson"><strong>best practices</strong></span></h1>
+
+</section>
+<section id="smfs-in-design-patterns" class="slide level2">
+<h2>SMFs in design patterns</h2>
+<ul>
+<li class="fragment">Singleton</li>
+<li class="fragment">Monostate</li>
+</ul>
+<div class="fragment">
+<p>Please don’t use them if you can <img data-src="images/em-point_up.svg" style="width:4.0%" /></p>
+<aside class="notes">
+<p>…</p>
+</aside>
+</div>
+</section>
+<section id="raii" class="slide level2">
+<h2>RAII</h2>
+<blockquote>
+<p>RAII == Resource Acquisition Is Initialization</p>
+</blockquote>
+<p> </p>
+<p><code class="sourceCode cpp"><span class="bu">std::</span>unique_ptr&lt;&gt;</code>/<code class="sourceCode cpp"><span class="bu">std::</span>shared_ptr&lt;&gt;</code>/<code class="sourceCode cpp"><span class="bu">std::</span>lock_guard&lt;&gt;</code>/…</p>
+<aside class="notes">
+<p>…</p>
+</aside>
+</section>
+<section id="raii-1" class="slide level2">
+<h2>RAII</h2>
+<div class="sourceCode" id="cb58"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb58-1"><a href="#cb58-1"></a><span class="dt">void</span> thread_process() {</span>
+<span id="cb58-2"><a href="#cb58-2"></a>  <span class="at">static</span> <span class="bu">std::</span>mutex mutex;</span>
+<span id="cb58-3"><a href="#cb58-3"></a></span>
+<span id="cb58-4"><a href="#cb58-4"></a>  <span class="bu">std::</span>lock_guard&lt;<span class="bu">std::</span>mutex&gt; lock(mutex);</span>
+<span id="cb58-5"><a href="#cb58-5"></a></span>
+<span id="cb58-6"><a href="#cb58-6"></a>  <span class="co">// Do dangerous things that may throw an exception..</span></span>
+<span id="cb58-7"><a href="#cb58-7"></a>}</span></code></pre></div>
+<p>Object <code class="sourceCode cpp">lock</code> will:</p>
+<ul>
+<li class="fragment"><code class="sourceCode cpp">lock()</code> the mutex upon construction,</li>
+<li class="fragment"><code class="sourceCode cpp">unlock()</code> the mutex upon destruction.</li>
+</ul>
+<aside class="notes">
+<p>…</p>
+</aside>
+</section>
+<section id="uncopyable-type" class="slide level2">
+<h2>Uncopyable type</h2>
+<div class="sourceCode" id="cb59"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb59-1"><a href="#cb59-1"></a><span class="kw">class</span> Uncopyable {</span>
+<span id="cb59-2"><a href="#cb59-2"></a><span class="kw">protected</span>:</span>
+<span id="cb59-3"><a href="#cb59-3"></a>  Uncopyable() = <span class="cf">default</span>;</span>
+<span id="cb59-4"><a href="#cb59-4"></a>  ~Uncopyable() = <span class="cf">default</span>;</span>
+<span id="cb59-5"><a href="#cb59-5"></a></span>
+<span id="cb59-6"><a href="#cb59-6"></a><span class="kw">public</span>:</span>
+<span id="cb59-7"><a href="#cb59-7"></a>  Uncopyable(<span class="at">const</span> Uncopyable&amp;) = <span class="kw">delete</span>;</span>
+<span id="cb59-8"><a href="#cb59-8"></a>  Uncopyable&amp; <span class="kw">operator</span>=(<span class="at">const</span> Uncopyable&amp;) = <span class="kw">delete</span>;</span>
+<span id="cb59-9"><a href="#cb59-9"></a></span>
+<span id="cb59-10"><a href="#cb59-10"></a>  Uncopyable(Uncopyable&amp;&amp;) = <span class="cf">default</span>;</span>
+<span id="cb59-11"><a href="#cb59-11"></a>  Uncopyable&amp; <span class="kw">operator</span>=(Uncopyable&amp;&amp;) = <span class="cf">default</span>;</span>
+<span id="cb59-12"><a href="#cb59-12"></a>};</span></code></pre></div>
+<aside class="notes">
+<p>The first pattern we’re going to look at is the uncopyable base class.</p>
+<p>By making this class a base class to your type class, you eliminate the possibility for it to be copied. This can be nice, because you don’t have to deal with these mechanics yourself in your derived class. In fact, there is a base class type in the boost library called ‘noncopyable’ that is like this.</p>
+<p>The constructor and destructor are declared in the protected section to make sure this class can only be used as a base class.</p>
+<p>For an implementation in pre-C++11, we would need to declare the copy operations in the private section of the class.</p>
+<p>Let’s look at an example usage.</p>
+</aside>
+</section>
+<section id="uncopyable-type-1" class="slide level2">
+<h2>Uncopyable type</h2>
+<div class="sourceCode" id="cb60"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb60-1"><a href="#cb60-1"></a><span class="kw">class</span> Uncopyable { <span class="co">/* ... */</span> };</span>
+<span id="cb60-2"><a href="#cb60-2"></a></span>
+<span id="cb60-3"><a href="#cb60-3"></a><span class="kw">class</span> X : <span class="kw">private</span> Uncopyable {};</span>
+<span id="cb60-4"><a href="#cb60-4"></a></span>
+<span id="cb60-5"><a href="#cb60-5"></a><span class="dt">int</span> main() {</span>
+<span id="cb60-6"><a href="#cb60-6"></a>  X x;</span>
+<span id="cb60-7"><a href="#cb60-7"></a><span class="co">//X y{x};            // Will fail to compile.</span></span>
+<span id="cb60-8"><a href="#cb60-8"></a>  X z{<span class="bu">std::</span>move(x)}; <span class="co">// Will move-construct.</span></span>
+<span id="cb60-9"><a href="#cb60-9"></a>}</span></code></pre></div>
+<aside class="notes">
+<p>Here we make class X uncopyable by simply privately deriving from the uncopyable class. The second line in the main function where attempt is made to copy an instance of x will fail to compiler.</p>
+<p>The third line will work fine. It would not exist in pre-C++11 world, making it possible to only construct/destruct a type like this for this version of the language.</p>
+<p>Can we do the same movability?</p>
+</aside>
+</section>
+<section id="unmovable-type" class="slide level2">
+<h2>Unmovable type</h2>
+<div class="sourceCode" id="cb61"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb61-1"><a href="#cb61-1"></a><span class="kw">class</span> Unmovable {</span>
+<span id="cb61-2"><a href="#cb61-2"></a><span class="kw">protected</span>:</span>
+<span id="cb61-3"><a href="#cb61-3"></a>  Unmovable() = <span class="cf">default</span>;</span>
+<span id="cb61-4"><a href="#cb61-4"></a>  ~Unmovable() = <span class="cf">default</span>;</span>
+<span id="cb61-5"><a href="#cb61-5"></a></span>
+<span id="cb61-6"><a href="#cb61-6"></a><span class="kw">public</span>:</span>
+<span id="cb61-7"><a href="#cb61-7"></a>  Unmovable(<span class="at">const</span> Unmovable&amp;) = <span class="cf">default</span>;</span>
+<span id="cb61-8"><a href="#cb61-8"></a>  Unmovable&amp; <span class="kw">operator</span>=(<span class="at">const</span> Unmovable&amp;) = <span class="cf">default</span>;</span>
+<span id="cb61-9"><a href="#cb61-9"></a></span>
+<span id="cb61-10"><a href="#cb61-10"></a>  Unmovable(Unmovable&amp;&amp;) = <span class="kw">delete</span>;</span>
+<span id="cb61-11"><a href="#cb61-11"></a>  Unmovable&amp; <span class="kw">operator</span>=(Unmovable&amp;&amp;) = <span class="kw">delete</span>;</span>
+<span id="cb61-12"><a href="#cb61-12"></a>};</span></code></pre></div>
+<aside class="notes">
+<p>Yes, of course, and it looks like this. Very similar to the uncopyable class, but now with the move operations deleted and the copy operations defaulted.</p>
+<p>Such a class would make no sense for pre-C++11, as there is no notion of move semantics in this version of the language.</p>
+<p>Let’s look at an example of this base class.</p>
+</aside>
+</section>
+<section id="unmovable-type-1" class="slide level2">
+<h2>Unmovable type</h2>
+<div class="sourceCode" id="cb62"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb62-1"><a href="#cb62-1"></a><span class="kw">class</span> Unmovable { <span class="co">/* ... */</span> };</span>
+<span id="cb62-2"><a href="#cb62-2"></a></span>
+<span id="cb62-3"><a href="#cb62-3"></a><span class="kw">class</span> X : <span class="kw">private</span> Unmovable {};</span>
+<span id="cb62-4"><a href="#cb62-4"></a></span>
+<span id="cb62-5"><a href="#cb62-5"></a><span class="dt">int</span> main() {</span>
+<span id="cb62-6"><a href="#cb62-6"></a>  X x;</span>
+<span id="cb62-7"><a href="#cb62-7"></a>  X y{x};            <span class="co">// Will copy-construct.</span></span>
+<span id="cb62-8"><a href="#cb62-8"></a>  X z{<span class="bu">std::</span>move(x)}; <span class="co">// Will copy-construct.</span></span>
+<span id="cb62-9"><a href="#cb62-9"></a>}</span></code></pre></div>
+<aside class="notes">
+<p>Again, we simply derive from the base class privately, that’s all. Now, X will only be copyable.</p>
+<p>Perhaps it might come as a surprise that the last line is possible at all. If you find this surprising, you might want to revisit your knowledge on move semantics.</p>
+</aside>
+</section>
+<section id="using-uncopyableunmovable" class="slide level2">
+<h2>Using <code>Uncopyable</code>/<code>Unmovable</code></h2>
+<blockquote>
+<p>Use <code>Uncopyable</code>/<code>Unmovable</code> as a base class for more readable (earlier) compiler errors for pre-C++11</p>
+</blockquote>
+<div class="fragment">
+<blockquote>
+<p>Use base class or direct deletion of SMFs in C++11</p>
+</blockquote>
+<aside class="notes">
+<p>Class type uncopyability and unmovability can be used as a base class instead of directly in the derived class for better compiler errors in older compilers. When implementing the uncopyability or unmovability in a type directly, would generate an error for this class type directly, while when using the base class, an error will be generated for the base class type, making it immediately clear what is going on.</p>
+<p>Actually boost has the class <code>noncopyable</code> that implements just this. There is no <code>nonmovable</code> class as far as I was able to tell though.</p>
+<p>If you’re lucky enough to be able to write your code in C++11 or newer, I would suggest to either use the base class, or deleting of special member functions directly in the designated type. Take into account the rules you will see later in this session, and you’ll be fine – it’s not all that complicated. It is mostly a matter of consistency of your codebase and style/taste.</p>
+</aside>
+</div>
+</section>
+<section id="creating-an-uncopyable-type" class="slide level2">
+<h2>Creating an uncopyable type</h2>
+<p>Pre-C++11: <strong>Private declarations</strong></p>
+<div class="sourceCode" id="cb63"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb63-1"><a href="#cb63-1"></a><span class="kw">class</span> T {</span>
+<span id="cb63-2"><a href="#cb63-2"></a><span class="kw">private</span>:</span>
+<span id="cb63-3"><a href="#cb63-3"></a>  T(<span class="at">const</span> T&amp;);</span>
+<span id="cb63-4"><a href="#cb63-4"></a>  T&amp; <span class="kw">operator</span>=(<span class="at">const</span> T&amp;);</span>
+<span id="cb63-5"><a href="#cb63-5"></a>};</span></code></pre></div>
+<p>Compiler error when copying:</p>
+<pre><code>&lt;source&gt;:29:8: error: &#39;T::T(const T&amp;)&#39; is private within this context
+   29 |   T y{x};
+      |        ^</code></pre>
+<aside class="notes">
+<p>Let’s consider we want our type to uncopyable. How can we force this behaviour?</p>
+<p>It’s quite simple, we make the copy operations private, that’s it.</p>
+<p>If you still try to do so in your code, the compiler error is shown below.</p>
+<p>What about C++11 and later?</p>
+</aside>
+</section>
+<section id="creating-a-uncopyable-type" class="slide level2">
+<h2>Creating a uncopyable type</h2>
+<p>C++11 and later: <strong>Explicitly removed definitions</strong></p>
+<div class="sourceCode" id="cb65"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb65-1"><a href="#cb65-1"></a><span class="kw">class</span> T {</span>
+<span id="cb65-2"><a href="#cb65-2"></a><span class="kw">public</span>:</span>
+<span id="cb65-3"><a href="#cb65-3"></a>  T(<span class="at">const</span> T&amp;) = <span class="kw">delete</span>;</span>
+<span id="cb65-4"><a href="#cb65-4"></a>  T&amp; <span class="kw">operator</span>=(<span class="at">const</span> T&amp;) = <span class="kw">delete</span>;</span>
+<span id="cb65-5"><a href="#cb65-5"></a>};</span></code></pre></div>
+<p>Compiler error when copying:</p>
+<pre><code>source&gt;:29:8: error: use of deleted function &#39;T::T(const T&amp;)&#39;
+   29 |   T y{x};
+      |        ^</code></pre>
+<aside class="notes">
+<p>For C++11 and later, we use the is delete syntax. Is delete is the opposite of is default, which request the compiler to implement a default implementation of an SMF. Now it does not matter in what section of the class type the definition is placed, be it private, protected or public.</p>
+<p>I think the compiler error for this example is more clear and explicit than the previous one.</p>
+<p>On a sidenote: one might wonder why we want to make an object uncopyable? If your object manages a resource such as hardware for example, it might be impossible to do this from two places at the same time. In that case you will want to prevent a user or your colleague to accidentally create a copy of the object managing the resource.</p>
+</aside>
+</section>
+<section id="hiding-smfs" class="slide level2">
+<h2>Hiding SMFs</h2>
+<blockquote>
+<p>Pre-C++11: <strong>private declarations</strong>.</p>
+</blockquote>
+<blockquote>
+<p>C++11 and later: <strong>explicitly deleted definitions</strong>.</p>
+</blockquote>
+<aside class="notes">
+<p>To summarize:</p>
+<p>…</p>
+</aside>
+</section>
+<section id="should-you-unit-test-smfs" class="slide level2">
+<h2>Should you unit-test SMFs?</h2>
+<p>I think you should.</p>
+<div class="fragment">
+<div class="sourceCode" id="cb67"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb67-1"><a href="#cb67-1"></a>X x;               <span class="co">// Test default construction.</span></span>
+<span id="cb67-2"><a href="#cb67-2"></a>X x{...};          <span class="co">// Test alternative construction.</span></span>
+<span id="cb67-3"><a href="#cb67-3"></a>X y{x};            <span class="co">// Test copy construction.</span></span>
+<span id="cb67-4"><a href="#cb67-4"></a>X y{<span class="bu">std::</span>move(x)}; <span class="co">// Test move construction.</span></span>
+<span id="cb67-5"><a href="#cb67-5"></a>y = x;             <span class="co">// Test copy assignment.</span></span>
+<span id="cb67-6"><a href="#cb67-6"></a>y = <span class="bu">std::</span>move(x);  <span class="co">// Test move assignment.</span></span></code></pre></div>
+</div>
+<div class="fragment">
+<p>Enable compiler sanitizers!</p>
+<aside class="notes">
+<p>Question: should you test special member functions? People make unit tests, integration tests, end-to-end tests. Do you make unit tests for special member functions? I think you should.</p>
+<p>Depending on applicability: I’m always adding the following tests to the unit test suite.</p>
+<p>…</p>
+<p>You might wonder; why? They make for silly tests! And moreover; most of the special member functions are tested implicitly!</p>
+<p>Yes that’s true, but are they all? Especially if you define some of them yourself this is important to be tested. And it makes even much more sense if you enable compiler sanitizers. If somethings wrong in your SMF implementation, you’ll find it right there in a neat and simple unit test, dedicated for this purpose.</p>
+</aside>
+</div>
+</section>
+<section id="static-analyzers-and-smfs" class="slide level2">
+<h2>Static analyzers and SMFs</h2>
+<p>Some static analyzers I’ve worked with:</p>
+<ul>
+<li class="fragment">Cppcheck,</li>
+<li class="fragment">Clang-tidy,</li>
+<li class="fragment">Clang-analyzer,</li>
+<li class="fragment">PVS Studio.</li>
+</ul>
+<aside class="notes">
+<p>Here’s some static analyzers I have worked with. All of them have support for checking errors in usage and implementation of special member functions. Also, all of them can be employed in your CI pipeline or reviewing work flow.</p>
+<p>Accompanying this presentation is a list of resources I’ve used for research, and in there is also a list of these static analyszers and a list of errors regarding SMFs they’re able to find. This list of resources will be provided together with a PDF of this talk.</p>
+</aside>
+</section></section>
+<section>
+<section id="extra-slides" class="title-slide slide level1">
+<h1>Extra slides</h1>
+
+</section>
+<section id="noisy-type" class="slide level2">
+<h2>Noisy type</h2>
+<div class="sourceCode" id="cb68"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb68-1"><a href="#cb68-1"></a><span class="pp">#include </span><span class="im">&lt;cstdio&gt;</span></span>
+<span id="cb68-2"><a href="#cb68-2"></a></span>
+<span id="cb68-3"><a href="#cb68-3"></a><span class="pp">#define LOG </span>puts(<span class="ot">__PRETTY_FUNCTION__</span>)</span>
+<span id="cb68-4"><a href="#cb68-4"></a></span>
+<span id="cb68-5"><a href="#cb68-5"></a><span class="kw">struct</span> T {</span>
+<span id="cb68-6"><a href="#cb68-6"></a>  T()                     { LOG; }</span>
+<span id="cb68-7"><a href="#cb68-7"></a>  ~T()                    { LOG; }</span>
+<span id="cb68-8"><a href="#cb68-8"></a>  T(<span class="at">const</span> T &amp;)            { LOG; }</span>
+<span id="cb68-9"><a href="#cb68-9"></a>  T &amp;<span class="kw">operator</span>=(<span class="at">const</span> T &amp;) { LOG; <span class="cf">return</span> *<span class="kw">this</span>; }</span>
+<span id="cb68-10"><a href="#cb68-10"></a>  T(T &amp;&amp;)                 { LOG; }</span>
+<span id="cb68-11"><a href="#cb68-11"></a>  T &amp;<span class="kw">operator</span>=(T &amp;&amp;)      { LOG; <span class="cf">return</span> *<span class="kw">this</span>; }</span>
+<span id="cb68-12"><a href="#cb68-12"></a>};</span></code></pre></div>
+</section>
+<section id="the-explicit-specifier" class="slide level2">
+<h2>The <code class="sourceCode cpp"><span class="kw">explicit</span></code> specifier</h2>
+<blockquote>
+<p>Specifies that a constructor or conversion function (since C++11) or deduction guide (since C++17) is explicit, that is, it cannot be used for implicit conversions and copy-initialization.</p>
+</blockquote>
+<div class="fragment">
+<blockquote>
+<p>Any constructor that is not declared with the <code class="sourceCode cpp"><span class="kw">explicit</span></code> specifier, is a <strong>converting constructor</strong>.</p>
+</blockquote>
+<aside class="notes">
+<p>…</p>
+</aside>
+</div>
+</section>
+<section id="empty-base-optimization" class="slide level2">
+<h2>Empty base optimization</h2>
+<div class="sourceCode" id="cb69"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb69-1"><a href="#cb69-1"></a><span class="pp">#include </span><span class="im">&lt;cassert&gt;</span></span>
+<span id="cb69-2"><a href="#cb69-2"></a></span>
+<span id="cb69-3"><a href="#cb69-3"></a><span class="kw">struct</span> Base {};</span>
+<span id="cb69-4"><a href="#cb69-4"></a> </span>
+<span id="cb69-5"><a href="#cb69-5"></a><span class="kw">struct</span> Derived : Base {</span>
+<span id="cb69-6"><a href="#cb69-6"></a>  <span class="dt">int</span> <span class="va">value_</span>;</span>
+<span id="cb69-7"><a href="#cb69-7"></a>};</span>
+<span id="cb69-8"><a href="#cb69-8"></a> </span>
+<span id="cb69-9"><a href="#cb69-9"></a><span class="dt">int</span> main() {</span>
+<span id="cb69-10"><a href="#cb69-10"></a>  <span class="co">// Every object is guaranteed to have a unique address.</span></span>
+<span id="cb69-11"><a href="#cb69-11"></a>  <span class="ot">assert</span>(<span class="kw">sizeof</span>(Base) &gt;= <span class="dv">1</span>);</span>
+<span id="cb69-12"><a href="#cb69-12"></a></span>
+<span id="cb69-13"><a href="#cb69-13"></a>  <span class="ot">assert</span>(<span class="kw">sizeof</span>(Derived) == <span class="kw">sizeof</span>(<span class="dt">int</span>)); <span class="co">// EBO.</span></span>
+<span id="cb69-14"><a href="#cb69-14"></a>}</span></code></pre></div>
+<aside class="notes">
+<p>What is empty base class optimization?</p>
+<p>Empty base class optimization is a compiler optimization that makes sure a base class without member variables can be counted to have size zero, without losing the guarantee that each object has a unique address.</p>
+</aside>
+</section>
+<section id="why-do-we-make-deleteed-functions-public" class="slide level2">
+<h2>Why do we make <code class="sourceCode cpp"><span class="kw">delete</span></code>’ed functions public?</h2>
+<ul>
+<li class="fragment">Because accessibility is checked before definition.</li>
+<li class="fragment">The wrong error can be triggered in the compilation.</li>
+</ul>
+</section>
+<section id="example-deleted-and-private" class="slide level2">
+<h2>Example: <code class="sourceCode cpp"><span class="kw">delete</span></code>d and <code class="sourceCode cpp"><span class="kw">private</span></code></h2>
+<div class="columns">
+<div class="column" style="width:25%;">
+<div class="sourceCode" id="cb70"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb70-1"><a href="#cb70-1"></a><span class="kw">class</span> X {</span>
+<span id="cb70-2"><a href="#cb70-2"></a><span class="kw">private</span>:</span>
+<span id="cb70-3"><a href="#cb70-3"></a>  X() = <span class="kw">delete</span>;</span>
+<span id="cb70-4"><a href="#cb70-4"></a>};</span>
+<span id="cb70-5"><a href="#cb70-5"></a></span>
+<span id="cb70-6"><a href="#cb70-6"></a><span class="dt">int</span> main() {</span>
+<span id="cb70-7"><a href="#cb70-7"></a>  X x;</span>
+<span id="cb70-8"><a href="#cb70-8"></a>}</span></code></pre></div>
+</div><div class="column" style="width:65%;">
+<p>GCC-5.5 output:</p>
+<pre><code>&lt;source&gt;: In function &#39;int main()&#39;:
+&lt;source&gt;:3:3: error: &#39;X::X()&#39; is private
+   X() = delete;
+   ^
+&lt;source&gt;:7:5: error: within this context
+   X x;
+     ^</code></pre>
+</div>
+</div>
+</section>
+<section id="example-deleted-and-public" class="slide level2">
+<h2>Example: <code>delete</code>d and <code>public</code></h2>
+<div class="columns">
+<div class="column" style="width:25%;">
+<div class="sourceCode" id="cb72"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb72-1"><a href="#cb72-1"></a><span class="kw">class</span> X {</span>
+<span id="cb72-2"><a href="#cb72-2"></a><span class="kw">public</span>:</span>
+<span id="cb72-3"><a href="#cb72-3"></a>  X() = <span class="kw">delete</span>;</span>
+<span id="cb72-4"><a href="#cb72-4"></a>};</span>
+<span id="cb72-5"><a href="#cb72-5"></a></span>
+<span id="cb72-6"><a href="#cb72-6"></a><span class="dt">int</span> main() {</span>
+<span id="cb72-7"><a href="#cb72-7"></a>  X x;</span>
+<span id="cb72-8"><a href="#cb72-8"></a>}</span></code></pre></div>
+</div><div class="column" style="width:65%;">
+<p>GCC-5.5 output:</p>
+<pre><code>source&gt;: In function &#39;int main()&#39;:
+&lt;source&gt;:7:5: error: use of deleted function &#39;X::X()&#39;
+   X x;
+     ^
+&lt;source&gt;:3:3: note: declared here
+   X() = delete;
+   ^</code></pre>
+</div>
+</div>
+</section>
+<section id="destructors-and-exceptions-1" class="slide level2">
+<h2>Destructors and exceptions</h2>
+<blockquote>
+<p>Don’t throw exceptions from destructors!</p>
+</blockquote>
+<ul>
+<li class="fragment"><code>terminate()</code> is called when another exception is already active,</li>
+<li class="fragment">Since C++11, destructors are <code class="sourceCode cpp"><span class="kw">noexcept</span></code> by default,</li>
+<li class="fragment"><code>terminate()</code> is called <em>always</em> (C++11 and onwards),</li>
+<li class="fragment">Also, a <code class="sourceCode cpp"><span class="cf">throw</span></code> would break completion of the destructor.</li>
+</ul>
+</section>
+<section id="case-study" class="slide level2">
+<h2>Case study</h2>
+<h3 id="destructors-and-exceptions-2">Destructors and exceptions</h3>
+<p>Designing a RAII type with strong exception guarantee</p>
+</section>
+<section id="stduncaught_exceptions" class="slide level2">
+<h2><code>std::uncaught_exceptions</code>?</h2>
+<div class="columns">
+<div class="column" style="width:65%;">
+<div class="sourceCode" id="cb74"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb74-1"><a href="#cb74-1"></a><span class="kw">struct</span> Transaction {</span>
+<span id="cb74-2"><a href="#cb74-2"></a>  <span class="co">// ...</span></span>
+<span id="cb74-3"><a href="#cb74-3"></a>};</span></code></pre></div>
+<p>How to safely roll back a transaction?</p>
+</div><div class="column" style="width:35%;">
+<div class="sourceCode" id="cb75"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb75-1"><a href="#cb75-1"></a><span class="kw">struct</span> X {</span>
+<span id="cb75-2"><a href="#cb75-2"></a>  ~X() {</span>
+<span id="cb75-3"><a href="#cb75-3"></a>    <span class="cf">try</span> {</span>
+<span id="cb75-4"><a href="#cb75-4"></a>      Transaction t;</span>
+<span id="cb75-5"><a href="#cb75-5"></a>      <span class="co">// ...</span></span>
+<span id="cb75-6"><a href="#cb75-6"></a>    } <span class="cf">catch</span> (...) {}</span>
+<span id="cb75-7"><a href="#cb75-7"></a>  }</span>
+<span id="cb75-8"><a href="#cb75-8"></a>};</span>
+<span id="cb75-9"><a href="#cb75-9"></a></span>
+<span id="cb75-10"><a href="#cb75-10"></a><span class="dt">int</span> main() {</span>
+<span id="cb75-11"><a href="#cb75-11"></a>  <span class="cf">try</span> {</span>
+<span id="cb75-12"><a href="#cb75-12"></a>    X x;</span>
+<span id="cb75-13"><a href="#cb75-13"></a>  } <span class="cf">catch</span> (...) {}</span>
+<span id="cb75-14"><a href="#cb75-14"></a>}</span></code></pre></div>
+</div>
+</div>
+<aside class="notes">
+<p>How can we safely roll back a transaction if an exception occurs? We don’t want our database to become tainted with faulty data. This requirement for Transaction is called a strong exception guarantee; the state of the database will remain unchanged when an operation throws an exception.</p>
+<p>In order to build this, we would have to check some condition in the destructor of the transaction.</p>
+</aside>
+</section>
+<section id="stduncaught_exceptions-1" class="slide level2">
+<h2><code class="sourceCode cpp"><span class="bu">std::</span>uncaught_exceptions</code>?</h2>
+<div class="columns">
+<div class="column" style="width:65%;">
+<div class="sourceCode" id="cb76"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb76-1"><a href="#cb76-1"></a><span class="kw">struct</span> Transaction {</span>
+<span id="cb76-2"><a href="#cb76-2"></a>  ~Transaction() {</span>
+<span id="cb76-3"><a href="#cb76-3"></a>    <span class="cf">if</span> (<span class="co">/* ...uuhhh... */</span>) {</span>
+<span id="cb76-4"><a href="#cb76-4"></a>      <span class="co">// Rollback transaction!</span></span>
+<span id="cb76-5"><a href="#cb76-5"></a>    } <span class="cf">else</span> {</span>
+<span id="cb76-6"><a href="#cb76-6"></a>      <span class="co">// No need to rollback -- all good.</span></span>
+<span id="cb76-7"><a href="#cb76-7"></a>    }</span>
+<span id="cb76-8"><a href="#cb76-8"></a>  }</span>
+<span id="cb76-9"><a href="#cb76-9"></a>};</span></code></pre></div>
+</div><div class="column" style="width:35%;">
+<div class="sourceCode" id="cb77"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb77-1"><a href="#cb77-1"></a><span class="kw">struct</span> X {</span>
+<span id="cb77-2"><a href="#cb77-2"></a>  ~X() {</span>
+<span id="cb77-3"><a href="#cb77-3"></a>    <span class="cf">try</span> {</span>
+<span id="cb77-4"><a href="#cb77-4"></a>      Transaction t;</span>
+<span id="cb77-5"><a href="#cb77-5"></a>      <span class="co">// ...</span></span>
+<span id="cb77-6"><a href="#cb77-6"></a>    } <span class="cf">catch</span> (...) {}</span>
+<span id="cb77-7"><a href="#cb77-7"></a>  }</span>
+<span id="cb77-8"><a href="#cb77-8"></a>};</span>
+<span id="cb77-9"><a href="#cb77-9"></a></span>
+<span id="cb77-10"><a href="#cb77-10"></a><span class="dt">int</span> main() {</span>
+<span id="cb77-11"><a href="#cb77-11"></a>  <span class="cf">try</span> {</span>
+<span id="cb77-12"><a href="#cb77-12"></a>    X x;</span>
+<span id="cb77-13"><a href="#cb77-13"></a>  } <span class="cf">catch</span> (...) {}</span>
+<span id="cb77-14"><a href="#cb77-14"></a>}</span></code></pre></div>
+</div>
+</div>
+<aside class="notes">
+<p>But what condition? This is where uncaught exceptions comes in.</p>
+</aside>
+</section>
+<section id="stduncaught_exceptions-2" class="slide level2">
+<h2><code class="sourceCode cpp"><span class="bu">std::</span>uncaught_exceptions</code>?</h2>
+<div class="columns">
+<div class="column" style="width:65%;">
+<div class="sourceCode" id="cb78"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb78-1"><a href="#cb78-1"></a><span class="kw">struct</span> Transaction {</span>
+<span id="cb78-2"><a href="#cb78-2"></a>  Transaction()</span>
+<span id="cb78-3"><a href="#cb78-3"></a>    : num_exceptions{<span class="bu">std::</span>uncaught_exceptions()} {}</span>
+<span id="cb78-4"><a href="#cb78-4"></a></span>
+<span id="cb78-5"><a href="#cb78-5"></a>  ~Transaction() {</span>
+<span id="cb78-6"><a href="#cb78-6"></a>    <span class="cf">if</span> (<span class="bu">std::</span>uncaught_exceptions() != num_exceptions) {</span>
+<span id="cb78-7"><a href="#cb78-7"></a>      puts(<span class="st">&quot;Rollback transaction!&quot;</span>);</span>
+<span id="cb78-8"><a href="#cb78-8"></a>    } <span class="cf">else</span> {</span>
+<span id="cb78-9"><a href="#cb78-9"></a>      puts(<span class="st">&quot;No need to rollback -- all good.&quot;</span>);</span>
+<span id="cb78-10"><a href="#cb78-10"></a>    }</span>
+<span id="cb78-11"><a href="#cb78-11"></a>  }</span>
+<span id="cb78-12"><a href="#cb78-12"></a></span>
+<span id="cb78-13"><a href="#cb78-13"></a>  <span class="dt">int</span> num_exceptions = {};</span>
+<span id="cb78-14"><a href="#cb78-14"></a>};</span></code></pre></div>
+</div><div class="column" style="width:35%;">
+<div class="sourceCode" id="cb79"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb79-1"><a href="#cb79-1"></a><span class="kw">struct</span> X {</span>
+<span id="cb79-2"><a href="#cb79-2"></a>  ~X() {</span>
+<span id="cb79-3"><a href="#cb79-3"></a>    <span class="cf">try</span> {</span>
+<span id="cb79-4"><a href="#cb79-4"></a>      Transaction t;</span>
+<span id="cb79-5"><a href="#cb79-5"></a>      <span class="co">// ...</span></span>
+<span id="cb79-6"><a href="#cb79-6"></a>    } <span class="cf">catch</span> (...) {}</span>
+<span id="cb79-7"><a href="#cb79-7"></a>  }</span>
+<span id="cb79-8"><a href="#cb79-8"></a>};</span>
+<span id="cb79-9"><a href="#cb79-9"></a></span>
+<span id="cb79-10"><a href="#cb79-10"></a><span class="dt">int</span> main() {</span>
+<span id="cb79-11"><a href="#cb79-11"></a>  <span class="cf">try</span> {</span>
+<span id="cb79-12"><a href="#cb79-12"></a>    X x;</span>
+<span id="cb79-13"><a href="#cb79-13"></a>  } <span class="cf">catch</span> (...) {}</span>
+<span id="cb79-14"><a href="#cb79-14"></a>}</span></code></pre></div>
+</div>
+</div>
+<aside class="notes">
+<p>It takes a bit of administration, but by using the check around uncaught_exceptions, we can detect whether an exception occurred that affects the transaction.</p>
+</aside>
+</section>
+<section id="multiple-destructors" class="slide level2">
+<h2>Multiple destructors</h2>
+<p>C++20 adds <strong>prospective destructors</strong> for allowing <em>concepts</em></p>
+<blockquote>
+<p>A type that can be a <strong>trivial type</strong> (depending on the <code class="sourceCode cpp"><span class="kw">requires</span></code> clause) or not, can have multiple destructors on which overload resolution is performed.</p>
+</blockquote>
+<p>(also holds for copy constructors)</p>
+<p><a href="https://eel.is/c++draft/class.dtor">ISO C++ draft</a> § class.dtor</p>
+<aside class="notes">
+<p>…</p>
+</aside>
+</section>
+<section id="are-there-any-other-smfs" class="slide level2">
+<h2>Are there any other SMFs?</h2>
+<p>In C++20 comparison operators can be <code>=</code> <code class="sourceCode cpp"><span class="cf">default</span></code>’ed as well.</p>
+<div class="sourceCode" id="cb80"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb80-1"><a href="#cb80-1"></a><span class="kw">struct</span> X {</span>
+<span id="cb80-2"><a href="#cb80-2"></a>  <span class="dt">bool</span> <span class="kw">operator</span>==() = <span class="cf">default</span>;</span>
+<span id="cb80-3"><a href="#cb80-3"></a>};</span></code></pre></div>
+</section>
+<section id="constexpr-constructors" class="slide level2">
+<h2><code class="sourceCode cpp"><span class="kw">constexpr</span></code> constructors</h2>
+<blockquote>
+<p>The constructors with a <code class="sourceCode cpp"><span class="kw">constexpr</span></code> specifier make their type a <strong>LiteralType</strong>.</p>
+</blockquote>
+</section>
+<section id="pure-virtual-destructor" class="slide level2">
+<h2>Pure <code class="sourceCode cpp"><span class="kw">virtual</span></code> destructor</h2>
+<p>…An abstract base class with a pure <code class="sourceCode cpp"><span class="kw">virtual</span></code> destructor needs an implementation as well…</p>
+</section>
+<section id="initialization-in-c20" class="slide level2">
+<h2>Initialization in C++20</h2>
+<p><img data-src="images/initialization.svg" style="width:60.0%" /></p>
+<p>From: <a href="https://github.com/randomnetcat/cpp_initialization">https://github.com/randomnetcat/cpp_initialization</a></p>
+<aside class="notes">
+<p>I don’t know if you can see it, but here’s a flow diagram of initialization in C++20. Each possible flow path describes a real-world scenario and the corresponding initialization mechanism that is triggered. Which is a lot.</p>
+<p>To keep it simple and straightforward, I’d like to quickly show you some of these.</p>
+</aside>
+</section>
+<section id="forms-of-initialization" class="slide level2">
+<h2>Forms of initialization</h2>
+<div class="sourceCode" id="cb81"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb81-1"><a href="#cb81-1"></a><span class="bu">std::</span>string a;         <span class="co">// Default initialization.</span></span>
+<span id="cb81-2"><a href="#cb81-2"></a><span class="bu">std::</span>string b{};       <span class="co">// Value initialization.</span></span>
+<span id="cb81-3"><a href="#cb81-3"></a><span class="bu">std::</span>string c{<span class="st">&quot;hi!&quot;</span>};  <span class="co">// Direct initialization.</span></span>
+<span id="cb81-4"><a href="#cb81-4"></a><span class="bu">std::</span>string d = <span class="st">&quot;hi!&quot;</span>; <span class="co">// Copy initialization.</span></span></code></pre></div>
+<p>There are more forms.</p>
+<aside class="notes">
+<p>From the examples, each one of these triggers a constructor, but technically is another form of initialization:</p>
+<ol type="1">
+<li>Default initialization (i.e. no initializer is given).</li>
+<li>Value initialization; performs default initialization or zero-initialization.</li>
+<li>Direct initialization; copy elision for prvalues, or corresponding constructor.</li>
+<li>Copy initialization; copy elision for prvalues, or corresponding constructor.</li>
+</ol>
+<p>There are more forms of initialization, such as list initialization, aggregate initialization and reference initialization. But these are out of scope for this session.</p>
+<p>Let’s look at the default constructor first.</p>
+</aside>
+</section>
+<section id="initialization-of-pods" class="slide level2">
+<h2>Initialization of PODs</h2>
+<p>…</p>
+<aside class="notes">
+<p>…</p>
+</aside>
+</section>
+<section id="declaration-rules-step-by-step" class="slide level2">
+<h2>Declaration rules step-by-step</h2>
+</section>
+<section id="section-8" class="slide level2">
+<h2></h2>
+<p><img data-src="images/special-member-functions-table-0.png" style="width:70.0%" /></p>
+<aside class="notes">
+<p>Let’s start out with a table, where on the rows we have the user-declared functions, and on the columns we have the implicitly declared functions by the compiler. As you can see there’s two more rows than there are columns, as we also include the possibility to user-declare nothing or an alternative constructor.</p>
+</aside>
+</section>
+<section id="section-9" class="slide level2">
+<h2></h2>
+<p><img data-src="images/special-member-functions-table-1.png" style="width:70.0%" /></p>
+<aside class="notes">
+<p>We can quickly block out all the diagonally overlapping cells – these are obvious.</p>
+<p>Now, let’s take a look at when we user-declare nothing.</p>
+</aside>
+</section>
+<section id="section-10" class="slide level2">
+<h2></h2>
+<p><img data-src="images/special-member-functions-table-2.png" style="width:70.0%" /></p>
+<aside class="notes">
+<p>In this case, every special member function is defaulted by the compiler. Makes sense.</p>
+<p>What if we declare an alternative constructor that is not the default constructor?</p>
+</aside>
+</section>
+<section id="section-11" class="slide level2">
+<h2></h2>
+<p><img data-src="images/special-member-functions-table-3.png" style="width:70.0%" /></p>
+<aside class="notes">
+<p>In that case, we lose the implicitly declared default constructor. Again this makes perfect sense, because the compiler cannot blindly assume your type can be default constructed, given that you declared a special constructor for it. Right?</p>
+<p>In this table, if we see ‘undeclared’ it means the compiler is not going to implement it. So, in this case, if you want the default constructor, you’ll have to default-declare/implement it yourself.</p>
+<p>Let’s continue. Now, what happens with the other special member functions if we define a default constructor?</p>
+</aside>
+</section>
+<section id="section-12" class="slide level2">
+<h2></h2>
+<p><img data-src="images/special-member-functions-table-4.png" style="width:70.0%" /></p>
+<aside class="notes">
+<p>Nothing, which is not a surprise really. In fact, up until here we haven’t had any real surprises really</p>
+<p>Let’s continue to the next two rows. What happens if we user-declare either one of the two copy operations?</p>
+</aside>
+</section>
+<section id="section-13" class="slide level2">
+<h2></h2>
+<p><img data-src="images/special-member-functions-table-5.png" style="width:70.0%" /></p>
+<aside class="notes">
+<p>Aha, now things are going to be interesting!</p>
+<p>Firstly, when we user-declare a copy constructor, the default constructor is removed. This makes sense, as apparently an object cannot simply be constructed; with which we communicate to the compiler that object construction is a special thing.</p>
+<p>Then something else that is remarkable, is that for both user-declared copy operations, both move operations are undeclared. This is quite easy to understand as well I think, as it makes perfect sense that if an object is not trivial to be copied, it is most likely also not trivial to be moved.</p>
+<p>Let’s continue and further complete the table. What happens if we user-declare either one of the two move operations?</p>
+</aside>
+</section>
+<section id="section-14" class="slide level2">
+<h2></h2>
+<p><img data-src="images/special-member-functions-table-6.png" style="width:70.0%" /></p>
+<aside class="notes">
+<p>Ouch!</p>
+<p>If we define the move constructor, we lose almost every bit of magic except for the compiler-declared destructor. Painful!</p>
+<p>Then again, we lose the default constructor if we user-declar any alternative constructor, as we always do. That makes sense.</p>
+<p>Also, just like we lost the compiler-declared move operations when user-declaring the copy operations, we lose the compiler-declared copy operations when we user-declare the move operations. This makes sense from the compilers’ perspective, that has to be conservative: if moveing is special, copying is special too.</p>
+<p>What is a wee bit puzzling though, is that we lose the compiler-declared move assignment operator if we user-declare the move constructor and vice versa. Why is that?</p>
+<p>Just think about it: what do the copy operations do? They copy their contents into a new or existing object, not affecting their own contents. That’s why the copy operations don’t cause one another to be undeclared when user-declaring either one. For move operations though, this is fundamentally different. What happens if an object is move-constructed or move-assigned? In principle, its contents are donated to the object that is constructed or moved to, this is a destructive operation! And even though this is not necessarily the case, it means the compiler to assume the worst. Right.</p>
+<p>This also means that the move operations are in principle always customized in pairs: both or none.</p>
+<p>Let’s fill in the last row of the table: what happens if we user-declare the destructor?</p>
+</aside>
+</section>
+<section id="section-15" class="slide level2">
+<h2></h2>
+<p><img data-src="images/special-member-functions-table-7.png" style="width:70.0%" /></p>
+<aside class="notes">
+<p>There are two casualties: the move operations. And if you think about it, this makes sense: if destruction/deinitialization of contents is a special thing to do, the compiler cannot automagically implement the move operations because they involve deinitialization of contents as well. Right?</p>
+<p>OK, so now our table is finished, and we have all the spots filled in. Great!</p>
+<p>And even though this is not such a large table, and we managed to reason about eacht cell, it can be challenging to remember the rules here. That’s why I suggest we look at some selected regions and extract basic rules from those.</p>
+</aside>
+</section>
+<section id="declarations-vs.-definitions" class="slide level2">
+<h2>Declarations vs. definitions</h2>
+</section>
+<section id="example-declarations" class="slide level2">
+<h2>Example declarations</h2>
+<div class="columns">
+<div class="column">
+<div class="sourceCode" id="cb82"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true"></a><span class="dt">int</span> i;</span>
+<span id="cb82-2"><a href="#cb82-2" aria-hidden="true"></a></span>
+<span id="cb82-3"><a href="#cb82-3" aria-hidden="true"></a><span class="dt">float</span> array[<span class="dv">2</span>];</span>
+<span id="cb82-4"><a href="#cb82-4" aria-hidden="true"></a></span>
+<span id="cb82-5"><a href="#cb82-5" aria-hidden="true"></a><span class="kw">auto</span>&amp; [x, y] = array;</span>
+<span id="cb82-6"><a href="#cb82-6" aria-hidden="true"></a></span>
+<span id="cb82-7"><a href="#cb82-7" aria-hidden="true"></a><span class="dt">void</span> func();</span>
+<span id="cb82-8"><a href="#cb82-8" aria-hidden="true"></a></span>
+<span id="cb82-9"><a href="#cb82-9" aria-hidden="true"></a><span class="kw">namespace</span> Earth {}</span>
+<span id="cb82-10"><a href="#cb82-10" aria-hidden="true"></a></span>
+<span id="cb82-11"><a href="#cb82-11" aria-hidden="true"></a><span class="kw">using</span> FuncPtr = <span class="bu">std::</span>function&lt;<span class="dt">void</span>()&gt;;</span>
+<span id="cb82-12"><a href="#cb82-12" aria-hidden="true"></a></span>
+<span id="cb82-13"><a href="#cb82-13" aria-hidden="true"></a><span class="kw">static_assert</span>(assertion, <span class="st">&quot;Fail!&quot;</span>);</span></code></pre></div>
+</div><div class="column">
+<div class="sourceCode" id="cb83"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true"></a><span class="kw">enum</span> <span class="kw">class</span> E;</span>
+<span id="cb83-2"><a href="#cb83-2" aria-hidden="true"></a></span>
+<span id="cb83-3"><a href="#cb83-3" aria-hidden="true"></a><span class="kw">union</span> U;</span>
+<span id="cb83-4"><a href="#cb83-4" aria-hidden="true"></a></span>
+<span id="cb83-5"><a href="#cb83-5" aria-hidden="true"></a><span class="kw">struct</span> X;</span>
+<span id="cb83-6"><a href="#cb83-6" aria-hidden="true"></a></span>
+<span id="cb83-7"><a href="#cb83-7" aria-hidden="true"></a><span class="kw">template</span>&lt;<span class="kw">typename</span> T&gt;</span>
+<span id="cb83-8"><a href="#cb83-8" aria-hidden="true"></a><span class="kw">struct</span> Y;</span>
+<span id="cb83-9"><a href="#cb83-9" aria-hidden="true"></a></span>
+<span id="cb83-10"><a href="#cb83-10" aria-hidden="true"></a><span class="kw">template</span> <span class="kw">struct</span> Y&lt;<span class="dt">int</span>&gt;;</span>
+<span id="cb83-11"><a href="#cb83-11" aria-hidden="true"></a></span>
+<span id="cb83-12"><a href="#cb83-12" aria-hidden="true"></a><span class="co">// Also: Explicit template specializations</span></span>
+<span id="cb83-13"><a href="#cb83-13" aria-hidden="true"></a><span class="co">// Also: Linkage specification</span></span>
+<span id="cb83-14"><a href="#cb83-14" aria-hidden="true"></a><span class="co">// Also: Asm declaration</span></span></code></pre></div>
+</div>
+</div>
+</section>
+<section id="example-definitions" class="slide level2">
+<h2>Example definitions</h2>
+<div class="columns">
+<div class="column">
+<div class="sourceCode" id="cb84"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true"></a><span class="dt">int</span> i = <span class="dv">42</span>;</span>
+<span id="cb84-2"><a href="#cb84-2" aria-hidden="true"></a></span>
+<span id="cb84-3"><a href="#cb84-3" aria-hidden="true"></a><span class="dt">float</span> array[<span class="dv">2</span>] = {};</span>
+<span id="cb84-4"><a href="#cb84-4" aria-hidden="true"></a></span>
+<span id="cb84-5"><a href="#cb84-5" aria-hidden="true"></a><span class="dt">void</span> func() {</span>
+<span id="cb84-6"><a href="#cb84-6" aria-hidden="true"></a>  <span class="co">// ...</span></span>
+<span id="cb84-7"><a href="#cb84-7" aria-hidden="true"></a>}</span>
+<span id="cb84-8"><a href="#cb84-8" aria-hidden="true"></a></span>
+<span id="cb84-9"><a href="#cb84-9" aria-hidden="true"></a><span class="kw">struct</span> X {</span>
+<span id="cb84-10"><a href="#cb84-10" aria-hidden="true"></a>  <span class="dt">int</span> <span class="va">value_</span> = <span class="dv">0</span>;</span>
+<span id="cb84-11"><a href="#cb84-11" aria-hidden="true"></a>};</span></code></pre></div>
+</div><div class="column">
+<div class="sourceCode" id="cb85"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true"></a><span class="kw">enum</span> <span class="kw">class</span> E {</span>
+<span id="cb85-2"><a href="#cb85-2" aria-hidden="true"></a>  Zero,</span>
+<span id="cb85-3"><a href="#cb85-3" aria-hidden="true"></a>  One</span>
+<span id="cb85-4"><a href="#cb85-4" aria-hidden="true"></a>};</span>
+<span id="cb85-5"><a href="#cb85-5" aria-hidden="true"></a></span>
+<span id="cb85-6"><a href="#cb85-6" aria-hidden="true"></a><span class="kw">template</span>&lt;<span class="kw">typename</span> T&gt; <span class="co">// A.K.A. &#39;temploid&#39;.</span></span>
+<span id="cb85-7"><a href="#cb85-7" aria-hidden="true"></a><span class="kw">struct</span> Y {</span>
+<span id="cb85-8"><a href="#cb85-8" aria-hidden="true"></a>  <span class="kw">auto</span> size() {</span>
+<span id="cb85-9"><a href="#cb85-9" aria-hidden="true"></a>    <span class="kw">sizeof</span>(T);</span>
+<span id="cb85-10"><a href="#cb85-10" aria-hidden="true"></a>  }</span>
+<span id="cb85-11"><a href="#cb85-11" aria-hidden="true"></a>};</span></code></pre></div>
+</div>
+</div>
+</section></section>
+    </div>
+  </div>
+
+  <script src="reveal.js/js/reveal.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        // Display the page number of the current slide
+        slideNumber: true,
+        // Push each slide change to the browser history
+        history: true,
+        // Transition style
+        transition: 'fade', // none/fade/slide/convex/concave/zoom
+
+        // Optional reveal.js plugins
+        dependencies: [
+          { src: 'reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: 'reveal.js/plugin/zoom-js/zoom.js', async: true },
+          { src: 'reveal.js/plugin/notes/notes.js', async: true }
+        ]
+      });
+    </script>
+    </body>
+</html>
