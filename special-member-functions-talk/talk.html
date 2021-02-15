@@ -81,7 +81,7 @@
     code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
   </style>
   <link rel="stylesheet" href="reveal.js/css/theme/solarized.css" id="theme">
-  <link rel="stylesheet" href="pandoc-overrides.css"/>
+  <link rel="stylesheet" href="css/pandoc-overrides.css"/>
   <!-- Printing and PDF exports -->
   <script>
     var link = document.createElement( 'link' );
@@ -783,18 +783,18 @@ Base::~Base()</code></pre>
 <span id="cb29-11"><a href="#cb29-11"></a>};</span></code></pre></div>
 <aside class="notes">
 <p>Now, we’re not completely done here! Wait a sec! What if we have multiple inheritance or multiple member variables? What’s the order then?</p>
-<p>Also that is fairly logical and simply defined. Multiple inheritance is dealt with in the order of left-to-right. Member variables are initialized in declaration order.</p>
+<p>Also this is fairly simple. Multiple inheritance is dealt with in the order of left-to-right. Member variables are initialized in declaration order.</p>
 <p>Nice and logical.</p>
 </aside>
 </section>
 <section id="smfs-and-inheritance-5" class="slide level2">
 <h2>SMFs and inheritance</h2>
 <p><img data-src="images/inheritance-order.png" style="width:90.0%" /></p>
-<ul>
+<ol type="1">
 <li class="fragment">Base class(es),</li>
 <li class="fragment">Non-<code class="sourceCode cpp"><span class="at">static</span></code> member variable(s),</li>
 <li class="fragment">Derived class.</li>
-</ul>
+</ol>
 <div class="fragment">
 <p>Destruction is order is reverse <img data-src="images/em-arrow_right_hook.svg" style="width:3.0%" /></p>
 <aside class="notes">
@@ -821,22 +821,68 @@ Base::~Base()</code></pre>
 <p><img data-src="images/special-member-functions-table-1.png" style="width:70.0%" /></p>
 <aside class="notes">
 <p>Let’s start out with a table, where on the rows we have the user-declared functions, and on the columns we have the implicitly declared functions by the compiler. As you can see there’s two more rows than there are columns, as we also include the possibility to user-declare nothing or an alternative constructor.</p>
-<p>We can quickly block out all the diagonally overlapping cells – these are obvious.</p>
-<p>Now, let’s take a look at the declaration rules.</p>
+<p>Now, let’s start filling out this table row-by-row and take a look at when we user-declare nothing.</p>
 </aside>
 </section>
 <section id="section-2" class="slide level2">
 <h2></h2>
-<p><img data-src="images/special-member-functions-table-7.png" style="width:70.0%" /></p>
+<p><img data-src="images/special-member-functions-table-2.png" style="width:70.0%" /></p>
 <aside class="notes">
-<p>There’s two kinds of cells: those that say ‘defaulted’, meaning the compiler will provide a default implementation. Then if we see ‘undeclared’ it means the compiler is not going to implement it.</p>
-<p>Take a couple of seconds to absorb this table.</p>
-<p>…</p>
-<p>Now, let’s take a closer look at some remarkable spots in this table. For starters, the destructor is never undeclared – and this makes sense in the light of the essential functionality a destructor brings. Then, another remarkable feat is the sheer amount of casualties when we user-declare the move constructor, nothing but the compiler-declared destructor survives this.</p>
-<p>But even though this is not such a large table, it can be challenging to remember the rules here. That’s why I suggest we look at some selected regions and extract basic rules from those.</p>
+<p>In this case, every special member function is defaulted by the compiler. Makes sense.</p>
+<p>What if we declare an alternative constructor that is not the default constructor?</p>
 </aside>
 </section>
 <section id="section-3" class="slide level2">
+<h2></h2>
+<p><img data-src="images/special-member-functions-table-3.png" style="width:70.0%" /></p>
+<aside class="notes">
+<p>In that case, we lose the implicitly declared default constructor. Again this makes perfect sense, because the compiler cannot blindly assume your type can be default constructed, given that you declared a special constructor for it. Right?</p>
+<p>In this table, if we see ‘undeclared’ it means the compiler is not going to implement it. So, in this case, if you want the default constructor, you’ll have to default-declare/implement it yourself.</p>
+<p>Let’s continue. Now, what happens with the other special member functions if we define a default constructor?</p>
+</aside>
+</section>
+<section id="section-4" class="slide level2">
+<h2></h2>
+<p><img data-src="images/special-member-functions-table-4.png" style="width:70.0%" /></p>
+<aside class="notes">
+<p>Nothing, which is not a surprise really. In fact, up until here we haven’t had any real surprises really</p>
+<p>Let’s continue to the next two rows. What happens if we user-declare either one of the two copy operations?</p>
+</aside>
+</section>
+<section id="section-5" class="slide level2">
+<h2></h2>
+<p><img data-src="images/special-member-functions-table-5.png" style="width:70.0%" /></p>
+<aside class="notes">
+<p>Aha, now things are going to be interesting!</p>
+<p>Firstly, when we user-declare a copy constructor, the default constructor is removed. This makes sense, as apparently an object cannot simply be constructed; with which we communicate to the compiler that object construction is a special thing.</p>
+<p>Then something else that is remarkable, is that for both user-declared copy operations, both move operations are undeclared. This is quite easy to understand as well I think, as it makes perfect sense that if an object is not trivial to be copied, it is most likely also not trivial to be moved.</p>
+<p>Let’s continue and further complete the table. What happens if we user-declare either one of the two move operations?</p>
+</aside>
+</section>
+<section id="section-6" class="slide level2">
+<h2></h2>
+<p><img data-src="images/special-member-functions-table-6.png" style="width:70.0%" /></p>
+<aside class="notes">
+<p>Ouch!</p>
+<p>If we define the move constructor, we lose almost every bit of magic except for the compiler-declared destructor. Painful!</p>
+<p>Then again, we lose the default constructor if we user-declar any alternative constructor, as we always do. That makes sense.</p>
+<p>Also, just like we lost the compiler-declared move operations when user-declaring the copy operations, we lose the compiler-declared copy operations when we user-declare the move operations. This makes sense from the compilers’ perspective, that has to be conservative: if moveing is special, copying is special too.</p>
+<p>What is a wee bit puzzling though, is that we lose the compiler-declared move assignment operator if we user-declare the move constructor and vice versa. Why is that?</p>
+<p>Just think about it: what do the copy operations do? They copy their contents into a new or existing object, not affecting their own contents. That’s why the copy operations don’t cause one another to be undeclared when user-declaring either one. For move operations though, this is fundamentally different. What happens if an object is move-constructed or move-assigned? In principle, its contents are donated to the object that is constructed or moved to, this is a destructive operation! And even though this is not necessarily the case, it means the compiler to assume the worst. Right.</p>
+<p>This also means that the move operations are in principle always customized in pairs: both or none.</p>
+<p>Let’s fill in the last row of the table: what happens if we user-declare the destructor?</p>
+</aside>
+</section>
+<section id="section-7" class="slide level2">
+<h2></h2>
+<p><img data-src="images/special-member-functions-table-7.png" style="width:70.0%" /></p>
+<aside class="notes">
+<p>There are two casualties: the move operations. And if you think about it, this makes sense: if destruction/deinitialization of contents is a special thing to do, the compiler cannot automagically implement the move operations because they involve deinitialization of contents as well. Right?</p>
+<p>OK, so now our table is finished, and we have all the spots filled in. Great!</p>
+<p>And even though this is not such a large table, and we managed to reason about eacht cell, it can be challenging to remember the rules here. That’s why I suggest we look at some selected regions and extract basic rules from those.</p>
+</aside>
+</section>
+<section id="section-8" class="slide level2">
 <h2></h2>
 <p><img data-src="images/special-member-functions-table-7_highlight1.png" style="width:70.0%" /></p>
 <aside class="notes">
@@ -845,7 +891,7 @@ Base::~Base()</code></pre>
 <p>Next section!</p>
 </aside>
 </section>
-<section id="section-4" class="slide level2">
+<section id="section-9" class="slide level2">
 <h2></h2>
 <p><img data-src="images/special-member-functions-table-7_highlight2.png" style="width:70.0%" /></p>
 <aside class="notes">
@@ -853,7 +899,7 @@ Base::~Base()</code></pre>
 <p>Then the second and last section.</p>
 </aside>
 </section>
-<section id="section-5" class="slide level2">
+<section id="section-10" class="slide level2">
 <h2></h2>
 <p><img data-src="images/special-member-functions-table-7_highlight3.png" style="width:70.0%" /></p>
 <aside class="notes">
@@ -950,7 +996,7 @@ Base::~Base()</code></pre>
 <p>What we can do, is use this knowledge to make our table from the previous section more complete.</p>
 </aside>
 </section>
-<section id="section-6" class="slide level2">
+<section id="section-11" class="slide level2">
 <h2></h2>
 <p><img data-src="images/special-member-functions-table-7.png" style="width:70.0%" /></p>
 <aside class="notes">
@@ -958,7 +1004,7 @@ Base::~Base()</code></pre>
 <p>Now if we include the knowledge that for undeclared move operations the copy fallback is available when the copy operations are still there, we arrive at the following table.</p>
 </aside>
 </section>
-<section id="section-7" class="slide level2">
+<section id="section-12" class="slide level2">
 <h2></h2>
 <p><img data-src="images/special-member-functions-table-8.png" style="width:70.0%" /></p>
 <aside class="notes">
@@ -1035,29 +1081,53 @@ Base::~Base()</code></pre>
 <h2>Rule of …X?</h2>
 <div class="columns">
 <div class="column">
-<ul>
-<li class="fragment">Rule of zero,</li>
-<li class="fragment">Rule of zero or all,</li>
-<li class="fragment">Rule of three,</li>
-<li class="fragment">Rule of four and a half,</li>
-</ul>
+<table style="width:72%;">
+<colgroup>
+<col style="width: 72%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td>Rule of zero</td>
+</tr>
+<tr class="even">
+<td>Rule of zero or all</td>
+</tr>
+<tr class="odd">
+<td>Rule of three</td>
+</tr>
+<tr class="even">
+<td>Rule of four and a half</td>
+</tr>
+</tbody>
+</table>
 </div><div class="column">
-<ul>
-<li class="fragment">Rule of five,</li>
-<li class="fragment">Rule of six,</li>
-<li class="fragment">Copy-only,</li>
-<li class="fragment">Move-only.</li>
-</ul>
+<table style="width:39%;">
+<colgroup>
+<col style="width: 38%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td>Rule of five</td>
+</tr>
+<tr class="even">
+<td>Rule of six</td>
+</tr>
+<tr class="odd">
+<td>Copy-only</td>
+</tr>
+<tr class="even">
+<td>Move-only</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
-<div class="fragment">
 <p><img data-src="images/em-exploding_head.svg" style="width:6.0%" /></p>
 <aside class="notes">
 <p>In research for this presentation, I have found many special rules to be used.</p>
 <p>…</p>
 <p>Each of the rules has its advantages and disadvantages, and some are outdated if you use a modern C++ style/toolchain. There are a few of these rules however, that make a lot of sense and should be used.</p>
 </aside>
-</div>
 </section>
 <section id="rule-of-zero" class="slide level2">
 <h2>Rule of zero</h2>
@@ -1091,41 +1161,6 @@ Base::~Base()</code></pre>
 <p>Let’s discuss each of these cases.</p>
 </aside>
 </div>
-</section>
-<section id="the-options-we-have.." class="slide level2">
-<h2>The options we have..</h2>
-<ul>
-<li class="fragment"><strong>Do nothing</strong>, let the compiler figure it out,</li>
-<li class="fragment">Provide a <strong>custom implementation</strong>,</li>
-<li class="fragment">Provide <strong>default implementation</strong><sup>†</sup>,</li>
-<li class="fragment"><strong>‘Hide’</strong> an SMF<sup>†</sup>.</li>
-</ul>
-<div class="fragment">
-<p><sup>†</sup> <em>C++-version-dependent procedure.</em></p>
-<aside class="notes">
-<p>…</p>
-</aside>
-</div>
-</section>
-<section id="the-options-we-have..-1" class="slide level2">
-<h2>The options we have.. <img data-src="images/cpp-classic.png" style="width:8.0%" /></h2>
-<ul>
-<li class="fragment">Default implementation: <code class="sourceCode cpp">T(){}</code></li>
-<li class="fragment">‘Hiding’ an SMF: declaration in <code class="sourceCode cpp"><span class="kw">private</span></code> section</li>
-</ul>
-<aside class="notes">
-<p>…</p>
-</aside>
-</section>
-<section id="the-options-we-have..-2" class="slide level2">
-<h2>The options we have.. <img data-src="images/cpp-modern.png" style="width:8.0%" /></h2>
-<ul>
-<li class="fragment">Default implementation: <code class="sourceCode cpp">T() = <span class="cf">default</span>;</code></li>
-<li class="fragment">‘Hiding’ an SMF: <code class="sourceCode cpp">T() = <span class="kw">delete</span>;</code> in <code class="sourceCode cpp"><span class="kw">public</span></code> section</li>
-</ul>
-<aside class="notes">
-<p>…</p>
-</aside>
 </section>
 <section id="container-classes" class="slide level2">
 <h2>Container classes</h2>
@@ -1178,7 +1213,7 @@ Base::~Base()</code></pre>
 <blockquote>
 <p>As a general one-rule-only policy the rule of zero or all can be followed.</p>
 </blockquote>
-<p>Trigger for ‘all’ is any non-constructor SMF.</p>
+<p>Trigger for ‘all’ is any copy/move operation or <code class="sourceCode cpp">~T()</code></p>
 <aside class="notes">
 <p>…</p>
 <p>Technically, in some of the previous examples, we didn’t have to explicitly mark the some operations as deleted, but as a company-wide rule it makes sense to do so. It explicitly advertises intent without the code reader having to know the declaration rules by heart.</p>
@@ -1209,6 +1244,38 @@ Base::~Base()</code></pre>
 <section id="implementation-guidelines" class="title-slide slide level1">
 <h1>Implementation <span style="color:crimson"><strong>guidelines</strong></span></h1>
 
+</section>
+<section id="what-are-the-options" class="slide level2">
+<h2>What are the options?</h2>
+<ol type="1">
+<li class="fragment">Do nothing,</li>
+<li class="fragment">Provide a custom implementation,</li>
+<li class="fragment">Provide a default implementation,</li>
+<li class="fragment">‘Hide’ an SMF.</li>
+</ol>
+<aside class="notes">
+<p>…</p>
+</aside>
+</section>
+<section id="defaulting-or-hiding-an-smf" class="slide level2">
+<h2>Defaulting or hiding an SMF <img data-src="images/cpp-classic.png" style="width:8.0%" /></h2>
+<ul>
+<li class="fragment">Default implementation: <code class="sourceCode cpp">T(){}</code></li>
+<li class="fragment">‘Hiding’ an SMF: declaration in <code class="sourceCode cpp"><span class="kw">private</span></code> section</li>
+</ul>
+<aside class="notes">
+<p>…</p>
+</aside>
+</section>
+<section id="defaulting-or-hiding-an-smf-1" class="slide level2">
+<h2>Defaulting or hiding an SMF <img data-src="images/cpp-modern.png" style="width:8.0%" /></h2>
+<ul>
+<li class="fragment">Default implementation: <code class="sourceCode cpp">T() = <span class="cf">default</span>;</code></li>
+<li class="fragment">‘Hiding’ an SMF: <code class="sourceCode cpp">T() = <span class="kw">delete</span>;</code> in <code class="sourceCode cpp"><span class="kw">public</span></code> section</li>
+</ul>
+<aside class="notes">
+<p>…</p>
+</aside>
 </section>
 <section id="constructor-guidelines" class="slide level2">
 <h2>Constructor guidelines</h2>
@@ -2208,82 +2275,6 @@ Base::~Base()</code></pre>
 <p>…</p>
 </aside>
 </section>
-<section id="declaration-rules-step-by-step" class="slide level2">
-<h2>Declaration rules step-by-step</h2>
-</section>
-<section id="section-8" class="slide level2">
-<h2></h2>
-<p><img data-src="images/special-member-functions-table-0.png" style="width:70.0%" /></p>
-<aside class="notes">
-<p>Let’s start out with a table, where on the rows we have the user-declared functions, and on the columns we have the implicitly declared functions by the compiler. As you can see there’s two more rows than there are columns, as we also include the possibility to user-declare nothing or an alternative constructor.</p>
-</aside>
-</section>
-<section id="section-9" class="slide level2">
-<h2></h2>
-<p><img data-src="images/special-member-functions-table-1.png" style="width:70.0%" /></p>
-<aside class="notes">
-<p>We can quickly block out all the diagonally overlapping cells – these are obvious.</p>
-<p>Now, let’s take a look at when we user-declare nothing.</p>
-</aside>
-</section>
-<section id="section-10" class="slide level2">
-<h2></h2>
-<p><img data-src="images/special-member-functions-table-2.png" style="width:70.0%" /></p>
-<aside class="notes">
-<p>In this case, every special member function is defaulted by the compiler. Makes sense.</p>
-<p>What if we declare an alternative constructor that is not the default constructor?</p>
-</aside>
-</section>
-<section id="section-11" class="slide level2">
-<h2></h2>
-<p><img data-src="images/special-member-functions-table-3.png" style="width:70.0%" /></p>
-<aside class="notes">
-<p>In that case, we lose the implicitly declared default constructor. Again this makes perfect sense, because the compiler cannot blindly assume your type can be default constructed, given that you declared a special constructor for it. Right?</p>
-<p>In this table, if we see ‘undeclared’ it means the compiler is not going to implement it. So, in this case, if you want the default constructor, you’ll have to default-declare/implement it yourself.</p>
-<p>Let’s continue. Now, what happens with the other special member functions if we define a default constructor?</p>
-</aside>
-</section>
-<section id="section-12" class="slide level2">
-<h2></h2>
-<p><img data-src="images/special-member-functions-table-4.png" style="width:70.0%" /></p>
-<aside class="notes">
-<p>Nothing, which is not a surprise really. In fact, up until here we haven’t had any real surprises really</p>
-<p>Let’s continue to the next two rows. What happens if we user-declare either one of the two copy operations?</p>
-</aside>
-</section>
-<section id="section-13" class="slide level2">
-<h2></h2>
-<p><img data-src="images/special-member-functions-table-5.png" style="width:70.0%" /></p>
-<aside class="notes">
-<p>Aha, now things are going to be interesting!</p>
-<p>Firstly, when we user-declare a copy constructor, the default constructor is removed. This makes sense, as apparently an object cannot simply be constructed; with which we communicate to the compiler that object construction is a special thing.</p>
-<p>Then something else that is remarkable, is that for both user-declared copy operations, both move operations are undeclared. This is quite easy to understand as well I think, as it makes perfect sense that if an object is not trivial to be copied, it is most likely also not trivial to be moved.</p>
-<p>Let’s continue and further complete the table. What happens if we user-declare either one of the two move operations?</p>
-</aside>
-</section>
-<section id="section-14" class="slide level2">
-<h2></h2>
-<p><img data-src="images/special-member-functions-table-6.png" style="width:70.0%" /></p>
-<aside class="notes">
-<p>Ouch!</p>
-<p>If we define the move constructor, we lose almost every bit of magic except for the compiler-declared destructor. Painful!</p>
-<p>Then again, we lose the default constructor if we user-declar any alternative constructor, as we always do. That makes sense.</p>
-<p>Also, just like we lost the compiler-declared move operations when user-declaring the copy operations, we lose the compiler-declared copy operations when we user-declare the move operations. This makes sense from the compilers’ perspective, that has to be conservative: if moveing is special, copying is special too.</p>
-<p>What is a wee bit puzzling though, is that we lose the compiler-declared move assignment operator if we user-declare the move constructor and vice versa. Why is that?</p>
-<p>Just think about it: what do the copy operations do? They copy their contents into a new or existing object, not affecting their own contents. That’s why the copy operations don’t cause one another to be undeclared when user-declaring either one. For move operations though, this is fundamentally different. What happens if an object is move-constructed or move-assigned? In principle, its contents are donated to the object that is constructed or moved to, this is a destructive operation! And even though this is not necessarily the case, it means the compiler to assume the worst. Right.</p>
-<p>This also means that the move operations are in principle always customized in pairs: both or none.</p>
-<p>Let’s fill in the last row of the table: what happens if we user-declare the destructor?</p>
-</aside>
-</section>
-<section id="section-15" class="slide level2">
-<h2></h2>
-<p><img data-src="images/special-member-functions-table-7.png" style="width:70.0%" /></p>
-<aside class="notes">
-<p>There are two casualties: the move operations. And if you think about it, this makes sense: if destruction/deinitialization of contents is a special thing to do, the compiler cannot automagically implement the move operations because they involve deinitialization of contents as well. Right?</p>
-<p>OK, so now our table is finished, and we have all the spots filled in. Great!</p>
-<p>And even though this is not such a large table, and we managed to reason about eacht cell, it can be challenging to remember the rules here. That’s why I suggest we look at some selected regions and extract basic rules from those.</p>
-</aside>
-</section>
 <section id="declarations-vs.-definitions" class="slide level2">
 <h2>Declarations vs. definitions</h2>
 </section>
@@ -2351,6 +2342,32 @@ Base::~Base()</code></pre>
 <span id="cb85-11"><a href="#cb85-11" aria-hidden="true"></a>};</span></code></pre></div>
 </div>
 </div>
+</section>
+<section id="the-options-we-have.." class="slide level2">
+<h2>The options we have..</h2>
+<ul>
+<li class="fragment"><strong>Do nothing</strong>, let the compiler figure it out,</li>
+<li class="fragment">Provide a <strong>custom implementation</strong>,</li>
+<li class="fragment">Provide <strong>default implementation</strong><sup>†</sup>,</li>
+<li class="fragment"><strong>‘Hide’</strong> an SMF<sup>†</sup>.</li>
+</ul>
+<div class="fragment">
+<p><sup>†</sup> <em>C++-version-dependent procedure.</em></p>
+</div>
+</section>
+<section id="the-options-we-have..-1" class="slide level2">
+<h2>The options we have.. <img data-src="images/cpp-classic.png" style="width:8.0%" /></h2>
+<ul>
+<li class="fragment">Default implementation: <code class="sourceCode cpp">T(){}</code></li>
+<li class="fragment">‘Hiding’ an SMF: declaration in <code class="sourceCode cpp"><span class="kw">private</span></code> section</li>
+</ul>
+</section>
+<section id="the-options-we-have..-2" class="slide level2">
+<h2>The options we have.. <img data-src="images/cpp-modern.png" style="width:8.0%" /></h2>
+<ul>
+<li class="fragment">Default implementation: <code class="sourceCode cpp">T() = <span class="cf">default</span>;</code></li>
+<li class="fragment">‘Hiding’ an SMF: <code class="sourceCode cpp">T() = <span class="kw">delete</span>;</code> in <code class="sourceCode cpp"><span class="kw">public</span></code> section</li>
+</ul>
 </section></section>
     </div>
   </div>
