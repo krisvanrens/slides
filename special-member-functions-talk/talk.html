@@ -1802,71 +1802,18 @@ Base::~Base()</code></pre>
 <p>It would not exist in pre-C++11 world, making it possible to only construct/destruct a type like this for this version of the language.</p>
 </aside>
 </section>
-<section id="using-uncopyable" class="slide level2">
-<h2>Using <code>Uncopyable</code></h2>
-<blockquote>
-<p>Use <code>Uncopyable</code> as a base class for more readable (earlier) compiler errors for pre-C++11</p>
-</blockquote>
-<div class="fragment">
-<blockquote>
-<p>Use base class or direct deletion of SMFs in C++11</p>
-</blockquote>
-<aside class="notes">
-<p>Class type uncopyability and unmovability can be used as a base class instead of directly in the derived class for better compiler errors in older compilers. When implementing the uncopyability or unmovability in a type directly, would generate an error for this class type directly, while when using the base class, an error will be generated for the base class type, making it immediately clear what is going on.</p>
-<p>Actually boost has the class <code>noncopyable</code> that implements just this.</p>
-<p>If you’re lucky enough to be able to write your code in C++11 or newer, I would suggest to either use the base class, or deleting of special member functions directly in the designated type. Take into account the rules you will see later in this session, and you’ll be fine – it’s not all that complicated. It is mostly a matter of consistency of your codebase and style/taste.</p>
-</aside>
-</div>
-</section>
-<section id="creating-an-uncopyable-type" class="slide level2">
-<h2>Creating an uncopyable type</h2>
-<p><strong>Private declarations</strong> <img data-src="images/cpp-classic.png" style="width:6.0%" /></p>
-<div class="sourceCode" id="cb60"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb60-1"><a href="#cb60-1"></a><span class="kw">class</span> T {</span>
-<span id="cb60-2"><a href="#cb60-2"></a><span class="kw">private</span>:</span>
-<span id="cb60-3"><a href="#cb60-3"></a>  T(<span class="at">const</span> T&amp;);</span>
-<span id="cb60-4"><a href="#cb60-4"></a>  T&amp; <span class="kw">operator</span>=(<span class="at">const</span> T&amp;);</span>
-<span id="cb60-5"><a href="#cb60-5"></a>};</span></code></pre></div>
-<p>Compiler error when copying:</p>
-<pre><code>&lt;source&gt;:29:8: error: &#39;T::T(const T&amp;)&#39; is private within this context
-   29 |   T y{x};
-      |        ^</code></pre>
-<aside class="notes">
-<p>Let’s consider we want our type to uncopyable. How can we force this behaviour?</p>
-<p>It’s quite simple, we make the copy operations private, that’s it.</p>
-<p>If you still try to do so in your code, the compiler error is shown below.</p>
-<p>What about C++11 and later?</p>
-</aside>
-</section>
-<section id="creating-a-uncopyable-type" class="slide level2">
-<h2>Creating a uncopyable type</h2>
-<p><strong>Explicitly removed definitions</strong> <img data-src="images/cpp-modern.png" style="width:6.0%" /></p>
-<div class="sourceCode" id="cb62"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb62-1"><a href="#cb62-1"></a><span class="kw">class</span> T {</span>
-<span id="cb62-2"><a href="#cb62-2"></a><span class="kw">public</span>:</span>
-<span id="cb62-3"><a href="#cb62-3"></a>  T(<span class="at">const</span> T&amp;) = <span class="kw">delete</span>;</span>
-<span id="cb62-4"><a href="#cb62-4"></a>  T&amp; <span class="kw">operator</span>=(<span class="at">const</span> T&amp;) = <span class="kw">delete</span>;</span>
-<span id="cb62-5"><a href="#cb62-5"></a>};</span></code></pre></div>
-<p>Compiler error when copying:</p>
-<pre><code>source&gt;:29:8: error: use of deleted function &#39;T::T(const T&amp;)&#39;
-   29 |   T y{x};
-      |        ^</code></pre>
-<aside class="notes">
-<p>For C++11 and later, we use the is delete syntax. Is delete is the opposite of is default, which request the compiler to implement a default implementation of an SMF. Now it does not matter in what section of the class type the definition is placed, be it private, protected or public.</p>
-<p>I think the compiler error for this example is more clear and explicit than the previous one.</p>
-<p>On a sidenote: one might wonder why we want to make an object uncopyable? If your object manages a resource such as hardware for example, it might be impossible to do this from two places at the same time. In that case you will want to prevent a user or your colleague to accidentally create a copy of the object managing the resource.</p>
-</aside>
-</section>
 <section id="unit-test-your-smfs" class="slide level2">
 <h2>Unit-test your SMFs!</h2>
 <div class="fragment">
-<div class="sourceCode" id="cb64"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb64-1"><a href="#cb64-1"></a>X x;               <span class="co">// Test default construction.</span></span>
-<span id="cb64-2"><a href="#cb64-2"></a>X x{...};          <span class="co">// Test alternative construction.</span></span>
-<span id="cb64-3"><a href="#cb64-3"></a>X y{x};            <span class="co">// Test copy construction.</span></span>
-<span id="cb64-4"><a href="#cb64-4"></a>X y{<span class="bu">std::</span>move(x)}; <span class="co">// Test move construction.</span></span>
-<span id="cb64-5"><a href="#cb64-5"></a>y = x;             <span class="co">// Test copy assignment.</span></span>
-<span id="cb64-6"><a href="#cb64-6"></a>y = <span class="bu">std::</span>move(x);  <span class="co">// Test move assignment.</span></span></code></pre></div>
+<div class="sourceCode" id="cb60"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb60-1"><a href="#cb60-1"></a>X x;               <span class="co">// Test default construction.</span></span>
+<span id="cb60-2"><a href="#cb60-2"></a>X x{...};          <span class="co">// Test alternative construction.</span></span>
+<span id="cb60-3"><a href="#cb60-3"></a>X y{x};            <span class="co">// Test copy construction.</span></span>
+<span id="cb60-4"><a href="#cb60-4"></a>X y{<span class="bu">std::</span>move(x)}; <span class="co">// Test move construction.</span></span>
+<span id="cb60-5"><a href="#cb60-5"></a>y = x;             <span class="co">// Test copy assignment.</span></span>
+<span id="cb60-6"><a href="#cb60-6"></a>y = <span class="bu">std::</span>move(x);  <span class="co">// Test move assignment.</span></span></code></pre></div>
 </div>
 <div class="fragment">
-<p>Enable compiler sanitizers!</p>
+<p>Enable compiler sanitizers! E.g. ASAN, UB, ..</p>
 <aside class="notes">
 <p>Question: should you test special member functions? People make unit tests, integration tests, end-to-end tests. Do you make unit tests for special member functions? I think you should.</p>
 <p>Depending on applicability: I’m always adding the following tests to the unit test suite.</p>
@@ -1886,10 +1833,13 @@ Base::~Base()</code></pre>
 <li class="fragment">Clang-analyzer,</li>
 <li class="fragment">PVS Studio.</li>
 </ul>
+<div class="fragment">
+<p>They all provide rules for checking SMF use</p>
 <aside class="notes">
 <p>Here’s some static analyzers I have worked with. All of them have support for checking errors in usage and implementation of special member functions. Also, all of them can be employed in your CI pipeline or reviewing work flow.</p>
 <p>Accompanying this presentation is a list of resources I’ve used for research, and in there is also a list of these static analyszers and a list of errors regarding SMFs they’re able to find. This list of resources will be provided together with a PDF of this talk.</p>
 </aside>
+</div>
 </section></section>
 <section id="end-the-real-one" class="title-slide slide level1">
 <h1>End <small>(the real one)</small></h1>
@@ -1920,20 +1870,20 @@ Base::~Base()</code></pre>
 </section>
 <section id="empty-base-optimization" class="slide level2">
 <h2>Empty base optimization</h2>
-<div class="sourceCode" id="cb65"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb65-1"><a href="#cb65-1"></a><span class="pp">#include </span><span class="im">&lt;cassert&gt;</span></span>
-<span id="cb65-2"><a href="#cb65-2"></a></span>
-<span id="cb65-3"><a href="#cb65-3"></a><span class="kw">struct</span> Base {};</span>
-<span id="cb65-4"><a href="#cb65-4"></a> </span>
-<span id="cb65-5"><a href="#cb65-5"></a><span class="kw">struct</span> Derived : Base {</span>
-<span id="cb65-6"><a href="#cb65-6"></a>  <span class="dt">int</span> <span class="va">value_</span>;</span>
-<span id="cb65-7"><a href="#cb65-7"></a>};</span>
-<span id="cb65-8"><a href="#cb65-8"></a> </span>
-<span id="cb65-9"><a href="#cb65-9"></a><span class="dt">int</span> main() {</span>
-<span id="cb65-10"><a href="#cb65-10"></a>  <span class="co">// Every object is guaranteed to have a unique address.</span></span>
-<span id="cb65-11"><a href="#cb65-11"></a>  <span class="ot">assert</span>(<span class="kw">sizeof</span>(Base) &gt;= <span class="dv">1</span>);</span>
-<span id="cb65-12"><a href="#cb65-12"></a></span>
-<span id="cb65-13"><a href="#cb65-13"></a>  <span class="ot">assert</span>(<span class="kw">sizeof</span>(Derived) == <span class="kw">sizeof</span>(<span class="dt">int</span>)); <span class="co">// EBO.</span></span>
-<span id="cb65-14"><a href="#cb65-14"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb61"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb61-1"><a href="#cb61-1"></a><span class="pp">#include </span><span class="im">&lt;cassert&gt;</span></span>
+<span id="cb61-2"><a href="#cb61-2"></a></span>
+<span id="cb61-3"><a href="#cb61-3"></a><span class="kw">struct</span> Base {};</span>
+<span id="cb61-4"><a href="#cb61-4"></a> </span>
+<span id="cb61-5"><a href="#cb61-5"></a><span class="kw">struct</span> Derived : Base {</span>
+<span id="cb61-6"><a href="#cb61-6"></a>  <span class="dt">int</span> <span class="va">value_</span>;</span>
+<span id="cb61-7"><a href="#cb61-7"></a>};</span>
+<span id="cb61-8"><a href="#cb61-8"></a> </span>
+<span id="cb61-9"><a href="#cb61-9"></a><span class="dt">int</span> main() {</span>
+<span id="cb61-10"><a href="#cb61-10"></a>  <span class="co">// Every object is guaranteed to have a unique address.</span></span>
+<span id="cb61-11"><a href="#cb61-11"></a>  <span class="ot">assert</span>(<span class="kw">sizeof</span>(Base) &gt;= <span class="dv">1</span>);</span>
+<span id="cb61-12"><a href="#cb61-12"></a></span>
+<span id="cb61-13"><a href="#cb61-13"></a>  <span class="ot">assert</span>(<span class="kw">sizeof</span>(Derived) == <span class="kw">sizeof</span>(<span class="dt">int</span>)); <span class="co">// EBO.</span></span>
+<span id="cb61-14"><a href="#cb61-14"></a>}</span></code></pre></div>
 <aside class="notes">
 <p>What is empty base class optimization?</p>
 <p>Empty base class optimization is a compiler optimization that makes sure a base class without member variables can be counted to have size zero, without losing the guarantee that each object has a unique address.</p>
@@ -1950,14 +1900,14 @@ Base::~Base()</code></pre>
 <h2>Example: <code class="sourceCode cpp"><span class="kw">delete</span></code>d and <code class="sourceCode cpp"><span class="kw">private</span></code></h2>
 <div class="columns">
 <div class="column" style="width:25%;">
-<div class="sourceCode" id="cb66"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb66-1"><a href="#cb66-1"></a><span class="kw">class</span> X {</span>
-<span id="cb66-2"><a href="#cb66-2"></a><span class="kw">private</span>:</span>
-<span id="cb66-3"><a href="#cb66-3"></a>  X() = <span class="kw">delete</span>;</span>
-<span id="cb66-4"><a href="#cb66-4"></a>};</span>
-<span id="cb66-5"><a href="#cb66-5"></a></span>
-<span id="cb66-6"><a href="#cb66-6"></a><span class="dt">int</span> main() {</span>
-<span id="cb66-7"><a href="#cb66-7"></a>  X x;</span>
-<span id="cb66-8"><a href="#cb66-8"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb62"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb62-1"><a href="#cb62-1"></a><span class="kw">class</span> X {</span>
+<span id="cb62-2"><a href="#cb62-2"></a><span class="kw">private</span>:</span>
+<span id="cb62-3"><a href="#cb62-3"></a>  X() = <span class="kw">delete</span>;</span>
+<span id="cb62-4"><a href="#cb62-4"></a>};</span>
+<span id="cb62-5"><a href="#cb62-5"></a></span>
+<span id="cb62-6"><a href="#cb62-6"></a><span class="dt">int</span> main() {</span>
+<span id="cb62-7"><a href="#cb62-7"></a>  X x;</span>
+<span id="cb62-8"><a href="#cb62-8"></a>}</span></code></pre></div>
 </div><div class="column" style="width:65%;">
 <p>GCC-5.5 output:</p>
 <pre><code>&lt;source&gt;: In function &#39;int main()&#39;:
@@ -1974,14 +1924,14 @@ Base::~Base()</code></pre>
 <h2>Example: <code>delete</code>d and <code>public</code></h2>
 <div class="columns">
 <div class="column" style="width:25%;">
-<div class="sourceCode" id="cb68"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb68-1"><a href="#cb68-1"></a><span class="kw">class</span> X {</span>
-<span id="cb68-2"><a href="#cb68-2"></a><span class="kw">public</span>:</span>
-<span id="cb68-3"><a href="#cb68-3"></a>  X() = <span class="kw">delete</span>;</span>
-<span id="cb68-4"><a href="#cb68-4"></a>};</span>
-<span id="cb68-5"><a href="#cb68-5"></a></span>
-<span id="cb68-6"><a href="#cb68-6"></a><span class="dt">int</span> main() {</span>
-<span id="cb68-7"><a href="#cb68-7"></a>  X x;</span>
-<span id="cb68-8"><a href="#cb68-8"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb64"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb64-1"><a href="#cb64-1"></a><span class="kw">class</span> X {</span>
+<span id="cb64-2"><a href="#cb64-2"></a><span class="kw">public</span>:</span>
+<span id="cb64-3"><a href="#cb64-3"></a>  X() = <span class="kw">delete</span>;</span>
+<span id="cb64-4"><a href="#cb64-4"></a>};</span>
+<span id="cb64-5"><a href="#cb64-5"></a></span>
+<span id="cb64-6"><a href="#cb64-6"></a><span class="dt">int</span> main() {</span>
+<span id="cb64-7"><a href="#cb64-7"></a>  X x;</span>
+<span id="cb64-8"><a href="#cb64-8"></a>}</span></code></pre></div>
 </div><div class="column" style="width:65%;">
 <p>GCC-5.5 output:</p>
 <pre><code>source&gt;: In function &#39;int main()&#39;:
@@ -2015,10 +1965,84 @@ Base::~Base()</code></pre>
 <h2><code>std::uncaught_exceptions</code>?</h2>
 <div class="columns">
 <div class="column" style="width:65%;">
-<div class="sourceCode" id="cb70"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb70-1"><a href="#cb70-1"></a><span class="kw">struct</span> Transaction {</span>
-<span id="cb70-2"><a href="#cb70-2"></a>  <span class="co">// ...</span></span>
-<span id="cb70-3"><a href="#cb70-3"></a>};</span></code></pre></div>
+<div class="sourceCode" id="cb66"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb66-1"><a href="#cb66-1"></a><span class="kw">struct</span> Transaction {</span>
+<span id="cb66-2"><a href="#cb66-2"></a>  <span class="co">// ...</span></span>
+<span id="cb66-3"><a href="#cb66-3"></a>};</span></code></pre></div>
 <p>How to safely roll back a transaction?</p>
+</div><div class="column" style="width:35%;">
+<div class="sourceCode" id="cb67"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb67-1"><a href="#cb67-1"></a><span class="kw">struct</span> X {</span>
+<span id="cb67-2"><a href="#cb67-2"></a>  ~X() {</span>
+<span id="cb67-3"><a href="#cb67-3"></a>    <span class="cf">try</span> {</span>
+<span id="cb67-4"><a href="#cb67-4"></a>      Transaction t;</span>
+<span id="cb67-5"><a href="#cb67-5"></a>      <span class="co">// ...</span></span>
+<span id="cb67-6"><a href="#cb67-6"></a>    } <span class="cf">catch</span> (...) {}</span>
+<span id="cb67-7"><a href="#cb67-7"></a>  }</span>
+<span id="cb67-8"><a href="#cb67-8"></a>};</span>
+<span id="cb67-9"><a href="#cb67-9"></a></span>
+<span id="cb67-10"><a href="#cb67-10"></a><span class="dt">int</span> main() {</span>
+<span id="cb67-11"><a href="#cb67-11"></a>  <span class="cf">try</span> {</span>
+<span id="cb67-12"><a href="#cb67-12"></a>    X x;</span>
+<span id="cb67-13"><a href="#cb67-13"></a>  } <span class="cf">catch</span> (...) {}</span>
+<span id="cb67-14"><a href="#cb67-14"></a>}</span></code></pre></div>
+</div>
+</div>
+<aside class="notes">
+<p>How can we safely roll back a transaction if an exception occurs? We don’t want our database to become tainted with faulty data. This requirement for Transaction is called a strong exception guarantee; the state of the database will remain unchanged when an operation throws an exception.</p>
+<p>In order to build this, we would have to check some condition in the destructor of the transaction.</p>
+</aside>
+</section>
+<section id="stduncaught_exceptions-1" class="slide level2">
+<h2><code class="sourceCode cpp"><span class="bu">std::</span>uncaught_exceptions</code>?</h2>
+<div class="columns">
+<div class="column" style="width:65%;">
+<div class="sourceCode" id="cb68"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb68-1"><a href="#cb68-1"></a><span class="kw">struct</span> Transaction {</span>
+<span id="cb68-2"><a href="#cb68-2"></a>  ~Transaction() {</span>
+<span id="cb68-3"><a href="#cb68-3"></a>    <span class="cf">if</span> (<span class="co">/* ...uuhhh... */</span>) {</span>
+<span id="cb68-4"><a href="#cb68-4"></a>      <span class="co">// Rollback transaction!</span></span>
+<span id="cb68-5"><a href="#cb68-5"></a>    } <span class="cf">else</span> {</span>
+<span id="cb68-6"><a href="#cb68-6"></a>      <span class="co">// No need to rollback -- all good.</span></span>
+<span id="cb68-7"><a href="#cb68-7"></a>    }</span>
+<span id="cb68-8"><a href="#cb68-8"></a>  }</span>
+<span id="cb68-9"><a href="#cb68-9"></a>};</span></code></pre></div>
+</div><div class="column" style="width:35%;">
+<div class="sourceCode" id="cb69"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb69-1"><a href="#cb69-1"></a><span class="kw">struct</span> X {</span>
+<span id="cb69-2"><a href="#cb69-2"></a>  ~X() {</span>
+<span id="cb69-3"><a href="#cb69-3"></a>    <span class="cf">try</span> {</span>
+<span id="cb69-4"><a href="#cb69-4"></a>      Transaction t;</span>
+<span id="cb69-5"><a href="#cb69-5"></a>      <span class="co">// ...</span></span>
+<span id="cb69-6"><a href="#cb69-6"></a>    } <span class="cf">catch</span> (...) {}</span>
+<span id="cb69-7"><a href="#cb69-7"></a>  }</span>
+<span id="cb69-8"><a href="#cb69-8"></a>};</span>
+<span id="cb69-9"><a href="#cb69-9"></a></span>
+<span id="cb69-10"><a href="#cb69-10"></a><span class="dt">int</span> main() {</span>
+<span id="cb69-11"><a href="#cb69-11"></a>  <span class="cf">try</span> {</span>
+<span id="cb69-12"><a href="#cb69-12"></a>    X x;</span>
+<span id="cb69-13"><a href="#cb69-13"></a>  } <span class="cf">catch</span> (...) {}</span>
+<span id="cb69-14"><a href="#cb69-14"></a>}</span></code></pre></div>
+</div>
+</div>
+<aside class="notes">
+<p>But what condition? This is where uncaught exceptions comes in.</p>
+</aside>
+</section>
+<section id="stduncaught_exceptions-2" class="slide level2">
+<h2><code class="sourceCode cpp"><span class="bu">std::</span>uncaught_exceptions</code>?</h2>
+<div class="columns">
+<div class="column" style="width:65%;">
+<div class="sourceCode" id="cb70"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb70-1"><a href="#cb70-1"></a><span class="kw">struct</span> Transaction {</span>
+<span id="cb70-2"><a href="#cb70-2"></a>  Transaction()</span>
+<span id="cb70-3"><a href="#cb70-3"></a>    : num_exceptions{<span class="bu">std::</span>uncaught_exceptions()} {}</span>
+<span id="cb70-4"><a href="#cb70-4"></a></span>
+<span id="cb70-5"><a href="#cb70-5"></a>  ~Transaction() {</span>
+<span id="cb70-6"><a href="#cb70-6"></a>    <span class="cf">if</span> (<span class="bu">std::</span>uncaught_exceptions() != num_exceptions) {</span>
+<span id="cb70-7"><a href="#cb70-7"></a>      puts(<span class="st">&quot;Rollback transaction!&quot;</span>);</span>
+<span id="cb70-8"><a href="#cb70-8"></a>    } <span class="cf">else</span> {</span>
+<span id="cb70-9"><a href="#cb70-9"></a>      puts(<span class="st">&quot;No need to rollback -- all good.&quot;</span>);</span>
+<span id="cb70-10"><a href="#cb70-10"></a>    }</span>
+<span id="cb70-11"><a href="#cb70-11"></a>  }</span>
+<span id="cb70-12"><a href="#cb70-12"></a></span>
+<span id="cb70-13"><a href="#cb70-13"></a>  <span class="dt">int</span> num_exceptions = {};</span>
+<span id="cb70-14"><a href="#cb70-14"></a>};</span></code></pre></div>
 </div><div class="column" style="width:35%;">
 <div class="sourceCode" id="cb71"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb71-1"><a href="#cb71-1"></a><span class="kw">struct</span> X {</span>
 <span id="cb71-2"><a href="#cb71-2"></a>  ~X() {</span>
@@ -2037,97 +2061,23 @@ Base::~Base()</code></pre>
 </div>
 </div>
 <aside class="notes">
-<p>How can we safely roll back a transaction if an exception occurs? We don’t want our database to become tainted with faulty data. This requirement for Transaction is called a strong exception guarantee; the state of the database will remain unchanged when an operation throws an exception.</p>
-<p>In order to build this, we would have to check some condition in the destructor of the transaction.</p>
-</aside>
-</section>
-<section id="stduncaught_exceptions-1" class="slide level2">
-<h2><code class="sourceCode cpp"><span class="bu">std::</span>uncaught_exceptions</code>?</h2>
-<div class="columns">
-<div class="column" style="width:65%;">
-<div class="sourceCode" id="cb72"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb72-1"><a href="#cb72-1"></a><span class="kw">struct</span> Transaction {</span>
-<span id="cb72-2"><a href="#cb72-2"></a>  ~Transaction() {</span>
-<span id="cb72-3"><a href="#cb72-3"></a>    <span class="cf">if</span> (<span class="co">/* ...uuhhh... */</span>) {</span>
-<span id="cb72-4"><a href="#cb72-4"></a>      <span class="co">// Rollback transaction!</span></span>
-<span id="cb72-5"><a href="#cb72-5"></a>    } <span class="cf">else</span> {</span>
-<span id="cb72-6"><a href="#cb72-6"></a>      <span class="co">// No need to rollback -- all good.</span></span>
-<span id="cb72-7"><a href="#cb72-7"></a>    }</span>
-<span id="cb72-8"><a href="#cb72-8"></a>  }</span>
-<span id="cb72-9"><a href="#cb72-9"></a>};</span></code></pre></div>
-</div><div class="column" style="width:35%;">
-<div class="sourceCode" id="cb73"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb73-1"><a href="#cb73-1"></a><span class="kw">struct</span> X {</span>
-<span id="cb73-2"><a href="#cb73-2"></a>  ~X() {</span>
-<span id="cb73-3"><a href="#cb73-3"></a>    <span class="cf">try</span> {</span>
-<span id="cb73-4"><a href="#cb73-4"></a>      Transaction t;</span>
-<span id="cb73-5"><a href="#cb73-5"></a>      <span class="co">// ...</span></span>
-<span id="cb73-6"><a href="#cb73-6"></a>    } <span class="cf">catch</span> (...) {}</span>
-<span id="cb73-7"><a href="#cb73-7"></a>  }</span>
-<span id="cb73-8"><a href="#cb73-8"></a>};</span>
-<span id="cb73-9"><a href="#cb73-9"></a></span>
-<span id="cb73-10"><a href="#cb73-10"></a><span class="dt">int</span> main() {</span>
-<span id="cb73-11"><a href="#cb73-11"></a>  <span class="cf">try</span> {</span>
-<span id="cb73-12"><a href="#cb73-12"></a>    X x;</span>
-<span id="cb73-13"><a href="#cb73-13"></a>  } <span class="cf">catch</span> (...) {}</span>
-<span id="cb73-14"><a href="#cb73-14"></a>}</span></code></pre></div>
-</div>
-</div>
-<aside class="notes">
-<p>But what condition? This is where uncaught exceptions comes in.</p>
-</aside>
-</section>
-<section id="stduncaught_exceptions-2" class="slide level2">
-<h2><code class="sourceCode cpp"><span class="bu">std::</span>uncaught_exceptions</code>?</h2>
-<div class="columns">
-<div class="column" style="width:65%;">
-<div class="sourceCode" id="cb74"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb74-1"><a href="#cb74-1"></a><span class="kw">struct</span> Transaction {</span>
-<span id="cb74-2"><a href="#cb74-2"></a>  Transaction()</span>
-<span id="cb74-3"><a href="#cb74-3"></a>    : num_exceptions{<span class="bu">std::</span>uncaught_exceptions()} {}</span>
-<span id="cb74-4"><a href="#cb74-4"></a></span>
-<span id="cb74-5"><a href="#cb74-5"></a>  ~Transaction() {</span>
-<span id="cb74-6"><a href="#cb74-6"></a>    <span class="cf">if</span> (<span class="bu">std::</span>uncaught_exceptions() != num_exceptions) {</span>
-<span id="cb74-7"><a href="#cb74-7"></a>      puts(<span class="st">&quot;Rollback transaction!&quot;</span>);</span>
-<span id="cb74-8"><a href="#cb74-8"></a>    } <span class="cf">else</span> {</span>
-<span id="cb74-9"><a href="#cb74-9"></a>      puts(<span class="st">&quot;No need to rollback -- all good.&quot;</span>);</span>
-<span id="cb74-10"><a href="#cb74-10"></a>    }</span>
-<span id="cb74-11"><a href="#cb74-11"></a>  }</span>
-<span id="cb74-12"><a href="#cb74-12"></a></span>
-<span id="cb74-13"><a href="#cb74-13"></a>  <span class="dt">int</span> num_exceptions = {};</span>
-<span id="cb74-14"><a href="#cb74-14"></a>};</span></code></pre></div>
-</div><div class="column" style="width:35%;">
-<div class="sourceCode" id="cb75"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb75-1"><a href="#cb75-1"></a><span class="kw">struct</span> X {</span>
-<span id="cb75-2"><a href="#cb75-2"></a>  ~X() {</span>
-<span id="cb75-3"><a href="#cb75-3"></a>    <span class="cf">try</span> {</span>
-<span id="cb75-4"><a href="#cb75-4"></a>      Transaction t;</span>
-<span id="cb75-5"><a href="#cb75-5"></a>      <span class="co">// ...</span></span>
-<span id="cb75-6"><a href="#cb75-6"></a>    } <span class="cf">catch</span> (...) {}</span>
-<span id="cb75-7"><a href="#cb75-7"></a>  }</span>
-<span id="cb75-8"><a href="#cb75-8"></a>};</span>
-<span id="cb75-9"><a href="#cb75-9"></a></span>
-<span id="cb75-10"><a href="#cb75-10"></a><span class="dt">int</span> main() {</span>
-<span id="cb75-11"><a href="#cb75-11"></a>  <span class="cf">try</span> {</span>
-<span id="cb75-12"><a href="#cb75-12"></a>    X x;</span>
-<span id="cb75-13"><a href="#cb75-13"></a>  } <span class="cf">catch</span> (...) {}</span>
-<span id="cb75-14"><a href="#cb75-14"></a>}</span></code></pre></div>
-</div>
-</div>
-<aside class="notes">
 <p>It takes a bit of administration, but by using the check around uncaught_exceptions, we can detect whether an exception occurred that affects the transaction.</p>
 </aside>
 </section>
 <section id="smfs-and-inheritance-5" class="slide level2">
 <h2>SMFs and inheritance</h2>
 <p>Multiple inheritance and multiple non-<code class="sourceCode cpp"><span class="at">static</span></code> class members:</p>
-<div class="sourceCode" id="cb76"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb76-1"><a href="#cb76-1"></a><span class="kw">struct</span> Derived</span>
-<span id="cb76-2"><a href="#cb76-2"></a>  : Base1,    <span class="co">// Base class initialization in left-to-right order 1..N</span></span>
-<span id="cb76-3"><a href="#cb76-3"></a>    Base2,</span>
-<span id="cb76-4"><a href="#cb76-4"></a>    <span class="co">// ...</span></span>
-<span id="cb76-5"><a href="#cb76-5"></a>    BaseN</span>
-<span id="cb76-6"><a href="#cb76-6"></a>{</span>
-<span id="cb76-7"><a href="#cb76-7"></a>  Member <span class="va">m1_</span>; <span class="co">// Initialization of non-static members in declaration order 1..M</span></span>
-<span id="cb76-8"><a href="#cb76-8"></a>  Member <span class="va">m2_</span>;</span>
-<span id="cb76-9"><a href="#cb76-9"></a>  <span class="co">// ...</span></span>
-<span id="cb76-10"><a href="#cb76-10"></a>  Member <span class="va">mM_</span>;</span>
-<span id="cb76-11"><a href="#cb76-11"></a>};</span></code></pre></div>
+<div class="sourceCode" id="cb72"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb72-1"><a href="#cb72-1"></a><span class="kw">struct</span> Derived</span>
+<span id="cb72-2"><a href="#cb72-2"></a>  : Base1,    <span class="co">// Base class initialization in left-to-right order 1..N</span></span>
+<span id="cb72-3"><a href="#cb72-3"></a>    Base2,</span>
+<span id="cb72-4"><a href="#cb72-4"></a>    <span class="co">// ...</span></span>
+<span id="cb72-5"><a href="#cb72-5"></a>    BaseN</span>
+<span id="cb72-6"><a href="#cb72-6"></a>{</span>
+<span id="cb72-7"><a href="#cb72-7"></a>  Member <span class="va">m1_</span>; <span class="co">// Initialization of non-static members in declaration order 1..M</span></span>
+<span id="cb72-8"><a href="#cb72-8"></a>  Member <span class="va">m2_</span>;</span>
+<span id="cb72-9"><a href="#cb72-9"></a>  <span class="co">// ...</span></span>
+<span id="cb72-10"><a href="#cb72-10"></a>  Member <span class="va">mM_</span>;</span>
+<span id="cb72-11"><a href="#cb72-11"></a>};</span></code></pre></div>
 </section>
 <section id="multiple-destructors" class="slide level2">
 <h2>Multiple destructors</h2>
@@ -2144,9 +2094,62 @@ Base::~Base()</code></pre>
 <section id="are-there-any-other-smfs" class="slide level2">
 <h2>Are there any other SMFs?</h2>
 <p>In C++20 comparison operators can be <code>=</code> <code class="sourceCode cpp"><span class="cf">default</span></code>’ed as well.</p>
-<div class="sourceCode" id="cb77"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb77-1"><a href="#cb77-1"></a><span class="kw">struct</span> X {</span>
-<span id="cb77-2"><a href="#cb77-2"></a>  <span class="dt">bool</span> <span class="kw">operator</span>==() = <span class="cf">default</span>;</span>
-<span id="cb77-3"><a href="#cb77-3"></a>};</span></code></pre></div>
+<div class="sourceCode" id="cb73"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb73-1"><a href="#cb73-1"></a><span class="kw">struct</span> X {</span>
+<span id="cb73-2"><a href="#cb73-2"></a>  <span class="dt">bool</span> <span class="kw">operator</span>==() = <span class="cf">default</span>;</span>
+<span id="cb73-3"><a href="#cb73-3"></a>};</span></code></pre></div>
+</section>
+<section id="using-uncopyable" class="slide level2">
+<h2>Using <code>Uncopyable</code></h2>
+<blockquote>
+<p>Use <code>Uncopyable</code> as a base class for more readable (earlier) compiler errors for pre-C++11</p>
+</blockquote>
+<div class="fragment">
+<blockquote>
+<p>Use base class or direct deletion of SMFs in C++11</p>
+</blockquote>
+<aside class="notes">
+<p>Class type uncopyability and unmovability can be used as a base class instead of directly in the derived class for better compiler errors in older compilers. When implementing the uncopyability or unmovability in a type directly, would generate an error for this class type directly, while when using the base class, an error will be generated for the base class type, making it immediately clear what is going on.</p>
+<p>Actually boost has the class <code>noncopyable</code> that implements just this.</p>
+<p>If you’re lucky enough to be able to write your code in C++11 or newer, I would suggest to either use the base class, or deleting of special member functions directly in the designated type. Take into account the rules you will see later in this session, and you’ll be fine – it’s not all that complicated. It is mostly a matter of consistency of your codebase and style/taste.</p>
+</aside>
+</div>
+</section>
+<section id="creating-an-uncopyable-type" class="slide level2">
+<h2>Creating an uncopyable type</h2>
+<p><strong>Private declarations</strong> <img data-src="images/cpp-classic.png" style="width:6.0%" /></p>
+<div class="sourceCode" id="cb74"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb74-1"><a href="#cb74-1"></a><span class="kw">class</span> T {</span>
+<span id="cb74-2"><a href="#cb74-2"></a><span class="kw">private</span>:</span>
+<span id="cb74-3"><a href="#cb74-3"></a>  T(<span class="at">const</span> T&amp;);</span>
+<span id="cb74-4"><a href="#cb74-4"></a>  T&amp; <span class="kw">operator</span>=(<span class="at">const</span> T&amp;);</span>
+<span id="cb74-5"><a href="#cb74-5"></a>};</span></code></pre></div>
+<p>Compiler error when copying:</p>
+<pre><code>&lt;source&gt;:29:8: error: &#39;T::T(const T&amp;)&#39; is private within this context
+   29 |   T y{x};
+      |        ^</code></pre>
+<aside class="notes">
+<p>Let’s consider we want our type to uncopyable. How can we force this behaviour?</p>
+<p>It’s quite simple, we make the copy operations private, that’s it.</p>
+<p>If you still try to do so in your code, the compiler error is shown below.</p>
+<p>What about C++11 and later?</p>
+</aside>
+</section>
+<section id="creating-a-uncopyable-type" class="slide level2">
+<h2>Creating a uncopyable type</h2>
+<p><strong>Explicitly removed definitions</strong> <img data-src="images/cpp-modern.png" style="width:6.0%" /></p>
+<div class="sourceCode" id="cb76"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb76-1"><a href="#cb76-1"></a><span class="kw">class</span> T {</span>
+<span id="cb76-2"><a href="#cb76-2"></a><span class="kw">public</span>:</span>
+<span id="cb76-3"><a href="#cb76-3"></a>  T(<span class="at">const</span> T&amp;) = <span class="kw">delete</span>;</span>
+<span id="cb76-4"><a href="#cb76-4"></a>  T&amp; <span class="kw">operator</span>=(<span class="at">const</span> T&amp;) = <span class="kw">delete</span>;</span>
+<span id="cb76-5"><a href="#cb76-5"></a>};</span></code></pre></div>
+<p>Compiler error when copying:</p>
+<pre><code>source&gt;:29:8: error: use of deleted function &#39;T::T(const T&amp;)&#39;
+   29 |   T y{x};
+      |        ^</code></pre>
+<aside class="notes">
+<p>For C++11 and later, we use the is delete syntax. Is delete is the opposite of is default, which request the compiler to implement a default implementation of an SMF. Now it does not matter in what section of the class type the definition is placed, be it private, protected or public.</p>
+<p>I think the compiler error for this example is more clear and explicit than the previous one.</p>
+<p>On a sidenote: one might wonder why we want to make an object uncopyable? If your object manages a resource such as hardware for example, it might be impossible to do this from two places at the same time. In that case you will want to prevent a user or your colleague to accidentally create a copy of the object managing the resource.</p>
+</aside>
 </section>
 <section id="constexpr-constructors" class="slide level2">
 <h2><code class="sourceCode cpp"><span class="kw">constexpr</span></code> constructors</h2>
