@@ -113,21 +113,11 @@
 <li class="fragment"><strong>Tooling and <span style="color:crimson"><strong>best practices</strong></span></strong></li>
 <li class="fragment"><strong>Conclusions</strong></li>
 </ul>
-<aside class="notes">
-<p>Hi and welcome to this session on special member functions in C++!</p>
-<p>Let me start out by providing you an overview of the next hour. I split up this talk in five parts, starting out with some of the fundamentals, to make sure we’re all on the same page. Then, I will dive into the mystical labyrinth of declaration rules (psst, don’t tell on; it’s not a labyrinth and they’re not mystical at all..). Then, for good measure we will look into some good practices for implementing special member functions. To finish, I’m going to touch upon some fringe subjects regarding special member functions, and provide those still awake with some conclusions.</p>
-<p>As you can see, we’re going to cover a lot of ground in a mere hour. But fear not, you will be provided with the PDF version of this presentation, accompanied with a hefty list of resources I used to conduct my research.</p>
-<p>As for questions: I will take questions at the end, and somewhere halfway to accomodate for the online setup.</p>
-</aside>
 </section>
 <section id="a-little-bit-about-me" class="slide level2">
 <h2>A little bit about me</h2>
 <p><img data-src="images/em-nerd_face.svg" style="width:7.0%" /> <img data-src="images/em-man-woman-girl-boy.svg" style="width:7.0%" /> <img data-src="images/em-guitar.svg" style="width:7.0%" /> <img data-src="images/em-running.svg" style="width:7.0%" /> <img data-src="images/em-man_climbing.svg" style="width:7.0%" /></p>
 <p><a href="">kris@vanrens.org</a></p>
-<aside class="notes">
-<p>A little bit about me: I’m Kris. Perhaps some of you might still remember me from the session about C++ value categories I did last year.</p>
-<p>I’m a software developer at ViNotion, a computer vision company here in Eindhoven. We make products that use video data to perform automated analysis such as multimodal traffic counting. We exploit machine learning algorithms on GPUs for our vision processing, and build our product software in C++. Outside of work I’m a husband, father of two, guitarist in a metal band and an avid runner and occasional climber. For any questions or comments, don’t hesitate to reach out to me by e-mail or LinkedIn.</p>
-</aside>
 </section>
 <section id="the-premise-and-goals" class="slide level2">
 <h2>The premise and goals</h2>
@@ -159,15 +149,6 @@
 </div>
 <div class="fragment">
 <p><img data-src="images/cpp-classic.png" style="width:10.0%" /> <img data-src="images/cpp-modern.png" style="width:10.0%" /></p>
-<aside class="notes">
-<p>Obviously, all topics on special member functions are about C++ class data structures. I will briefly touch on inheritance/composition here and there, but this talk will focus on special member functions.</p>
-<p>Also, you will sometimes hear or see me use the abbreviated term “SMF”, which of course stands for “special member function”. Then there’s c’tor, or constructor, and d’tor, or destructor. These are not established terms as such, but they saved me some precious slide real-estate and perhaps win me some time trying to cover all the topics of this presentation.</p>
-<p>On another note: I annotated each slide with C++ version information if applicable. Then I tried to write modern C++ in the rest of the examples.</p>
-<p>In order to explain the goal of this session, let me tell you why I chose this topic in the first place. C++ is a flexible, advanced and sometimes quite complex programming language. Class data structures are at the heart of the language and are probably one of the first things any programmer will come up with as a characteristic of C++. Especially in the light of its predecessor: C. Classes and like data structures are an important part of the language to understand. Yet I’ve noticed that for many people classes are shrouded in mystery, especially the rules and principles regarding special member functions. I myself was also slightly confused, and got even more confused when in C++11 the move operations were added.</p>
-<p>The truth is, however, that the rules aren’t all that complicated as they might seem, and build on common sense mostly. And it’s this common sense in each of you that I want to address today.</p>
-<p>I hope at the end of this talk you will have a clear overview of what the special member functions are, when they are defined, called and how to use and implement them!</p>
-<p>Let’s start!</p>
-</aside>
 </div>
 </section></section>
 <section>
@@ -181,11 +162,6 @@
 <p>Some member functions are <strong>special</strong>: under certain circumstances they are defined by the compiler even if not defined by the user.</p>
 </blockquote>
 <p><em><a href="https://en.cppreference.com/w/cpp/language/member_functions">cppreference.com</a> § Non-static member functions</em></p>
-<aside class="notes">
-<p>Before we get into any details and code examples, I’d like to review the actual meaning of ‘special member function’. In fact, what is special? Does it mean you get mayonaise and unions with it when you order one? Well no.</p>
-<p>As much as I’d like to talk about food here today, it simply means we’re talking about functions in a class type that are possibly defined by the compiler even if we don’t.</p>
-<p>Alright, but then what does ‘define’ mean?</p>
-</aside>
 </section>
 <section id="then-what-is-define" class="slide level2">
 <h2>Then what is ‘define’?</h2>
@@ -195,12 +171,6 @@
 <p>Declarations introduce (or re-introduce) names into the C++ program. Each kind of entity is declared differently.</p>
 </blockquote>
 <p><a href="https://en.cppreference.com/w/cpp/language/declarations">cppreference.com</a> § Declarations</p>
-<aside class="notes">
-<p>This might seem like a nonsensical question, but it actually makes sense in a programming literal sense. There’s another term that is sometimes used in a wrong way interchangeably, and that is: declare.</p>
-<p>So let’s first look at declare, because there is a clear difference.</p>
-<p>…</p>
-<p>So a declaration gives a thing a name, but nothing more.</p>
-</aside>
 </div>
 </section>
 <section id="the-definition-of-a-definition" class="slide level2">
@@ -209,10 +179,6 @@
 <p>Definitions are declarations that fully define the entity introduced by the declaration.</p>
 </blockquote>
 <p><a href="https://en.cppreference.com/w/cpp/language/definition">cppreference.com</a> § Definitions and ODR</p>
-<aside class="notes">
-<p>Ah, so a definition is a declaration <em>and</em> and a full description of the value or contents. So that’s a introduction or re-introduction and the description at the same time.</p>
-<p>Let’s check out some examples of declarations and definitions..</p>
-</aside>
 </section>
 <section id="section" class="slide level2">
 <h2></h2>
@@ -251,11 +217,6 @@
 <span id="cb2-14"><a href="#cb2-14"></a>};</span></code></pre></div>
 </div>
 </div>
-<aside class="notes">
-<p>On the left are the declarations, where only names are introduced, on the right are the definitions, that introduce names and provide a full description. Just take a couple of seconds to look at them.</p>
-<p>Going back to the special member function definition; this means the compiler is able to define a special member function even if we don’t provide one. That is, introduce its name, and provide the full contents of it.</p>
-<p>To demonstrate what the compiler will do with a simple bit of code, take a look at a simple example.</p>
-</aside>
 </section>
 <section id="magic" class="slide level2">
 <h2>Magic! <img data-src="images/cpp-classic.png" style="width:8.0%" /></h2>
@@ -281,13 +242,6 @@
 <span id="cb4-8"><a href="#cb4-8"></a>};</span></code></pre></div>
 </div>
 </div>
-<aside class="notes">
-<p>First we’re going to look at the situation pre-C++11. That is, no move operations and some other such fancy stuff.</p>
-<p>Each of the lines in this bit of example code on the left will require the presence of a special member function, each of which is generated on the right by the compiler. Magic! Right?</p>
-<p>As you can see, it will generate default implementation for each of these functions with a standard set of attributes. That is: <code>public</code>, <code>inline</code> and they will always be there.</p>
-<p>You might be wondering why the destructor is commented out in this example. Well, actually for such a simple class as this one it’s not needed, but I put it there for completeness as it will be generated if necessary.</p>
-<p>But what happens if we would time-travel back to the future and use a more modern implementation?</p>
-</aside>
 </section>
 <section id="magic-1" class="slide level2">
 <h2>Magic! <img data-src="images/cpp-modern.png" style="width:6.0%" /></h2>
@@ -319,11 +273,6 @@
 <span id="cb6-11"><a href="#cb6-11"></a>};</span></code></pre></div>
 </div>
 </div>
-<aside class="notes">
-<p>Again, the example code is on the left, what the compiler will generate is on the right. Even more magic!</p>
-<p>That is: again, the keywords <code>public</code> and <code>inline</code> will always be there, the other keywords <code>constexpr</code> and <code>noexcept</code> will be there if they can be. I’m not going to discuss the meaning of each of these specifiers, that is out of the scope of this talk. Perhaps some other time?</p>
-<p>Now, coding life if not always so easy. There are situations in which the compiler is not going to provide us with all these functions for free. Sometimes we actually have to do some work.</p>
-</aside>
 </section>
 <section id="when-the-magic-is-gone" class="slide level2">
 <h2>When the magic is gone</h2>
@@ -349,13 +298,6 @@
 </div>
 <div class="fragment">
 <p>Examples are ill-formed, and the default constructors are deleted</p>
-<aside class="notes">
-<p>In these two examples, the compiler cannot generate default implementations for some of the special member functions. The examples here are ill-formed. In particular: the default constructors are deleted.</p>
-<p>However, there are actually more functions that are not available. Can you think of which ones?</p>
-<p>…</p>
-<p>Of course that will be the assigment operators. For the left type, const values can not be assigned to, and on the right; in C++ it is not possible to rebind a reference.</p>
-<p>Let’s fix these examples and add a constructor to initialize the const variable and the reference respectively.</p>
-</aside>
 </div>
 </section>
 <section id="having-the-magic-return" class="slide level2">
@@ -395,10 +337,6 @@
 <span id="cb10-16"><a href="#cb10-16"></a>}</span></code></pre></div>
 </div>
 </div>
-<aside class="notes">
-<p>Now, the compiler is satisfied again. We have taken on ourselves the hard labour on to implement a constructor that initializes the member variables. The compiler will generate the copy and move constructors for us.</p>
-<p>Assignment is impossible by default, but if we really wanted to, we could implement our own.</p>
-</aside>
 </section>
 <section id="whats-the-magic-made-of" class="slide level2">
 <h2>What’s the magic made of?</h2>
@@ -412,11 +350,6 @@
 </div>
 <div class="fragment">
 <p>There are exceptions.</p>
-<aside class="notes">
-<p>We have seen that the compiler can implicitly define a special member function, and since C++11 we can explicitly have it define or delete a special member function.</p>
-<p>Generally speaking there are two cases: default defined and deleted SMFs.</p>
-<p>There are some exceptions; for example, the default constructor, where sometimes an implicitly defined default constructor may be defined that does nothing. But exceptions like this are out of the scope of this presentation.</p>
-</aside>
 </div>
 </section>
 <section id="smf-prototypes" class="slide level2">
@@ -432,12 +365,6 @@
 <span id="cb11-9"><a href="#cb11-9"></a>  T&amp; <span class="kw">operator</span>=(T&amp;&amp; other);      <span class="co">// Move assignment operator (C++11 and later).</span></span>
 <span id="cb11-10"><a href="#cb11-10"></a>};</span></code></pre></div>
 <p>Mandatory memory material <img data-src="images/em-m.svg" style="width:3.0%" /></p>
-<aside class="notes">
-<p>We’ve already seen this list in one of the examples before, but for completeness, here it is again.</p>
-<p>…</p>
-<p>I personally think this is quite an important list, and I would suggest you remember it. For example, from my personal experience, it is a very important tool for reviewing. Did the poor soul under review forget the existence or implementation of any of these – if applicable of course?</p>
-<p>Now let’s go over each of these in some more detail.</p>
-</aside>
 </section>
 <section id="special-member-constructors" class="slide level2">
 <h2>Special member: constructors</h2>
@@ -453,10 +380,6 @@
 <span id="cb12-9"><a href="#cb12-9"></a>X e{a};            <span class="co">// Calls copy constructor.</span></span>
 <span id="cb12-10"><a href="#cb12-10"></a></span>
 <span id="cb12-11"><a href="#cb12-11"></a>X f{<span class="bu">std::</span>move(a)}; <span class="co">// Calls move constructor.</span></span></code></pre></div>
-<aside class="notes">
-<p>From this short example alone, we can already sort of categorize four different kinds of constructors. We see: the default constructor, a non-default constructor, the copy constructor and the move constructor.</p>
-<p>If you start reading, you’ll see there’s such a plethora of constructors, we could play bingo!</p>
-</aside>
 </section>
 <section id="constructor-bingo" class="slide level2">
 <h2>Constructor bingo!</h2>
@@ -471,11 +394,6 @@
 <li class="fragment"><strong>Copy</strong> c’tor</li>
 <li class="fragment"><strong>Move</strong> c’tor</li>
 </ul>
-<aside class="notes">
-<p>Sorry, but no bingo today. There’s only four types of constructors actually.</p>
-<p>…</p>
-<p>Any other constructor names are just adjectives to indicate properties of constructors.</p>
-</aside>
 </section>
 <section id="default-constructors" class="slide level2">
 <h2>Default constructors</h2>
@@ -488,10 +406,6 @@
 <span id="cb13-4"><a href="#cb13-4"></a>X b();</span>
 <span id="cb13-5"><a href="#cb13-5"></a>X c{};</span>
 <span id="cb13-6"><a href="#cb13-6"></a><span class="kw">auto</span> d = X{};</span></code></pre></div>
-<aside class="notes">
-<p>…</p>
-<p>All of the examples below show when this constructor is called. Your type may or may not have a default constructor, and the compiler may or may not implement one for you – more on that later.</p>
-</aside>
 </section>
 <section id="non-default-constructors" class="slide level2">
 <h2>Non-default constructors</h2>
@@ -502,12 +416,6 @@
 <span id="cb14-4"><a href="#cb14-4"></a>X b(<span class="st">&quot;Hi!&quot;</span>, <span class="fl">3.1415</span><span class="bu">f</span>);</span>
 <span id="cb14-5"><a href="#cb14-5"></a>X c{a};</span>
 <span id="cb14-6"><a href="#cb14-6"></a>X d{<span class="bu">std::</span>move(b)};</span></code></pre></div>
-<aside class="notes">
-<p>…</p>
-<p>Let’s support the type X has some non-default constructors defined. Any of the calls in the example below call a non-default constructor. A new identifier is introduced and a corresponding construction function is called.</p>
-<p>There are two special cases, namely the last two lines. The second-to-last line calles the copy constructor, and the last line calls the move constructor (if you’re living in a C++11 or later world). We’re going to discuss each of these later on, but in essence they are just non-default constructors.</p>
-<p>Now, where the constructor deals with the creation of an object, the destructor deals with the removal of an object.</p>
-</aside>
 </section>
 <section id="special-member-destructors" class="slide level2">
 <h2>Special member: destructors</h2>
@@ -523,11 +431,6 @@
 <span id="cb15-7"><a href="#cb15-7"></a>    X b;</span>
 <span id="cb15-8"><a href="#cb15-8"></a>  } <span class="co">// Destructor of &#39;b&#39; is called.</span></span>
 <span id="cb15-9"><a href="#cb15-9"></a>}   <span class="co">// Destructor of &#39;a&#39; is called.</span></span></code></pre></div>
-<aside class="notes">
-<p>…</p>
-<p>The lifetime of an object in C++ can be a complex subject we’re not going to discuss in detail here. The example below shows a few typical cases of when a destructor for an object is called. Here object ‘b’ is destructed earlier because it is defined in a nested scope that ends earlier than the one object ‘a’ lives in.</p>
-<p>Next, the copy operations.</p>
-</aside>
 </section>
 <section id="special-member-copy-ops" class="slide level2">
 <h2>Special member: copy ops</h2>
@@ -555,15 +458,6 @@
 <span id="cb16-6"><a href="#cb16-6"></a>X c = a; <span class="co">// Calls copy constructor.</span></span>
 <span id="cb16-7"><a href="#cb16-7"></a></span>
 <span id="cb16-8"><a href="#cb16-8"></a>b = a;   <span class="co">// Calls copy assignment operator.</span></span></code></pre></div>
-<aside class="notes">
-<p>The copy operations are called when dealing with copy operations of the same type as the class itself.</p>
-<p>There are two operations:</p>
-<ul>
-<li>Copy constructor – which deals with newly introduced objects,</li>
-<li>Copy assignment operator – which deals with copying to already existing objects.</li>
-</ul>
-<p>C++11 and later also features move semantics, for which two sibling functions have been introduced, namely the move operations.</p>
-</aside>
 </section>
 <section id="special-member-move-ops" class="slide level2">
 <h2>Special member: move ops</h2>
@@ -591,15 +485,6 @@
 <span id="cb17-6"><a href="#cb17-6"></a>X c = <span class="bu">std::</span>move(a2); <span class="co">// Calls move constructor.</span></span>
 <span id="cb17-7"><a href="#cb17-7"></a></span>
 <span id="cb17-8"><a href="#cb17-8"></a>b = <span class="bu">std::</span>move(a3);   <span class="co">// Calls move assignment operator.</span></span></code></pre></div>
-<aside class="notes">
-<p>And just like the copy operations: the move operations are called when dealing with move operations of the same type as the class itself.</p>
-<p>Again there are two operations:</p>
-<ul>
-<li>Move constructor – which deals with newly introduced objects,</li>
-<li>Move assignment operator – which deals with moving to already existing objects.</li>
-</ul>
-<p>Now that we know who’s who, we can set the special member functions in perspective. One thing that is very important to understand is object life cycle.</p>
-</aside>
 </section>
 <section id="noisy-type" class="slide level2">
 <h2>Noisy type</h2>
@@ -637,10 +522,6 @@ Type::~Type()
 Member::~Member()</code></pre>
 </div>
 </div>
-<aside class="notes">
-<p>If an object is contained within another object, e.g. when an object is composed of another one, what is the order of construction? Well it seems logical, and of course it is logical: first the member variables of any object are constructed, then the object itself. Destruction is right the other way around.</p>
-<p>And the reason why this order is quite obvious: otherwise, how would you be able to safely use member variables in the constructor or destructor?</p>
-</aside>
 </section>
 <section id="smfs-and-inheritance" class="slide level2">
 <h2>SMFs and inheritance</h2>
@@ -661,10 +542,6 @@ Derived::~Derived()
 Base::~Base()</code></pre>
 </div>
 </div>
-<aside class="notes">
-<p>For inheritance first the base class is constructed, then the derived class. Vice versa for the destruction order.</p>
-<p>Every C++ programmer should know this. Let’s move on.</p>
-</aside>
 </section>
 <section id="smfs-and-inheritance-1" class="slide level2">
 <h2>SMFs and inheritance</h2>
@@ -690,11 +567,6 @@ Base::~Base()</code></pre>
 // ?</code></pre>
 </div>
 </div>
-<aside class="notes">
-<p>Now, lets mix up the previous two examples! What’s the order now? Do YOU know?</p>
-<p>Let’s try to think of a logical order just by reasoning.</p>
-<p>The first one we can take off the list is the derived class, which will obviously be the last one to be constructed, and the first one to be destructed. We frankly need the base class and the member variables to be constructed when it is constructed itself.</p>
-</aside>
 </section>
 <section id="smfs-and-inheritance-2" class="slide level2">
 <h2>SMFs and inheritance</h2>
@@ -720,10 +592,6 @@ Derived::~Derived()
 // ?</code></pre>
 </div>
 </div>
-<aside class="notes">
-<p>OK. But what’s in the other positions? Will the base class be constructed first or a member variable?</p>
-<p>Consider what makes most sense. The base class is a thing in of itself, it is and should be agnostic as to how it is used. The derived class however is written in terms of the base class. This also means, that the derived class member variables may even be initialized in terms of base class elements. So as a conlusion, we can reason that the base class must construct first, then the derived class members, then the derived class.</p>
-</aside>
 </section>
 <section id="smfs-and-inheritance-3" class="slide level2">
 <h2>SMFs and inheritance</h2>
@@ -749,9 +617,6 @@ Member::~Member()
 Base::~Base()</code></pre>
 </div>
 </div>
-<aside class="notes">
-<p>So here it is.</p>
-</aside>
 </section>
 <section id="smfs-and-inheritance-4" class="slide level2">
 <h2>SMFs and inheritance</h2>
@@ -763,10 +628,6 @@ Base::~Base()</code></pre>
 </ol>
 <div class="fragment">
 <p>Destruction is order is reverse <img data-src="images/em-arrow_right_hook.svg" style="width:3.0%" /></p>
-<aside class="notes">
-<p>To conclude this section: special member functions and inheritance: the order of construction is base/non-static member variables/derived class. Destruction order is reverse.</p>
-<p>I hope now, at the end of this section, everyone is on the same page and perhaps has their memory refreshed? For the next part, we’re going to look at the declaration rules for special member functions.</p>
-</aside>
 </div>
 </section></section>
 <section>
@@ -777,101 +638,46 @@ Base::~Base()</code></pre>
 <section id="when-are-smfs-generated" class="slide level2">
 <h2>When are SMFs generated?</h2>
 <p><img data-src="images/labyrinth.jpg" style="width:75.0%" /></p>
-<aside class="notes">
-<p>This section is all about the questions: when are special member functions generated? And thus implicitly: what should you do to keep your object SMF hygene right?</p>
-<p>This is an important part of this whole session, so watch closely and think along! I going to show you that the declaration rules are not at all mystical.</p>
-</aside>
 </section>
 <section id="section-1" class="slide level2">
 <h2></h2>
 <p><img data-src="images/special-member-functions-table-1.png" style="width:70.0%" /></p>
-<aside class="notes">
-<p>Let’s start out with a table, where on the rows we have the user-declared functions, and on the columns we have the implicitly declared functions by the compiler. As you can see there’s two more rows than there are columns, as we also include the possibility to user-declare nothing or an alternative constructor.</p>
-<p>Now, let’s start filling out this table row-by-row and take a look at when we user-declare nothing.</p>
-</aside>
 </section>
 <section id="section-2" class="slide level2">
 <h2></h2>
 <p><img data-src="images/special-member-functions-table-2.png" style="width:70.0%" /></p>
-<aside class="notes">
-<p>In this case, every special member function is defaulted by the compiler. Makes sense.</p>
-<p>What if we declare an alternative constructor that is not the default constructor?</p>
-</aside>
 </section>
 <section id="section-3" class="slide level2">
 <h2></h2>
 <p><img data-src="images/special-member-functions-table-3.png" style="width:70.0%" /></p>
-<aside class="notes">
-<p>In that case, we lose the implicitly declared default constructor. Again this makes perfect sense, because the compiler cannot blindly assume your type can be default constructed, given that you declared a special constructor for it. Right?</p>
-<p>In this table, if we see ‘undeclared’ it means the compiler is not going to implement it. So, in this case, if you want the default constructor, you’ll have to default-declare/implement it yourself.</p>
-<p>Let’s continue. Now, what happens with the other special member functions if we define a default constructor?</p>
-</aside>
 </section>
 <section id="section-4" class="slide level2">
 <h2></h2>
 <p><img data-src="images/special-member-functions-table-4.png" style="width:70.0%" /></p>
-<aside class="notes">
-<p>Nothing, which is not a surprise really. In fact, up until here we haven’t had any real surprises really</p>
-<p>Let’s continue to the next two rows. What happens if we user-declare either one of the two copy operations?</p>
-</aside>
 </section>
 <section id="section-5" class="slide level2">
 <h2></h2>
 <p><img data-src="images/special-member-functions-table-5.png" style="width:70.0%" /></p>
-<aside class="notes">
-<p>Aha, now things are going to be interesting!</p>
-<p>Firstly, when we user-declare a copy constructor, the default constructor is removed. This makes sense, as apparently an object cannot simply be constructed; with which we communicate to the compiler that object construction is a special thing.</p>
-<p>Then something else that is remarkable, is that for both user-declared copy operations, both move operations are undeclared. This is quite easy to understand as well I think, as it makes perfect sense that if an object is not trivial to be copied, it is most likely also not trivial to be moved.</p>
-<p>Let’s continue and further complete the table. What happens if we user-declare either one of the two move operations?</p>
-</aside>
 </section>
 <section id="section-6" class="slide level2">
 <h2></h2>
 <p><img data-src="images/special-member-functions-table-6.png" style="width:70.0%" /></p>
-<aside class="notes">
-<p>Ouch!</p>
-<p>If we define the move constructor, we lose almost every bit of magic except for the compiler-declared destructor. Painful!</p>
-<p>Then again, we lose the default constructor if we user-declar any alternative constructor, as we always do. That makes sense.</p>
-<p>Also, just like we lost the compiler-declared move operations when user-declaring the copy operations, we lose the compiler-declared copy operations when we user-declare the move operations. This makes sense from the compilers’ perspective, that has to be conservative: if moveing is special, copying is special too.</p>
-<p>What is a wee bit puzzling though, is that we lose the compiler-declared move assignment operator if we user-declare the move constructor and vice versa. Why is that?</p>
-<p>Just think about it: what do the copy operations do? They copy their contents into a new or existing object, not affecting their own contents. That’s why the copy operations don’t cause one another to be undeclared when user-declaring either one. For move operations though, this is fundamentally different. What happens if an object is move-constructed or move-assigned? In principle, its contents are donated to the object that is constructed or moved to, this is a destructive operation! And even though this is not necessarily the case, it means the compiler to assume the worst. Right.</p>
-<p>This also means that the move operations are in principle always customized in pairs: both or none.</p>
-<p>Let’s fill in the last row of the table: what happens if we user-declare the destructor?</p>
-</aside>
 </section>
 <section id="section-7" class="slide level2">
 <h2></h2>
 <p><img data-src="images/special-member-functions-table-7.png" style="width:70.0%" /></p>
-<aside class="notes">
-<p>There are two casualties: the move operations. And if you think about it, this makes sense: if destruction/deinitialization of contents is a special thing to do, the compiler cannot automagically implement the move operations because they involve deinitialization of contents as well. Right?</p>
-<p>OK, so now our table is finished, and we have all the spots filled in. Great!</p>
-<p>And even though this is not such a large table, and we managed to reason about eacht cell, it can be challenging to remember the rules here. That’s why I suggest we look at some selected regions and extract basic rules from those.</p>
-</aside>
 </section>
 <section id="section-8" class="slide level2">
 <h2></h2>
 <p><img data-src="images/special-member-functions-table-7_highlight1.png" style="width:70.0%" /></p>
-<aside class="notes">
-<p>First let’s look at the spots in the table where the default constructor is not compiler-declared anymore. This is quite simple to remember: for every user-declared constructor, the compiler will not declare the default constructor.</p>
-<p>Or, the other way around: if you need a default constructor, you’ll have to user-declare it for every other constructor you user-declare. Right? That’s quite easy to remember.</p>
-<p>Next section!</p>
-</aside>
 </section>
 <section id="section-9" class="slide level2">
 <h2></h2>
 <p><img data-src="images/special-member-functions-table-7_highlight2.png" style="width:70.0%" /></p>
-<aside class="notes">
-<p>That is the compiler-undeclaration of copy operations, if any of the move operations is user-declared. That’s the second rule we’re going to remember. Simple! Right?</p>
-<p>Then the second and last section.</p>
-</aside>
 </section>
 <section id="section-10" class="slide level2">
 <h2></h2>
 <p><img data-src="images/special-member-functions-table-7_highlight3.png" style="width:70.0%" /></p>
-<aside class="notes">
-<p>The last section is about when the move operations are not compiler-declared anymore. As we can see, the move operations will not be compiler-declared when copy operations, move operations or the destructor are user-declared. And that’ll be the third rule.</p>
-<p>Summarizing these three rules, we come to the following table.</p>
-</aside>
 </section>
 <section id="declaration-rules-summary" class="slide level2">
 <h2>Declaration rules summary</h2>
@@ -901,14 +707,6 @@ Base::~Base()</code></pre>
 </tr>
 </tbody>
 </table>
-<aside class="notes">
-<p>To summarize the declaration rules:</p>
-<ol type="1">
-<li><strong>Default constructor</strong> will be undeclared for any other constructor,</li>
-<li><strong>Move operations</strong> will be undeclared for any copy/move/destructor,</li>
-<li><strong>Copy operations</strong> will be undeclared for any move operation.</li>
-</ol>
-</aside>
 </div>
 </section>
 <section id="declaration-rules-summary-1" class="slide level2">
@@ -938,9 +736,6 @@ Base::~Base()</code></pre>
 </tr>
 </tbody>
 </table>
-<aside class="notes">
-<p>Or, if you read C++ code more easily. Whatever you like!</p>
-</aside>
 </section>
 <section id="copy-vs-move-and-fallback" class="slide level2">
 <h2>Copy vs move and fallback</h2>
@@ -953,31 +748,14 @@ Base::~Base()</code></pre>
 <span id="cb29-6"><a href="#cb29-6"></a>  X z{<span class="bu">std::</span>move(x)}; <span class="co">// Will copy-construct.</span></span>
 <span id="cb29-7"><a href="#cb29-7"></a>}</span></code></pre></div>
 <p><img data-src="images/em-thinking_face.svg" style="width:6.0%" /></p>
-<aside class="notes">
-<p>Look at this example of a type that is copy-only. This is interesting. I thought you said copy-only Kris, what’s that? Are you lying to us?</p>
-<p>Well no, copy-only, in this example, basically means it is guaranteed that the contents of the original object will never be moved. It is still OK to perform the move operation on it, implicitly and explicitly. The thing is, <code>std::move</code> doesn’t move, at least, not per sé.</p>
-<p>The point I’m trying to address here though, is that even though a class made unmovable, it doesn’t break all the code that previously used this movable ability. This might be a loss in efficiency, but not a loss in code correctness.</p>
-<p>In short: when the move operations of a class type are deleted, the copy fallback is still available and keeps your code working.</p>
-<p>What we can do, is use this knowledge to make our table from the previous section more complete.</p>
-</aside>
 </section>
 <section id="section-11" class="slide level2">
 <h2></h2>
 <p><img data-src="images/special-member-functions-table-7.png" style="width:70.0%" /></p>
-<aside class="notes">
-<p>Here’s the table as we built in in the previous section. Lots of red cells, meaning we lose a certain operation, compiler magic and possible breakage of existing code.</p>
-<p>Now if we include the knowledge that for undeclared move operations the copy fallback is available when the copy operations are still there, we arrive at the following table.</p>
-</aside>
 </section>
 <section id="section-12" class="slide level2">
 <h2></h2>
 <p><img data-src="images/special-member-functions-table-8.png" style="width:70.0%" /></p>
-<aside class="notes">
-<p>Now that looks a lot less hostile if you ask me.</p>
-<p>There are two cells still as red as they were. If we user-declare our move operations, we lose the copy operations as well. We knew that.</p>
-<p>The cells that are now purple however, indicate the situations where we lose a move operation, but keep the copy operations! That means we lose potential efficiency, as the compiler cannot perform a potentially more efficient move, but our code will still build, which is nice.</p>
-<p>Especially for legacy code bases that gradually move towards more modern implementations and use modern tools, this is important.</p>
-</aside>
 </section>
 <section id="porting-legacy-code" class="slide level2">
 <h2>Porting legacy code</h2>
@@ -1001,17 +779,6 @@ Base::~Base()</code></pre>
 </div>
 <div class="fragment">
 <p>C++11 and later will still copy – due to <code class="sourceCode cpp">~X()</code> and copy fallback</p>
-<aside class="notes">
-<p>Consider this plausible example of a class somewhere in your codebase. It user-declares a destructor, nothing really special.</p>
-<p>Let’s suppose we have a vector onto which we push these anonymous temporary instantiations of X, also called rvalues. Again, not a really strange situation, it might just be your code.</p>
-<p>Now as time progresses your tools are renewed and you move from pre-C++11 into the modern, post-C++11 world. Yay!</p>
-<p>You hurry yourself to the nearest browser and pull up cppreference.com, as one often does. On the page of <code>std::vector</code>, you find this table for member function <code>push_back()</code>.</p>
-<p>Ah! C++11 features a version of <code>push_back</code> that takes an rvalue reference function argument! Awesome, that’ll mean all my rvalue X’s here will be moved instead of copied! Modern C++ for the win!</p>
-<p>Well, yes and no. Let’s start with the good news: your code will still build. The bad news though, is that X’s are still being copied here. Not moved.</p>
-<p>But why?</p>
-<p>Because the destructor is user-declared. This disables the move operations, but enables the copy fallback. The code still builds, but no move.</p>
-<p>In order to fix this, we need to user-declare the move operations. Let’s do that.</p>
-</aside>
 </div>
 </section>
 <section id="porting-legacy-code-1" class="slide level2">
@@ -1037,10 +804,6 @@ Base::~Base()</code></pre>
 <p><br/> <img data-src="images/vector_push_back.png" style="width:100.0%" /></p>
 </div>
 </div>
-<aside class="notes">
-<p>Now the X’s will be moved into the vector for C++11 and later.</p>
-<p>One could come up with numerous examples like this one, which may happen all over your code base. To get the most out of modern tooling and features like move semantics, a little bit of porting is sometimes required.</p>
-</aside>
 </section>
 <section id="rule-of-x" class="slide level2">
 <h2>Rule of …X?</h2>
@@ -1088,11 +851,6 @@ Base::~Base()</code></pre>
 </div>
 </div>
 <p><img data-src="images/em-exploding_head.svg" style="width:6.0%" /></p>
-<aside class="notes">
-<p>In research for this presentation, I have found many special rules to be used.</p>
-<p>…</p>
-<p>Each of the rules has its advantages and disadvantages, and some are outdated if you use a modern C++ style/toolchain. There are a few of these rules however, that make a lot of sense and should be used.</p>
-</aside>
 </section>
 <section id="rule-of-zero" class="slide level2">
 <h2>Rule of zero</h2>
@@ -1102,12 +860,6 @@ Base::~Base()</code></pre>
 <div class="sourceCode" id="cb32"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true"></a><span class="kw">struct</span> X {</span>
 <span id="cb32-2"><a href="#cb32-2" aria-hidden="true"></a>  <span class="co">// Let the compiler do all the work.</span></span>
 <span id="cb32-3"><a href="#cb32-3" aria-hidden="true"></a>};</span></code></pre></div>
-<aside class="notes">
-<p>First, for most cases, you should try to apply the rule of zero. Let the compiler do the work for you.</p>
-<p>This is a timeless rule. And as the language, compilers and toolchains get more advanced, they will hopefully be able to offload even more of your work. It’s their job to do so!</p>
-<p>So, again, where ever you can, don’t implement any of the special member functions.</p>
-<p>Things change when for some reason you must implement an SMF.</p>
-</aside>
 </section>
 <section id="if-custom-smfs-are-needed" class="slide level2">
 <h2>If custom SMFs are needed</h2>
@@ -1118,13 +870,6 @@ Base::~Base()</code></pre>
 </ul>
 <div class="fragment">
 <p>Use the rule of zero for everything else.</p>
-<aside class="notes">
-<p>My suggestion, and many agree, that it makes sense to look at the purpose of a class first; then decide upon the SMF policy.</p>
-<p>Generally speaking, there are three cases:</p>
-<p>…</p>
-<p>Otherwise, use the rule of zero.</p>
-<p>Let’s discuss each of these cases.</p>
-</aside>
 </div>
 </section>
 <section id="container-classes" class="slide level2">
@@ -1140,10 +885,6 @@ Base::~Base()</code></pre>
 <span id="cb33-8"><a href="#cb33-8"></a>  Container(Container&amp;&amp; other);</span>
 <span id="cb33-9"><a href="#cb33-9"></a>  Container&amp; <span class="kw">operator</span>=(Container&amp;&amp; other);</span>
 <span id="cb33-10"><a href="#cb33-10"></a>};</span></code></pre></div>
-<aside class="notes">
-<p>Containers are all about versatile usage in combination with the STL and various programming paradigms. We want the type to be complete and useful in as many situations as possible.</p>
-<p>Therefor, we must support all possible operations and we want a default constructor as well. That’s why this rule is called rule of six.</p>
-</aside>
 </section>
 <section id="resource-managing-classes" class="slide level2">
 <h2>Resource managing classes</h2>
@@ -1156,10 +897,6 @@ Base::~Base()</code></pre>
 <span id="cb34-6"><a href="#cb34-6"></a>  ResourceManager&amp; <span class="kw">operator</span>=(ResourceManager&amp;&amp; other);</span>
 <span id="cb34-7"><a href="#cb34-7"></a>};</span></code></pre></div>
 <p>The rules/compiler will take care of the rest.</p>
-<aside class="notes">
-<p>What about a resource managing class? Resource managing classes hold a resource that is move-only, or in other words non-copyable.</p>
-<p>Because you implement the move operations, the copy operations will be undeclared.</p>
-</aside>
 </section>
 <section id="immobile-classes" class="slide level2">
 <h2>Immobile classes <img data-src="images/em-house.svg" style="width:5.0%" /></h2>
@@ -1169,9 +906,6 @@ Base::~Base()</code></pre>
 <span id="cb35-3"><a href="#cb35-3"></a>  Immobile&amp; <span class="kw">operator</span>=(<span class="at">const</span> Immobile&amp; other) = <span class="kw">delete</span>;</span>
 <span id="cb35-4"><a href="#cb35-4"></a>};</span></code></pre></div>
 <p>The rules/compiler will take care of the rest.</p>
-<aside class="notes">
-<p>…</p>
-</aside>
 </section>
 <section id="the-rule-of-zero-or-all" class="slide level2">
 <h2>The rule of zero or all</h2>
@@ -1180,13 +914,6 @@ Base::~Base()</code></pre>
 </blockquote>
 <div class="fragment">
 <p>Trigger for ‘all’ is any copy/move operations or <code class="sourceCode cpp">~T()</code></p>
-<aside class="notes">
-<p>…</p>
-<p>Technically, in some of the previous examples, we didn’t have to explicitly mark the some operations as deleted, but as a company-wide rule it makes sense to do so. It explicitly advertises intent without the code reader having to know the declaration rules by heart.</p>
-<p>So in that vein, it makes sense to apply the rule of zero or all.</p>
-<p>If no special member functions are needed, don’t declare any. If any copy or move operation, or the destructor is user-declared, declare all of them.</p>
-<p>Slightly blunt, but simple to remember and manage.</p>
-</aside>
 </div>
 </section>
 <section id="some-last-notes" class="slide level2">
@@ -1196,12 +923,6 @@ Base::~Base()</code></pre>
 <li class="fragment">Don’t split copy operations and move operations,</li>
 <li class="fragment">Don’t build copy-only types, they are surprising.</li>
 </ul>
-<aside class="notes">
-<p>Some final thoughts before we close this section off.</p>
-<p>First: try to maintain a default constructor if you can. This makes working with a class easier in general, and opens up possibilities for other styles of programming.</p>
-<p>Second: never split up copy operations or move operations. For example only implementing the copy constructor, but not the copy assignment operator. This is surprising for a user, and therefor bad.</p>
-<p>Lastly: don’t build copy-only types with deleted move operations. This breaks code that would otherwise still build, and again, leads to nasty surprises.</p>
-</aside>
 </section></section>
 <section>
 <section id="implementation-guidelines" class="title-slide slide level1">
@@ -1216,9 +937,6 @@ Base::~Base()</code></pre>
 <li class="fragment">Provide a default implementation,</li>
 <li class="fragment">‘Hide’ an SMF.</li>
 </ol>
-<aside class="notes">
-<p>…</p>
-</aside>
 </section>
 <section id="defaulting-or-hiding-an-smf" class="slide level2">
 <h2>Defaulting or hiding an SMF <img data-src="images/cpp-classic.png" style="width:8.0%" /></h2>
@@ -1226,9 +944,6 @@ Base::~Base()</code></pre>
 <li class="fragment">Default implementation: <code class="sourceCode cpp">T(){}</code></li>
 <li class="fragment">‘Hiding’ an SMF: declaration in <code class="sourceCode cpp"><span class="kw">private</span></code> section</li>
 </ul>
-<aside class="notes">
-<p>…</p>
-</aside>
 </section>
 <section id="defaulting-or-hiding-an-smf-1" class="slide level2">
 <h2>Defaulting or hiding an SMF <img data-src="images/cpp-modern.png" style="width:8.0%" /></h2>
@@ -1236,9 +951,6 @@ Base::~Base()</code></pre>
 <li class="fragment">Default implementation: <code class="sourceCode cpp">T() = <span class="cf">default</span>;</code></li>
 <li class="fragment">‘Hiding’ an SMF: <code class="sourceCode cpp">T() = <span class="kw">delete</span>;</code> in <code class="sourceCode cpp"><span class="kw">public</span></code> section</li>
 </ul>
-<aside class="notes">
-<p>…</p>
-</aside>
 </section>
 <section id="constructor-guidelines" class="slide level2">
 <h2>Constructor guidelines</h2>
@@ -1249,9 +961,6 @@ Base::~Base()</code></pre>
 <li class="fragment">Make sure your object is in a specified state after <code class="sourceCode cpp">T()</code>,</li>
 <li class="fragment">Mark a constructor taking only one argument <code class="sourceCode cpp"><span class="kw">explicit</span></code>.</li>
 </ul>
-<aside class="notes">
-<p>…</p>
-</aside>
 </section>
 <section id="explicit-constructor" class="slide level2">
 <h2>Explicit constructor</h2>
@@ -1259,9 +968,6 @@ Base::~Base()</code></pre>
 <p>Make any constructor that takes only one argument an <code class="sourceCode cpp"><span class="kw">explicit</span></code> constructor.</p>
 </blockquote>
 <p>Unless you intend to write a converting constructor.</p>
-<aside class="notes">
-<p>…</p>
-</aside>
 </section>
 <section id="explicit-constructor-1" class="slide level2">
 <h2>Explicit constructor</h2>
@@ -1274,9 +980,6 @@ Base::~Base()</code></pre>
 <span id="cb36-6"><a href="#cb36-6"></a>}</span>
 <span id="cb36-7"><a href="#cb36-7"></a></span>
 <span id="cb36-8"><a href="#cb36-8"></a>func(<span class="dv">42</span>); <span class="co">// Will implicitly convert &#39;42&#39; to X..</span></span></code></pre></div>
-<aside class="notes">
-<p>…</p>
-</aside>
 </section>
 <section id="explicit-constructor-2" class="slide level2">
 <h2>Explicit constructor</h2>
@@ -1289,9 +992,6 @@ Base::~Base()</code></pre>
 <span id="cb37-6"><a href="#cb37-6"></a>}</span>
 <span id="cb37-7"><a href="#cb37-7"></a></span>
 <span id="cb37-8"><a href="#cb37-8"></a>func(<span class="dv">42</span>); <span class="co">// Compiler error!</span></span></code></pre></div>
-<aside class="notes">
-<p>…</p>
-</aside>
 </section>
 <section id="explicit-constructor-3" class="slide level2">
 <h2>Explicit constructor</h2>
@@ -1304,9 +1004,6 @@ Base::~Base()</code></pre>
 <span id="cb38-6"><a href="#cb38-6"></a>}</span>
 <span id="cb38-7"><a href="#cb38-7"></a></span>
 <span id="cb38-8"><a href="#cb38-8"></a>func(X{<span class="dv">42</span>}); <span class="co">// OK, explicit and safe.</span></span></code></pre></div>
-<aside class="notes">
-<p>…</p>
-</aside>
 </section>
 <section id="member-initializer-list" class="slide level2">
 <h2>Member initializer list</h2>
@@ -1322,11 +1019,6 @@ Base::~Base()</code></pre>
 <li class="fragment">Default-constructs <code>value_</code> first,</li>
 <li class="fragment">Calls assignment operator second.</li>
 </ol>
-<aside class="notes">
-<p>From a historical perspective, the constructor is there to initialize an object. Part of this initialization is preparing or setting the non-static member variables.</p>
-<p>This could be done like so.. [see example]</p>
-<p>However, this is an inefficient implementation because the member value will first be default-constructed and then, in a separate operation, assigned. A better approach would be to utilize the member initialization list.</p>
-</aside>
 </section>
 <section id="member-initializer-list-1" class="slide level2">
 <h2>Member initializer list</h2>
@@ -1340,9 +1032,6 @@ Base::~Base()</code></pre>
 <span id="cb40-7"><a href="#cb40-7"></a>};</span></code></pre></div>
 <div class="fragment">
 <p>Direct-initializes <code>value_</code>.</p>
-<aside class="notes">
-<p>This implementation, which yields the same result as the previous example, just directly initializes the member variable in one go. So, if possible, use the member initializer list. It is the most efficient way to initialize non-static member variables.</p>
-</aside>
 </div>
 </section>
 <section id="member-variable-initializations" class="slide level2">
@@ -1359,13 +1048,6 @@ Base::~Base()</code></pre>
 <p><strong>Question</strong>: will <code>value_</code> be initialized twice?</p>
 <div class="fragment">
 <p>No.</p>
-<aside class="notes">
-<p>Let’s look at this example then, using the default member initializer from C++11 and onwards.</p>
-<p>Question: is <code>value_</code> initialized twice due to the default member initializer? The answer is: no.</p>
-<p>The non-static data member already appears in the member initialization list, so the default member initializer is ignored. Nice.</p>
-<p>You might wonder though, this doesn’t make sense: initializing a member variable in two places. Well, it actually does make sense when a default constructor is defined. A compiler-generated default constructor will use the default initializer for non-static member variables.</p>
-<p>Also when your class has multiple members, part of which are initialized in by default initializers, part by a specialized constructor, you can leave out the member variables that are default-initialized from the member initializer list as they’re already taken care of.</p>
-</aside>
 </div>
 </section>
 <section id="member-variable-initializations-1" class="slide level2">
@@ -1376,10 +1058,6 @@ Base::~Base()</code></pre>
 <span id="cb42-3"><a href="#cb42-3"></a>};</span>
 <span id="cb42-4"><a href="#cb42-4"></a></span>
 <span id="cb42-5"><a href="#cb42-5"></a>X x;</span></code></pre></div>
-<aside class="notes">
-<p>Here’s the example fixed, more readable and just as efficient.</p>
-<p>Let’s look at initialization order then.</p>
-</aside>
 </section>
 <section id="member-initializer-list-2" class="slide level2">
 <h2>Member initializer list</h2>
@@ -1393,11 +1071,6 @@ Base::~Base()</code></pre>
 <span id="cb43-7"><a href="#cb43-7"></a>  <span class="dt">int</span> <span class="va">value1_</span> = {};</span>
 <span id="cb43-8"><a href="#cb43-8"></a>  <span class="dt">int</span> <span class="va">value2_</span> = {};</span>
 <span id="cb43-9"><a href="#cb43-9"></a>};</span></code></pre></div>
-<aside class="notes">
-<p>C++ class initialization order is strict and well-defined; initialization will happen in the order of declaration. However, the order in the initialization list may be random – the code in this example is legal.</p>
-<p>See how <code>value2_</code> is defined in terms of <code>value1_</code>, even though <code>value1_</code> is not initialized yet. Mistakes like this can creep into your code easily, especially when a data structure has many members.</p>
-<p>Compilers are able to detect errors like this, so one must enable compiler warnings or use a proper static code analyser.</p>
-</aside>
 </section>
 <section id="member-initializer-list-3" class="slide level2">
 <h2>Member initializer list</h2>
@@ -1409,14 +1082,6 @@ Base::~Base()</code></pre>
 </blockquote>
 <div class="fragment">
 <p>(and look at them..or better even, use <code>-Werror</code>/<code>/WX</code>)</p>
-<aside class="notes">
-<p>So, as a quick summary on the member initializer list in the constructor:</p>
-<ul>
-<li>Use the member initialization list if necessary; it’s the most efficient way to initialize class members.</li>
-<li>Secondly, a general remark: use the compiler and enable compiler warnings.</li>
-</ul>
-<p>And look at the warnings; or perhaps better even, turn on warnings as errors and get them fixed immediately.</p>
-</aside>
 </div>
 </section>
 <section id="destructor-guidelines" class="slide level2">
@@ -1427,11 +1092,6 @@ Base::~Base()</code></pre>
 <li class="fragment">Make destructor <code class="sourceCode cpp"><span class="kw">virtual</span></code> if applicable,</li>
 <li class="fragment">Don’t let exceptions leave destructors.</li>
 </ul>
-<aside class="notes">
-<p>Again, never call virtual functions from constructors and destructors. Overriding has not happened yet in this context, leading to surprising results.</p>
-<p>For the destructor, there are generally two subtopics that are important: when and how to deal with virtual destructors, and how to deal with exceptions.</p>
-<p>Let’s look at virtual destructors first.</p>
-</aside>
 </section>
 <section id="virtual-destructors" class="slide level2">
 <h2><code class="sourceCode cpp"><span class="kw">virtual</span></code> destructors</h2>
@@ -1444,12 +1104,6 @@ Base::~Base()</code></pre>
 <span id="cb44-4"><a href="#cb44-4"></a>{</span>
 <span id="cb44-5"><a href="#cb44-5"></a>  <span class="kw">auto</span> ptr = <span class="bu">std::</span>make_unique&lt;Base&gt;(Derived{});</span>
 <span id="cb44-6"><a href="#cb44-6"></a>} <span class="co">// Pointer &#39;ptr&#39; will go out of scope here and destruct via Base-type.</span></span></code></pre></div>
-<aside class="notes">
-<p>…</p>
-<p>When we look at the example, we can see how this works. If the smart pointer object will go out of scope, it will destruct the object it’s holding. But that’s a pointer of type ‘Base’ to an object of type ‘Derived’.</p>
-<p>If Base does not have a virtual destructor, deleting a derived class through a base class pointer is undefined behavior. Your harddrive might be wiped, but most of the time only the ‘Base’ part of the ‘Derived’ object will be destructed – which is pretty bad as well. So use a virtual destructor for any class that is meant to be a base class for polymorphic use.</p>
-<p>In the same vein, a class that is NOT meant for polymorphic usage should NOT have a virtual destructor. This can be inefficient for the compiler could implement vtables which will not be used. Mark your class final if it’s not supposed to be used for polymorphic use.</p>
-</aside>
 </section>
 <section id="virtual-destructors-1" class="slide level2">
 <h2><code class="sourceCode cpp"><span class="kw">virtual</span></code> destructors</h2>
@@ -1464,11 +1118,6 @@ Base::~Base()</code></pre>
 <span id="cb45-9"><a href="#cb45-9"></a>{</span>
 <span id="cb45-10"><a href="#cb45-10"></a>  <span class="kw">auto</span> ptr = <span class="bu">std::</span>make_unique&lt;Base&gt;(Derived{});</span>
 <span id="cb45-11"><a href="#cb45-11"></a>} <span class="co">// All is safe now.</span></span></code></pre></div>
-<aside class="notes">
-<p>Here’s the example again, with some details.</p>
-<p>Note the ‘override’ specifier on the derived destructor. This might seem a useless thing to do, but it is not. The override specifier will not do anything no, but it only works on virtual functions. So if the base class destructor is not virtual –which should be the case as we just saw– this program will not compile. This adds a nice safeguard to your code.</p>
-<p>This is good advice in general by the way: if you’re in C++11 or later world; use the override specifier for each function that overrides a (supposedly) virtual function.</p>
-</aside>
 </section>
 <section id="destructors-and-exceptions" class="slide level2">
 <h2>Destructors and exceptions</h2>
@@ -1477,10 +1126,6 @@ Base::~Base()</code></pre>
 </blockquote>
 <p> </p>
 <p><img data-src="images/em-robot_face.svg" style="width:4.0%" /> <code>terminate()</code> will be called!</p>
-<aside class="notes">
-<p>In destructors, make sure that an exception cannot escape.</p>
-<p>Either terminate will be called, or something else bad will happen.</p>
-</aside>
 </section>
 <section id="copy-operations" class="slide level2">
 <h2>Copy operations</h2>
@@ -1492,9 +1137,6 @@ Base::~Base()</code></pre>
 <li class="fragment">Return a reference to <code class="sourceCode cpp">*<span class="kw">this</span></code>,</li>
 <li class="fragment">Provide (strong) exception-safety.</li>
 </ul>
-<aside class="notes">
-<p>…</p>
-</aside>
 </section>
 <section id="move-operations" class="slide level2">
 <h2>Move operations</h2>
@@ -1507,9 +1149,6 @@ Base::~Base()</code></pre>
 <li class="fragment">Provide (strong) exception-safety,</li>
 <li class="fragment">Leave a moved-from object in a valid state.</li>
 </ul>
-<aside class="notes">
-<p>…</p>
-</aside>
 </section></section>
 <section>
 <section id="tooling-and-best-practices" class="title-slide slide level1">
@@ -1524,9 +1163,6 @@ Base::~Base()</code></pre>
 </ul>
 <div class="fragment">
 <p>Please don’t use them if you can <img data-src="images/em-point_up.svg" style="width:4.0%" /></p>
-<aside class="notes">
-<p>…</p>
-</aside>
 </div>
 </section>
 <section id="raii" class="slide level2">
@@ -1536,9 +1172,6 @@ Base::~Base()</code></pre>
 </blockquote>
 <p> </p>
 <p><code class="sourceCode cpp"><span class="bu">std::</span>unique_ptr&lt;&gt;</code>/<code class="sourceCode cpp"><span class="bu">std::</span>shared_ptr&lt;&gt;</code>/<code class="sourceCode cpp"><span class="bu">std::</span>lock_guard&lt;&gt;</code>/…</p>
-<aside class="notes">
-<p>…</p>
-</aside>
 </section>
 <section id="raii-1" class="slide level2">
 <h2>RAII</h2>
@@ -1555,9 +1188,6 @@ Base::~Base()</code></pre>
 <li class="fragment"><code class="sourceCode cpp">lock()</code> the mutex upon construction,</li>
 <li class="fragment"><code class="sourceCode cpp">unlock()</code> the mutex upon destruction.</li>
 </ul>
-<aside class="notes">
-<p>…</p>
-</aside>
 </div>
 </section>
 <section id="the-copy-and-swap-idiom" class="slide level2">
@@ -1693,13 +1323,6 @@ Base::~Base()</code></pre>
 <span id="cb57-10"><a href="#cb57-10"></a>  Uncopyable(Uncopyable&amp;&amp;) = <span class="cf">default</span>;</span>
 <span id="cb57-11"><a href="#cb57-11"></a>  Uncopyable&amp; <span class="kw">operator</span>=(Uncopyable&amp;&amp;) = <span class="cf">default</span>;</span>
 <span id="cb57-12"><a href="#cb57-12"></a>};</span></code></pre></div>
-<aside class="notes">
-<p>The first pattern we’re going to look at is the uncopyable base class.</p>
-<p>By making this class a base class to your type class, you eliminate the possibility for it to be copied. This can be nice, because you don’t have to deal with these mechanics yourself in your derived class. In fact, there is a base class type in the boost library called ‘noncopyable’ that is like this.</p>
-<p>The constructor and destructor are declared in the protected section to make sure this class can only be used as a base class.</p>
-<p>For an implementation in pre-C++11, we would need to declare the copy operations in the private section of the class.</p>
-<p>Let’s look at an example usage.</p>
-</aside>
 </section>
 <section id="uncopyable-type-1" class="slide level2">
 <h2>Uncopyable type</h2>
@@ -1712,12 +1335,6 @@ Base::~Base()</code></pre>
 <span id="cb58-7"><a href="#cb58-7"></a><span class="co">//X y{x};            // Will fail to compile.</span></span>
 <span id="cb58-8"><a href="#cb58-8"></a>  X z{<span class="bu">std::</span>move(x)}; <span class="co">// Will move-construct.</span></span>
 <span id="cb58-9"><a href="#cb58-9"></a>}</span></code></pre></div>
-<aside class="notes">
-<p>Here we make class X uncopyable by simply privately deriving from the uncopyable class. The second line in the main function where attempt is made to copy an instance of x will fail to compiler.</p>
-<p>The third line will work fine.</p>
-<p>This type could be used to implement a resource handle like we discussed before.</p>
-<p>It would not exist in pre-C++11 world, making it possible to only construct/destruct a type like this for this version of the language.</p>
-</aside>
 </section>
 <section id="unit-test-your-smfs" class="slide level2">
 <h2>Unit-test your SMFs!</h2>
@@ -1731,13 +1348,6 @@ Base::~Base()</code></pre>
 </div>
 <div class="fragment">
 <p>Enable compiler sanitizers! E.g. ASAN, UB, ..</p>
-<aside class="notes">
-<p>Question: should you test special member functions? People make unit tests, integration tests, end-to-end tests. Do you make unit tests for special member functions? I think you should.</p>
-<p>Depending on applicability: I’m always adding the following tests to the unit test suite.</p>
-<p>…</p>
-<p>You might wonder; why? They make for silly tests! And moreover; most of the special member functions are tested implicitly!</p>
-<p>Yes that’s true, but are they all? Especially if you define some of them yourself this is important to be tested. And it makes even much more sense if you enable compiler sanitizers. If somethings wrong in your SMF implementation, you’ll find it right there in a neat and simple unit test, dedicated for this purpose.</p>
-</aside>
 </div>
 </section>
 <section id="static-analyzers-and-smfs" class="slide level2">
@@ -1752,10 +1362,6 @@ Base::~Base()</code></pre>
 </ul>
 <div class="fragment">
 <p>They all provide rules for checking SMF use</p>
-<aside class="notes">
-<p>Here’s some static analyzers I have worked with. All of them have support for checking errors in usage and implementation of special member functions. Also, all of them can be employed in your CI pipeline or reviewing work flow.</p>
-<p>Accompanying this presentation is a list of resources I’ve used for research, and in there is also a list of these static analyszers and a list of errors regarding SMFs they’re able to find. This list of resources will be provided together with a PDF of this talk.</p>
-</aside>
 </div>
 </section></section>
 <section>
@@ -1824,10 +1430,6 @@ Base::~Base()</code></pre>
 <p> </p>
 <p><img data-src="images/em-left_speech_bubble.svg" style="width:8.0%" /> <img data-src="images/em-question.svg" style="width:7.0%" /></p>
 <p><img data-src="images/em-link.svg" style="width:3.0%" /> <a href="https://github.com/krisvanrens/">github.com/krisvanrens</a></p>
-<aside class="notes">
-<p>Thank you!</p>
-<p>Are there any questions?</p>
-</aside>
 </section>
     </div>
   </div>
