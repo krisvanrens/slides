@@ -110,17 +110,15 @@
 <li class="fragment"><strong>Special member function <span style="color:crimson"><strong>fundamentals</strong></span></strong></li>
 <li class="fragment"><strong><span style="color:crimson"><strong>Declaration rules</strong></span></strong></li>
 <li class="fragment"><strong>Implementation <span style="color:crimson"><strong>guidelines</strong></span></strong></li>
+<li class="fragment"><strong>Tooling and <span style="color:crimson"><strong>best practices</strong></span></strong></li>
 <li class="fragment"><strong>Conclusions</strong></li>
 </ul>
-<div class="fragment">
-<p>Extra: <strong>Tooling and <span style="color:crimson"><strong>best practices</strong></span></strong></p>
 <aside class="notes">
 <p>Hi and welcome to this session on special member functions in C++!</p>
 <p>Let me start out by providing you an overview of the next hour. I split up this talk in five parts, starting out with some of the fundamentals, to make sure we’re all on the same page. Then, I will dive into the mystical labyrinth of declaration rules (psst, don’t tell on; it’s not a labyrinth and they’re not mystical at all..). Then, for good measure we will look into some good practices for implementing special member functions. To finish, I’m going to touch upon some fringe subjects regarding special member functions, and provide those still awake with some conclusions.</p>
 <p>As you can see, we’re going to cover a lot of ground in a mere hour. But fear not, you will be provided with the PDF version of this presentation, accompanied with a hefty list of resources I used to conduct my research.</p>
 <p>As for questions: I will take questions at the end, and somewhere halfway to accomodate for the online setup.</p>
 </aside>
-</div>
 </section>
 <section id="a-little-bit-about-me" class="slide level2">
 <h2>A little bit about me</h2>
@@ -1514,87 +1512,6 @@ Base::~Base()</code></pre>
 </aside>
 </section></section>
 <section>
-<section id="conclusions" class="title-slide slide level1">
-<h1>Conclusions</h1>
-
-</section>
-<section id="smf-prototypes-1" class="slide level2">
-<h2>SMF prototypes</h2>
-<div class="sourceCode" id="cb46"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb46-1"><a href="#cb46-1"></a><span class="kw">struct</span> T {</span>
-<span id="cb46-2"><a href="#cb46-2"></a>  T();                          <span class="co">// Default constructor.</span></span>
-<span id="cb46-3"><a href="#cb46-3"></a>  ~T();                         <span class="co">// Destructor.</span></span>
-<span id="cb46-4"><a href="#cb46-4"></a></span>
-<span id="cb46-5"><a href="#cb46-5"></a>  T(<span class="at">const</span> T&amp; other);            <span class="co">// Copy constructor.</span></span>
-<span id="cb46-6"><a href="#cb46-6"></a>  T&amp; <span class="kw">operator</span>=(<span class="at">const</span> T&amp; other); <span class="co">// Copy assignment operator.</span></span>
-<span id="cb46-7"><a href="#cb46-7"></a></span>
-<span id="cb46-8"><a href="#cb46-8"></a>  T(T&amp;&amp; other);                 <span class="co">// Move constructor (C++11 and later).</span></span>
-<span id="cb46-9"><a href="#cb46-9"></a>  T&amp; <span class="kw">operator</span>=(T&amp;&amp; other);      <span class="co">// Move assignment operator (C++11 and later).</span></span>
-<span id="cb46-10"><a href="#cb46-10"></a>};</span></code></pre></div>
-<aside class="notes">
-<p>…</p>
-</aside>
-</section>
-<section id="declaration-rules-1" class="slide level2">
-<h2>Declaration rules</h2>
-<table>
-<colgroup>
-<col style="width: 66%" />
-<col style="width: 33%" />
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><strong>When user declares..</strong></td>
-<td><strong>Undeclaration of..</strong></td>
-</tr>
-<tr class="even">
-<td><code class="sourceCode cpp">T(*)</code></td>
-<td><code class="sourceCode cpp">T()</code></td>
-</tr>
-<tr class="odd">
-<td><code class="sourceCode cpp">*(T&amp;&amp;)</code></td>
-<td><code class="sourceCode cpp">*(<span class="at">const</span> T&amp;)</code></td>
-</tr>
-<tr class="even">
-<td><code class="sourceCode cpp">*(<span class="at">const</span> T&amp;)</code>/<code class="sourceCode cpp">*(T&amp;&amp;)</code>/<code class="sourceCode cpp">~T()</code></td>
-<td><code class="sourceCode cpp">*(T&amp;&amp;)</code></td>
-</tr>
-</tbody>
-</table>
-<aside class="notes">
-<p>First: the undeclaration rules table:</p>
-<p>…</p>
-</aside>
-</section>
-<section id="guidelines" class="slide level2">
-<h2>Guidelines</h2>
-<ul>
-<li class="fragment"><strong>SMF policies</strong>:
-<ul>
-<li class="fragment">Rule of zero (if possible),</li>
-<li class="fragment">Custom rules for containers/resources/immobiles,</li>
-<li class="fragment">Or: rule of zero or all.</li>
-</ul></li>
-<li class="fragment">Use the <strong>member initialization list</strong>,</li>
-<li class="fragment">Make base class destructors <code class="sourceCode cpp"><span class="kw">virtual</span></code>,</li>
-<li class="fragment"><strong>Don’t <code class="sourceCode cpp"><span class="cf">throw</span></code> from destructors</strong>.</li>
-</ul>
-<aside class="notes">
-<p>…</p>
-</aside>
-</section></section>
-<section id="end" class="title-slide slide level1">
-<h1>End</h1>
-<p>Thank you <img data-src="images/em-grinning.svg" style="width:3.0%" /></p>
-<p> </p>
-<p><img data-src="images/em-left_speech_bubble.svg" style="width:8.0%" /> <img data-src="images/em-question.svg" style="width:7.0%" /></p>
-<p><img data-src="images/em-link.svg" style="width:3.0%" /> <a href="https://github.com/krisvanrens/">github.com/krisvanrens</a></p>
-<aside class="notes">
-<p>Thank you!</p>
-<p>Are there any questions?</p>
-</aside>
-</section>
-
-<section>
 <section id="tooling-and-best-practices" class="title-slide slide level1">
 <h1>Tooling and <br/><span style="color:crimson"><strong>best practices</strong></span></h1>
 
@@ -1625,13 +1542,13 @@ Base::~Base()</code></pre>
 </section>
 <section id="raii-1" class="slide level2">
 <h2>RAII</h2>
-<div class="sourceCode" id="cb47"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb47-1"><a href="#cb47-1"></a><span class="dt">void</span> thread_process() {</span>
-<span id="cb47-2"><a href="#cb47-2"></a>  <span class="at">static</span> <span class="bu">std::</span>mutex mutex;</span>
-<span id="cb47-3"><a href="#cb47-3"></a></span>
-<span id="cb47-4"><a href="#cb47-4"></a>  <span class="bu">std::</span>lock_guard&lt;<span class="bu">std::</span>mutex&gt; lock(mutex);</span>
-<span id="cb47-5"><a href="#cb47-5"></a></span>
-<span id="cb47-6"><a href="#cb47-6"></a>  <span class="co">// Do dangerous things that may throw an exception..</span></span>
-<span id="cb47-7"><a href="#cb47-7"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb46"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb46-1"><a href="#cb46-1"></a><span class="dt">void</span> thread_process() {</span>
+<span id="cb46-2"><a href="#cb46-2"></a>  <span class="at">static</span> <span class="bu">std::</span>mutex mutex;</span>
+<span id="cb46-3"><a href="#cb46-3"></a></span>
+<span id="cb46-4"><a href="#cb46-4"></a>  <span class="bu">std::</span>lock_guard&lt;<span class="bu">std::</span>mutex&gt; lock(mutex);</span>
+<span id="cb46-5"><a href="#cb46-5"></a></span>
+<span id="cb46-6"><a href="#cb46-6"></a>  <span class="co">// Do dangerous things that may throw an exception..</span></span>
+<span id="cb46-7"><a href="#cb46-7"></a>}</span></code></pre></div>
 <div class="fragment">
 <p>Object <code class="sourceCode cpp">lock</code> will:</p>
 <ul>
@@ -1651,21 +1568,21 @@ Base::~Base()</code></pre>
 <h2>Copy and swap (1)</h2>
 <div class="columns">
 <div class="column">
-<div class="sourceCode" id="cb48"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb48-1"><a href="#cb48-1"></a><span class="kw">class</span> X {</span>
-<span id="cb48-2"><a href="#cb48-2"></a><span class="kw">public</span>:</span>
-<span id="cb48-3"><a href="#cb48-3"></a>  X() { <span class="co">/* ..initialize r_.. */</span> }</span>
-<span id="cb48-4"><a href="#cb48-4"></a></span>
-<span id="cb48-5"><a href="#cb48-5"></a>  <span class="co">// ???</span></span>
-<span id="cb48-6"><a href="#cb48-6"></a></span>
-<span id="cb48-7"><a href="#cb48-7"></a><span class="kw">private</span>:</span>
-<span id="cb48-8"><a href="#cb48-8"></a>  Resource <span class="va">r_</span>;</span>
-<span id="cb48-9"><a href="#cb48-9"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb47"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb47-1"><a href="#cb47-1"></a><span class="kw">class</span> X {</span>
+<span id="cb47-2"><a href="#cb47-2"></a><span class="kw">public</span>:</span>
+<span id="cb47-3"><a href="#cb47-3"></a>  X() { <span class="co">/* ..initialize r_.. */</span> }</span>
+<span id="cb47-4"><a href="#cb47-4"></a></span>
+<span id="cb47-5"><a href="#cb47-5"></a>  <span class="co">// ???</span></span>
+<span id="cb47-6"><a href="#cb47-6"></a></span>
+<span id="cb47-7"><a href="#cb47-7"></a><span class="kw">private</span>:</span>
+<span id="cb47-8"><a href="#cb47-8"></a>  Resource <span class="va">r_</span>;</span>
+<span id="cb47-9"><a href="#cb47-9"></a>}</span></code></pre></div>
 </div><div class="column">
-<div class="sourceCode" id="cb49"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb49-1"><a href="#cb49-1"></a><span class="dt">int</span> main() {</span>
-<span id="cb49-2"><a href="#cb49-2"></a>  X x;</span>
-<span id="cb49-3"><a href="#cb49-3"></a>  X y{x};</span>
-<span id="cb49-4"><a href="#cb49-4"></a>  y = x;</span>
-<span id="cb49-5"><a href="#cb49-5"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb48"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb48-1"><a href="#cb48-1"></a><span class="dt">int</span> main() {</span>
+<span id="cb48-2"><a href="#cb48-2"></a>  X x;</span>
+<span id="cb48-3"><a href="#cb48-3"></a>  X y{x};</span>
+<span id="cb48-4"><a href="#cb48-4"></a>  y = x;</span>
+<span id="cb48-5"><a href="#cb48-5"></a>}</span></code></pre></div>
 </div>
 </div>
 </section>
@@ -1673,25 +1590,25 @@ Base::~Base()</code></pre>
 <h2>Copy and swap (2)</h2>
 <div class="columns">
 <div class="column">
-<div class="sourceCode" id="cb50"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb50-1"><a href="#cb50-1"></a><span class="kw">class</span> X {</span>
-<span id="cb50-2"><a href="#cb50-2"></a><span class="kw">public</span>:</span>
-<span id="cb50-3"><a href="#cb50-3"></a>  X() { <span class="co">/* ..initialize r_.. */</span> }</span>
-<span id="cb50-4"><a href="#cb50-4"></a></span>
-<span id="cb50-5"><a href="#cb50-5"></a>  X(<span class="at">const</span> X&amp; other) {</span>
-<span id="cb50-6"><a href="#cb50-6"></a>    <span class="va">r_</span> = other.<span class="va">r_</span>;</span>
-<span id="cb50-7"><a href="#cb50-7"></a>  }</span>
-<span id="cb50-8"><a href="#cb50-8"></a></span>
-<span id="cb50-9"><a href="#cb50-9"></a>  <span class="co">// ???</span></span>
-<span id="cb50-10"><a href="#cb50-10"></a></span>
-<span id="cb50-11"><a href="#cb50-11"></a><span class="kw">private</span>:</span>
-<span id="cb50-12"><a href="#cb50-12"></a>  Resource <span class="va">r_</span>;</span>
-<span id="cb50-13"><a href="#cb50-13"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb49"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb49-1"><a href="#cb49-1"></a><span class="kw">class</span> X {</span>
+<span id="cb49-2"><a href="#cb49-2"></a><span class="kw">public</span>:</span>
+<span id="cb49-3"><a href="#cb49-3"></a>  X() { <span class="co">/* ..initialize r_.. */</span> }</span>
+<span id="cb49-4"><a href="#cb49-4"></a></span>
+<span id="cb49-5"><a href="#cb49-5"></a>  X(<span class="at">const</span> X&amp; other) {</span>
+<span id="cb49-6"><a href="#cb49-6"></a>    <span class="va">r_</span> = other.<span class="va">r_</span>;</span>
+<span id="cb49-7"><a href="#cb49-7"></a>  }</span>
+<span id="cb49-8"><a href="#cb49-8"></a></span>
+<span id="cb49-9"><a href="#cb49-9"></a>  <span class="co">// ???</span></span>
+<span id="cb49-10"><a href="#cb49-10"></a></span>
+<span id="cb49-11"><a href="#cb49-11"></a><span class="kw">private</span>:</span>
+<span id="cb49-12"><a href="#cb49-12"></a>  Resource <span class="va">r_</span>;</span>
+<span id="cb49-13"><a href="#cb49-13"></a>}</span></code></pre></div>
 </div><div class="column">
-<div class="sourceCode" id="cb51"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb51-1"><a href="#cb51-1"></a><span class="dt">int</span> main() {</span>
-<span id="cb51-2"><a href="#cb51-2"></a>  X x;</span>
-<span id="cb51-3"><a href="#cb51-3"></a>  X y{x};</span>
-<span id="cb51-4"><a href="#cb51-4"></a>  y = x;</span>
-<span id="cb51-5"><a href="#cb51-5"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb50"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb50-1"><a href="#cb50-1"></a><span class="dt">int</span> main() {</span>
+<span id="cb50-2"><a href="#cb50-2"></a>  X x;</span>
+<span id="cb50-3"><a href="#cb50-3"></a>  X y{x};</span>
+<span id="cb50-4"><a href="#cb50-4"></a>  y = x;</span>
+<span id="cb50-5"><a href="#cb50-5"></a>}</span></code></pre></div>
 </div>
 </div>
 </section>
@@ -1699,31 +1616,31 @@ Base::~Base()</code></pre>
 <h2>Copy and swap (3)</h2>
 <div class="columns">
 <div class="column">
-<div class="sourceCode" id="cb52"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb52-1"><a href="#cb52-1"></a><span class="kw">class</span> X {</span>
-<span id="cb52-2"><a href="#cb52-2"></a><span class="kw">public</span>:</span>
-<span id="cb52-3"><a href="#cb52-3"></a>  X() { <span class="co">/* ..initialize resource.. */</span> }</span>
-<span id="cb52-4"><a href="#cb52-4"></a></span>
-<span id="cb52-5"><a href="#cb52-5"></a>  X(<span class="at">const</span> X&amp; other) { <span class="co">/* ... */</span> }</span>
-<span id="cb52-6"><a href="#cb52-6"></a></span>
-<span id="cb52-7"><a href="#cb52-7"></a>  X&amp; <span class="kw">operator</span>=(X other) {</span>
-<span id="cb52-8"><a href="#cb52-8"></a>    swap(*<span class="kw">this</span>, other);</span>
-<span id="cb52-9"><a href="#cb52-9"></a>    <span class="cf">return</span> *<span class="kw">this</span>;</span>
-<span id="cb52-10"><a href="#cb52-10"></a>  }</span>
-<span id="cb52-11"><a href="#cb52-11"></a></span>
-<span id="cb52-12"><a href="#cb52-12"></a>  <span class="kw">friend</span> <span class="dt">void</span> swap(X&amp; x1, X&amp; x2);</span>
-<span id="cb52-13"><a href="#cb52-13"></a></span>
-<span id="cb52-14"><a href="#cb52-14"></a><span class="kw">private</span>:</span>
-<span id="cb52-15"><a href="#cb52-15"></a>  Resource <span class="va">r_</span>;</span>
-<span id="cb52-16"><a href="#cb52-16"></a>};</span></code></pre></div>
+<div class="sourceCode" id="cb51"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb51-1"><a href="#cb51-1"></a><span class="kw">class</span> X {</span>
+<span id="cb51-2"><a href="#cb51-2"></a><span class="kw">public</span>:</span>
+<span id="cb51-3"><a href="#cb51-3"></a>  X() { <span class="co">/* ..initialize resource.. */</span> }</span>
+<span id="cb51-4"><a href="#cb51-4"></a></span>
+<span id="cb51-5"><a href="#cb51-5"></a>  X(<span class="at">const</span> X&amp; other) { <span class="co">/* ... */</span> }</span>
+<span id="cb51-6"><a href="#cb51-6"></a></span>
+<span id="cb51-7"><a href="#cb51-7"></a>  X&amp; <span class="kw">operator</span>=(X other) {</span>
+<span id="cb51-8"><a href="#cb51-8"></a>    swap(*<span class="kw">this</span>, other);</span>
+<span id="cb51-9"><a href="#cb51-9"></a>    <span class="cf">return</span> *<span class="kw">this</span>;</span>
+<span id="cb51-10"><a href="#cb51-10"></a>  }</span>
+<span id="cb51-11"><a href="#cb51-11"></a></span>
+<span id="cb51-12"><a href="#cb51-12"></a>  <span class="kw">friend</span> <span class="dt">void</span> swap(X&amp; x1, X&amp; x2);</span>
+<span id="cb51-13"><a href="#cb51-13"></a></span>
+<span id="cb51-14"><a href="#cb51-14"></a><span class="kw">private</span>:</span>
+<span id="cb51-15"><a href="#cb51-15"></a>  Resource <span class="va">r_</span>;</span>
+<span id="cb51-16"><a href="#cb51-16"></a>};</span></code></pre></div>
 </div><div class="column">
-<div class="sourceCode" id="cb53" data-startFrom="17"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp" style="counter-reset: source-line 16;"><span id="cb53-17"><a href="#cb53-17"></a><span class="dt">void</span> X::swap(X&amp; x1, X&amp; x2) {</span>
-<span id="cb53-18"><a href="#cb53-18"></a>  <span class="bu">std::</span>swap(x1.<span class="va">r_</span>, x2.<span class="va">r_</span>);</span>
-<span id="cb53-19"><a href="#cb53-19"></a>}</span></code></pre></div>
-<div class="sourceCode" id="cb54"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb54-1"><a href="#cb54-1"></a><span class="dt">int</span> main() {</span>
-<span id="cb54-2"><a href="#cb54-2"></a>  X x;</span>
-<span id="cb54-3"><a href="#cb54-3"></a>  X y{x};</span>
-<span id="cb54-4"><a href="#cb54-4"></a>  y = x;</span>
-<span id="cb54-5"><a href="#cb54-5"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb52" data-startFrom="17"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp" style="counter-reset: source-line 16;"><span id="cb52-17"><a href="#cb52-17"></a><span class="dt">void</span> X::swap(X&amp; x1, X&amp; x2) {</span>
+<span id="cb52-18"><a href="#cb52-18"></a>  <span class="bu">std::</span>swap(x1.<span class="va">r_</span>, x2.<span class="va">r_</span>);</span>
+<span id="cb52-19"><a href="#cb52-19"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb53"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb53-1"><a href="#cb53-1"></a><span class="dt">int</span> main() {</span>
+<span id="cb53-2"><a href="#cb53-2"></a>  X x;</span>
+<span id="cb53-3"><a href="#cb53-3"></a>  X y{x};</span>
+<span id="cb53-4"><a href="#cb53-4"></a>  y = x;</span>
+<span id="cb53-5"><a href="#cb53-5"></a>}</span></code></pre></div>
 </div>
 </div>
 </section>
@@ -1731,51 +1648,51 @@ Base::~Base()</code></pre>
 <h2>Copy and swap (4)</h2>
 <div class="columns">
 <div class="column">
-<div class="sourceCode" id="cb55"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb55-1"><a href="#cb55-1"></a><span class="kw">class</span> X {</span>
-<span id="cb55-2"><a href="#cb55-2"></a><span class="kw">public</span>:</span>
-<span id="cb55-3"><a href="#cb55-3"></a>  X() { <span class="co">/* ..initialize resource.. */</span> }</span>
-<span id="cb55-4"><a href="#cb55-4"></a></span>
-<span id="cb55-5"><a href="#cb55-5"></a>  X(<span class="at">const</span> X&amp; other)     { <span class="co">/* ... */</span> }</span>
-<span id="cb55-6"><a href="#cb55-6"></a>  X&amp; <span class="kw">operator</span>=(X other) { <span class="co">/* ... */</span> }</span>
-<span id="cb55-7"><a href="#cb55-7"></a></span>
-<span id="cb55-8"><a href="#cb55-8"></a>  X(X&amp;&amp; other)</span>
-<span id="cb55-9"><a href="#cb55-9"></a>    : X() {</span>
-<span id="cb55-10"><a href="#cb55-10"></a>    swap(*<span class="kw">this</span>, other);</span>
-<span id="cb55-11"><a href="#cb55-11"></a>  }</span>
-<span id="cb55-12"><a href="#cb55-12"></a></span>
-<span id="cb55-13"><a href="#cb55-13"></a>  <span class="kw">friend</span> <span class="dt">void</span> swap(X&amp; x1, X&amp; x2);</span>
-<span id="cb55-14"><a href="#cb55-14"></a></span>
-<span id="cb55-15"><a href="#cb55-15"></a><span class="kw">private</span>:</span>
-<span id="cb55-16"><a href="#cb55-16"></a>  Resource <span class="va">r_</span>;</span>
-<span id="cb55-17"><a href="#cb55-17"></a>};</span></code></pre></div>
+<div class="sourceCode" id="cb54"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb54-1"><a href="#cb54-1"></a><span class="kw">class</span> X {</span>
+<span id="cb54-2"><a href="#cb54-2"></a><span class="kw">public</span>:</span>
+<span id="cb54-3"><a href="#cb54-3"></a>  X() { <span class="co">/* ..initialize resource.. */</span> }</span>
+<span id="cb54-4"><a href="#cb54-4"></a></span>
+<span id="cb54-5"><a href="#cb54-5"></a>  X(<span class="at">const</span> X&amp; other)     { <span class="co">/* ... */</span> }</span>
+<span id="cb54-6"><a href="#cb54-6"></a>  X&amp; <span class="kw">operator</span>=(X other) { <span class="co">/* ... */</span> }</span>
+<span id="cb54-7"><a href="#cb54-7"></a></span>
+<span id="cb54-8"><a href="#cb54-8"></a>  X(X&amp;&amp; other)</span>
+<span id="cb54-9"><a href="#cb54-9"></a>    : X() {</span>
+<span id="cb54-10"><a href="#cb54-10"></a>    swap(*<span class="kw">this</span>, other);</span>
+<span id="cb54-11"><a href="#cb54-11"></a>  }</span>
+<span id="cb54-12"><a href="#cb54-12"></a></span>
+<span id="cb54-13"><a href="#cb54-13"></a>  <span class="kw">friend</span> <span class="dt">void</span> swap(X&amp; x1, X&amp; x2);</span>
+<span id="cb54-14"><a href="#cb54-14"></a></span>
+<span id="cb54-15"><a href="#cb54-15"></a><span class="kw">private</span>:</span>
+<span id="cb54-16"><a href="#cb54-16"></a>  Resource <span class="va">r_</span>;</span>
+<span id="cb54-17"><a href="#cb54-17"></a>};</span></code></pre></div>
 </div><div class="column">
-<div class="sourceCode" id="cb56" data-startFrom="18"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp" style="counter-reset: source-line 17;"><span id="cb56-18"><a href="#cb56-18"></a><span class="dt">void</span> X::swap(X&amp; x1, X&amp; x2) {</span>
-<span id="cb56-19"><a href="#cb56-19"></a>  <span class="bu">std::</span>swap(x1.<span class="va">r_</span>, x2.<span class="va">r_</span>);</span>
-<span id="cb56-20"><a href="#cb56-20"></a>}</span></code></pre></div>
-<div class="sourceCode" id="cb57"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb57-1"><a href="#cb57-1"></a><span class="dt">int</span> main() {</span>
-<span id="cb57-2"><a href="#cb57-2"></a>  X x;</span>
-<span id="cb57-3"><a href="#cb57-3"></a>  X y{x};</span>
-<span id="cb57-4"><a href="#cb57-4"></a>  y = x;</span>
-<span id="cb57-5"><a href="#cb57-5"></a>  X z{<span class="bu">std::</span>move(y)};</span>
-<span id="cb57-6"><a href="#cb57-6"></a>  z = <span class="bu">std::</span>move(x);</span>
-<span id="cb57-7"><a href="#cb57-7"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb55" data-startFrom="18"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp" style="counter-reset: source-line 17;"><span id="cb55-18"><a href="#cb55-18"></a><span class="dt">void</span> X::swap(X&amp; x1, X&amp; x2) {</span>
+<span id="cb55-19"><a href="#cb55-19"></a>  <span class="bu">std::</span>swap(x1.<span class="va">r_</span>, x2.<span class="va">r_</span>);</span>
+<span id="cb55-20"><a href="#cb55-20"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb56"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb56-1"><a href="#cb56-1"></a><span class="dt">int</span> main() {</span>
+<span id="cb56-2"><a href="#cb56-2"></a>  X x;</span>
+<span id="cb56-3"><a href="#cb56-3"></a>  X y{x};</span>
+<span id="cb56-4"><a href="#cb56-4"></a>  y = x;</span>
+<span id="cb56-5"><a href="#cb56-5"></a>  X z{<span class="bu">std::</span>move(y)};</span>
+<span id="cb56-6"><a href="#cb56-6"></a>  z = <span class="bu">std::</span>move(x);</span>
+<span id="cb56-7"><a href="#cb56-7"></a>}</span></code></pre></div>
 </div>
 </div>
 </section>
 <section id="uncopyable-type" class="slide level2">
 <h2>Uncopyable type</h2>
-<div class="sourceCode" id="cb58"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb58-1"><a href="#cb58-1"></a><span class="kw">class</span> Uncopyable {</span>
-<span id="cb58-2"><a href="#cb58-2"></a><span class="kw">protected</span>:</span>
-<span id="cb58-3"><a href="#cb58-3"></a>  Uncopyable() = <span class="cf">default</span>;</span>
-<span id="cb58-4"><a href="#cb58-4"></a>  ~Uncopyable() = <span class="cf">default</span>;</span>
-<span id="cb58-5"><a href="#cb58-5"></a></span>
-<span id="cb58-6"><a href="#cb58-6"></a><span class="kw">public</span>:</span>
-<span id="cb58-7"><a href="#cb58-7"></a>  Uncopyable(<span class="at">const</span> Uncopyable&amp;) = <span class="kw">delete</span>;</span>
-<span id="cb58-8"><a href="#cb58-8"></a>  Uncopyable&amp; <span class="kw">operator</span>=(<span class="at">const</span> Uncopyable&amp;) = <span class="kw">delete</span>;</span>
-<span id="cb58-9"><a href="#cb58-9"></a></span>
-<span id="cb58-10"><a href="#cb58-10"></a>  Uncopyable(Uncopyable&amp;&amp;) = <span class="cf">default</span>;</span>
-<span id="cb58-11"><a href="#cb58-11"></a>  Uncopyable&amp; <span class="kw">operator</span>=(Uncopyable&amp;&amp;) = <span class="cf">default</span>;</span>
-<span id="cb58-12"><a href="#cb58-12"></a>};</span></code></pre></div>
+<div class="sourceCode" id="cb57"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb57-1"><a href="#cb57-1"></a><span class="kw">class</span> Uncopyable {</span>
+<span id="cb57-2"><a href="#cb57-2"></a><span class="kw">protected</span>:</span>
+<span id="cb57-3"><a href="#cb57-3"></a>  Uncopyable() = <span class="cf">default</span>;</span>
+<span id="cb57-4"><a href="#cb57-4"></a>  ~Uncopyable() = <span class="cf">default</span>;</span>
+<span id="cb57-5"><a href="#cb57-5"></a></span>
+<span id="cb57-6"><a href="#cb57-6"></a><span class="kw">public</span>:</span>
+<span id="cb57-7"><a href="#cb57-7"></a>  Uncopyable(<span class="at">const</span> Uncopyable&amp;) = <span class="kw">delete</span>;</span>
+<span id="cb57-8"><a href="#cb57-8"></a>  Uncopyable&amp; <span class="kw">operator</span>=(<span class="at">const</span> Uncopyable&amp;) = <span class="kw">delete</span>;</span>
+<span id="cb57-9"><a href="#cb57-9"></a></span>
+<span id="cb57-10"><a href="#cb57-10"></a>  Uncopyable(Uncopyable&amp;&amp;) = <span class="cf">default</span>;</span>
+<span id="cb57-11"><a href="#cb57-11"></a>  Uncopyable&amp; <span class="kw">operator</span>=(Uncopyable&amp;&amp;) = <span class="cf">default</span>;</span>
+<span id="cb57-12"><a href="#cb57-12"></a>};</span></code></pre></div>
 <aside class="notes">
 <p>The first pattern we’re going to look at is the uncopyable base class.</p>
 <p>By making this class a base class to your type class, you eliminate the possibility for it to be copied. This can be nice, because you don’t have to deal with these mechanics yourself in your derived class. In fact, there is a base class type in the boost library called ‘noncopyable’ that is like this.</p>
@@ -1786,15 +1703,15 @@ Base::~Base()</code></pre>
 </section>
 <section id="uncopyable-type-1" class="slide level2">
 <h2>Uncopyable type</h2>
-<div class="sourceCode" id="cb59"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb59-1"><a href="#cb59-1"></a><span class="kw">class</span> Uncopyable { <span class="co">/* ... */</span> };</span>
-<span id="cb59-2"><a href="#cb59-2"></a></span>
-<span id="cb59-3"><a href="#cb59-3"></a><span class="kw">class</span> X : <span class="kw">private</span> Uncopyable {};</span>
-<span id="cb59-4"><a href="#cb59-4"></a></span>
-<span id="cb59-5"><a href="#cb59-5"></a><span class="dt">int</span> main() {</span>
-<span id="cb59-6"><a href="#cb59-6"></a>  X x;</span>
-<span id="cb59-7"><a href="#cb59-7"></a><span class="co">//X y{x};            // Will fail to compile.</span></span>
-<span id="cb59-8"><a href="#cb59-8"></a>  X z{<span class="bu">std::</span>move(x)}; <span class="co">// Will move-construct.</span></span>
-<span id="cb59-9"><a href="#cb59-9"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb58"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb58-1"><a href="#cb58-1"></a><span class="kw">class</span> Uncopyable { <span class="co">/* ... */</span> };</span>
+<span id="cb58-2"><a href="#cb58-2"></a></span>
+<span id="cb58-3"><a href="#cb58-3"></a><span class="kw">class</span> X : <span class="kw">private</span> Uncopyable {};</span>
+<span id="cb58-4"><a href="#cb58-4"></a></span>
+<span id="cb58-5"><a href="#cb58-5"></a><span class="dt">int</span> main() {</span>
+<span id="cb58-6"><a href="#cb58-6"></a>  X x;</span>
+<span id="cb58-7"><a href="#cb58-7"></a><span class="co">//X y{x};            // Will fail to compile.</span></span>
+<span id="cb58-8"><a href="#cb58-8"></a>  X z{<span class="bu">std::</span>move(x)}; <span class="co">// Will move-construct.</span></span>
+<span id="cb58-9"><a href="#cb58-9"></a>}</span></code></pre></div>
 <aside class="notes">
 <p>Here we make class X uncopyable by simply privately deriving from the uncopyable class. The second line in the main function where attempt is made to copy an instance of x will fail to compiler.</p>
 <p>The third line will work fine.</p>
@@ -1805,12 +1722,12 @@ Base::~Base()</code></pre>
 <section id="unit-test-your-smfs" class="slide level2">
 <h2>Unit-test your SMFs!</h2>
 <div class="fragment">
-<div class="sourceCode" id="cb60"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb60-1"><a href="#cb60-1"></a>X x;               <span class="co">// Test default construction.</span></span>
-<span id="cb60-2"><a href="#cb60-2"></a>X x{...};          <span class="co">// Test alternative construction.</span></span>
-<span id="cb60-3"><a href="#cb60-3"></a>X y{x};            <span class="co">// Test copy construction.</span></span>
-<span id="cb60-4"><a href="#cb60-4"></a>X y{<span class="bu">std::</span>move(x)}; <span class="co">// Test move construction.</span></span>
-<span id="cb60-5"><a href="#cb60-5"></a>y = x;             <span class="co">// Test copy assignment.</span></span>
-<span id="cb60-6"><a href="#cb60-6"></a>y = <span class="bu">std::</span>move(x);  <span class="co">// Test move assignment.</span></span></code></pre></div>
+<div class="sourceCode" id="cb59"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb59-1"><a href="#cb59-1"></a>X x;               <span class="co">// Test default construction.</span></span>
+<span id="cb59-2"><a href="#cb59-2"></a>X x{...};          <span class="co">// Test alternative construction.</span></span>
+<span id="cb59-3"><a href="#cb59-3"></a>X y{x};            <span class="co">// Test copy construction.</span></span>
+<span id="cb59-4"><a href="#cb59-4"></a>X y{<span class="bu">std::</span>move(x)}; <span class="co">// Test move construction.</span></span>
+<span id="cb59-5"><a href="#cb59-5"></a>y = x;             <span class="co">// Test copy assignment.</span></span>
+<span id="cb59-6"><a href="#cb59-6"></a>y = <span class="bu">std::</span>move(x);  <span class="co">// Test move assignment.</span></span></code></pre></div>
 </div>
 <div class="fragment">
 <p>Enable compiler sanitizers! E.g. ASAN, UB, ..</p>
@@ -1841,462 +1758,77 @@ Base::~Base()</code></pre>
 </aside>
 </div>
 </section></section>
-<section id="end-the-real-one" class="title-slide slide level1">
-<h1>End <small>(the real one)</small></h1>
-<p>Once again, thank you <img data-src="images/em-grinning.svg" style="width:3.0%" /></p>
+<section>
+<section id="conclusions" class="title-slide slide level1">
+<h1>Conclusions</h1>
+
+</section>
+<section id="smf-prototypes-1" class="slide level2">
+<h2>SMF prototypes</h2>
+<div class="sourceCode" id="cb60"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb60-1"><a href="#cb60-1"></a><span class="kw">struct</span> T {</span>
+<span id="cb60-2"><a href="#cb60-2"></a>  T();                          <span class="co">// Default constructor.</span></span>
+<span id="cb60-3"><a href="#cb60-3"></a>  ~T();                         <span class="co">// Destructor.</span></span>
+<span id="cb60-4"><a href="#cb60-4"></a></span>
+<span id="cb60-5"><a href="#cb60-5"></a>  T(<span class="at">const</span> T&amp; other);            <span class="co">// Copy constructor.</span></span>
+<span id="cb60-6"><a href="#cb60-6"></a>  T&amp; <span class="kw">operator</span>=(<span class="at">const</span> T&amp; other); <span class="co">// Copy assignment operator.</span></span>
+<span id="cb60-7"><a href="#cb60-7"></a></span>
+<span id="cb60-8"><a href="#cb60-8"></a>  T(T&amp;&amp; other);                 <span class="co">// Move constructor (C++11 and later).</span></span>
+<span id="cb60-9"><a href="#cb60-9"></a>  T&amp; <span class="kw">operator</span>=(T&amp;&amp; other);      <span class="co">// Move assignment operator (C++11 and later).</span></span>
+<span id="cb60-10"><a href="#cb60-10"></a>};</span></code></pre></div>
+</section>
+<section id="declaration-rules-1" class="slide level2">
+<h2>Declaration rules</h2>
+<table>
+<colgroup>
+<col style="width: 66%" />
+<col style="width: 33%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><strong>When user declares..</strong></td>
+<td><strong>Undeclaration of..</strong></td>
+</tr>
+<tr class="even">
+<td><code class="sourceCode cpp">T(*)</code></td>
+<td><code class="sourceCode cpp">T()</code></td>
+</tr>
+<tr class="odd">
+<td><code class="sourceCode cpp">*(T&amp;&amp;)</code></td>
+<td><code class="sourceCode cpp">*(<span class="at">const</span> T&amp;)</code></td>
+</tr>
+<tr class="even">
+<td><code class="sourceCode cpp">*(<span class="at">const</span> T&amp;)</code>/<code class="sourceCode cpp">*(T&amp;&amp;)</code>/<code class="sourceCode cpp">~T()</code></td>
+<td><code class="sourceCode cpp">*(T&amp;&amp;)</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="guidelines" class="slide level2">
+<h2>Guidelines</h2>
+<ul>
+<li class="fragment"><strong>SMF policies</strong>:
+<ul>
+<li class="fragment">Rule of zero (if possible),</li>
+<li class="fragment">Custom rules for containers/resources/immobiles,</li>
+<li class="fragment">Or: rule of zero or all.</li>
+</ul></li>
+<li class="fragment">Use the <strong>member initialization list</strong>,</li>
+<li class="fragment">Make base class destructors <code class="sourceCode cpp"><span class="kw">virtual</span></code>,</li>
+<li class="fragment"><strong>Don’t <code class="sourceCode cpp"><span class="cf">throw</span></code> from destructors</strong>,</li>
+<li class="fragment">Use <strong>copy and swap</strong> to implement copy/move operations.</li>
+</ul>
+</section></section>
+<section id="end" class="title-slide slide level1">
+<h1>End</h1>
+<p>Thank you <img data-src="images/em-grinning.svg" style="width:3.0%" /></p>
 <p> </p>
 <p><img data-src="images/em-left_speech_bubble.svg" style="width:8.0%" /> <img data-src="images/em-question.svg" style="width:7.0%" /></p>
 <p><img data-src="images/em-link.svg" style="width:3.0%" /> <a href="https://github.com/krisvanrens/">github.com/krisvanrens</a></p>
-</section>
-
-<section>
-<section id="extra-slides" class="title-slide slide level1">
-<h1>Extra slides</h1>
-
-</section>
-<section id="the-explicit-specifier" class="slide level2">
-<h2>The <code class="sourceCode cpp"><span class="kw">explicit</span></code> specifier</h2>
-<blockquote>
-<p>Specifies that a constructor or conversion function (since C++11) or deduction guide (since C++17) is explicit, that is, it cannot be used for implicit conversions and copy-initialization.</p>
-</blockquote>
-<div class="fragment">
-<blockquote>
-<p>Any constructor that is not declared with the <code class="sourceCode cpp"><span class="kw">explicit</span></code> specifier, is a <strong>converting constructor</strong>.</p>
-</blockquote>
 <aside class="notes">
-<p>…</p>
-</aside>
-</div>
-</section>
-<section id="empty-base-optimization" class="slide level2">
-<h2>Empty base optimization</h2>
-<div class="sourceCode" id="cb61"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb61-1"><a href="#cb61-1"></a><span class="pp">#include </span><span class="im">&lt;cassert&gt;</span></span>
-<span id="cb61-2"><a href="#cb61-2"></a></span>
-<span id="cb61-3"><a href="#cb61-3"></a><span class="kw">struct</span> Base {};</span>
-<span id="cb61-4"><a href="#cb61-4"></a> </span>
-<span id="cb61-5"><a href="#cb61-5"></a><span class="kw">struct</span> Derived : Base {</span>
-<span id="cb61-6"><a href="#cb61-6"></a>  <span class="dt">int</span> <span class="va">value_</span>;</span>
-<span id="cb61-7"><a href="#cb61-7"></a>};</span>
-<span id="cb61-8"><a href="#cb61-8"></a> </span>
-<span id="cb61-9"><a href="#cb61-9"></a><span class="dt">int</span> main() {</span>
-<span id="cb61-10"><a href="#cb61-10"></a>  <span class="co">// Every object is guaranteed to have a unique address.</span></span>
-<span id="cb61-11"><a href="#cb61-11"></a>  <span class="ot">assert</span>(<span class="kw">sizeof</span>(Base) &gt;= <span class="dv">1</span>);</span>
-<span id="cb61-12"><a href="#cb61-12"></a></span>
-<span id="cb61-13"><a href="#cb61-13"></a>  <span class="ot">assert</span>(<span class="kw">sizeof</span>(Derived) == <span class="kw">sizeof</span>(<span class="dt">int</span>)); <span class="co">// EBO.</span></span>
-<span id="cb61-14"><a href="#cb61-14"></a>}</span></code></pre></div>
-<aside class="notes">
-<p>What is empty base class optimization?</p>
-<p>Empty base class optimization is a compiler optimization that makes sure a base class without member variables can be counted to have size zero, without losing the guarantee that each object has a unique address.</p>
+<p>Thank you!</p>
+<p>Are there any questions?</p>
 </aside>
 </section>
-<section id="why-do-we-make-deleteed-functions-public" class="slide level2">
-<h2>Why do we make <code class="sourceCode cpp"><span class="kw">delete</span></code>’ed functions public?</h2>
-<ul>
-<li class="fragment">Because accessibility is checked before definition.</li>
-<li class="fragment">The wrong error can be triggered in the compilation.</li>
-</ul>
-</section>
-<section id="example-deleted-and-private" class="slide level2">
-<h2>Example: <code class="sourceCode cpp"><span class="kw">delete</span></code>d and <code class="sourceCode cpp"><span class="kw">private</span></code></h2>
-<div class="columns">
-<div class="column" style="width:25%;">
-<div class="sourceCode" id="cb62"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb62-1"><a href="#cb62-1"></a><span class="kw">class</span> X {</span>
-<span id="cb62-2"><a href="#cb62-2"></a><span class="kw">private</span>:</span>
-<span id="cb62-3"><a href="#cb62-3"></a>  X() = <span class="kw">delete</span>;</span>
-<span id="cb62-4"><a href="#cb62-4"></a>};</span>
-<span id="cb62-5"><a href="#cb62-5"></a></span>
-<span id="cb62-6"><a href="#cb62-6"></a><span class="dt">int</span> main() {</span>
-<span id="cb62-7"><a href="#cb62-7"></a>  X x;</span>
-<span id="cb62-8"><a href="#cb62-8"></a>}</span></code></pre></div>
-</div><div class="column" style="width:65%;">
-<p>GCC-5.5 output:</p>
-<pre><code>&lt;source&gt;: In function &#39;int main()&#39;:
-&lt;source&gt;:3:3: error: &#39;X::X()&#39; is private
-   X() = delete;
-   ^
-&lt;source&gt;:7:5: error: within this context
-   X x;
-     ^</code></pre>
-</div>
-</div>
-</section>
-<section id="example-deleted-and-public" class="slide level2">
-<h2>Example: <code>delete</code>d and <code>public</code></h2>
-<div class="columns">
-<div class="column" style="width:25%;">
-<div class="sourceCode" id="cb64"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb64-1"><a href="#cb64-1"></a><span class="kw">class</span> X {</span>
-<span id="cb64-2"><a href="#cb64-2"></a><span class="kw">public</span>:</span>
-<span id="cb64-3"><a href="#cb64-3"></a>  X() = <span class="kw">delete</span>;</span>
-<span id="cb64-4"><a href="#cb64-4"></a>};</span>
-<span id="cb64-5"><a href="#cb64-5"></a></span>
-<span id="cb64-6"><a href="#cb64-6"></a><span class="dt">int</span> main() {</span>
-<span id="cb64-7"><a href="#cb64-7"></a>  X x;</span>
-<span id="cb64-8"><a href="#cb64-8"></a>}</span></code></pre></div>
-</div><div class="column" style="width:65%;">
-<p>GCC-5.5 output:</p>
-<pre><code>source&gt;: In function &#39;int main()&#39;:
-&lt;source&gt;:7:5: error: use of deleted function &#39;X::X()&#39;
-   X x;
-     ^
-&lt;source&gt;:3:3: note: declared here
-   X() = delete;
-   ^</code></pre>
-</div>
-</div>
-</section>
-<section id="destructors-and-exceptions-1" class="slide level2">
-<h2>Destructors and exceptions</h2>
-<blockquote>
-<p>Don’t throw exceptions from destructors!</p>
-</blockquote>
-<ul>
-<li class="fragment"><code>terminate()</code> is called when another exception is already active,</li>
-<li class="fragment">Since C++11, destructors are <code class="sourceCode cpp"><span class="kw">noexcept</span></code> by default,</li>
-<li class="fragment"><code>terminate()</code> is called <em>always</em> (C++11 and onwards),</li>
-<li class="fragment">Also, a <code class="sourceCode cpp"><span class="cf">throw</span></code> would break completion of the destructor.</li>
-</ul>
-</section>
-<section id="case-study" class="slide level2">
-<h2>Case study</h2>
-<h3 id="destructors-and-exceptions-2">Destructors and exceptions</h3>
-<p>Designing a RAII type with strong exception guarantee</p>
-</section>
-<section id="stduncaught_exceptions" class="slide level2">
-<h2><code>std::uncaught_exceptions</code>?</h2>
-<div class="columns">
-<div class="column" style="width:65%;">
-<div class="sourceCode" id="cb66"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb66-1"><a href="#cb66-1"></a><span class="kw">struct</span> Transaction {</span>
-<span id="cb66-2"><a href="#cb66-2"></a>  <span class="co">// ...</span></span>
-<span id="cb66-3"><a href="#cb66-3"></a>};</span></code></pre></div>
-<p>How to safely roll back a transaction?</p>
-</div><div class="column" style="width:35%;">
-<div class="sourceCode" id="cb67"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb67-1"><a href="#cb67-1"></a><span class="kw">struct</span> X {</span>
-<span id="cb67-2"><a href="#cb67-2"></a>  ~X() {</span>
-<span id="cb67-3"><a href="#cb67-3"></a>    <span class="cf">try</span> {</span>
-<span id="cb67-4"><a href="#cb67-4"></a>      Transaction t;</span>
-<span id="cb67-5"><a href="#cb67-5"></a>      <span class="co">// ...</span></span>
-<span id="cb67-6"><a href="#cb67-6"></a>    } <span class="cf">catch</span> (...) {}</span>
-<span id="cb67-7"><a href="#cb67-7"></a>  }</span>
-<span id="cb67-8"><a href="#cb67-8"></a>};</span>
-<span id="cb67-9"><a href="#cb67-9"></a></span>
-<span id="cb67-10"><a href="#cb67-10"></a><span class="dt">int</span> main() {</span>
-<span id="cb67-11"><a href="#cb67-11"></a>  <span class="cf">try</span> {</span>
-<span id="cb67-12"><a href="#cb67-12"></a>    X x;</span>
-<span id="cb67-13"><a href="#cb67-13"></a>  } <span class="cf">catch</span> (...) {}</span>
-<span id="cb67-14"><a href="#cb67-14"></a>}</span></code></pre></div>
-</div>
-</div>
-<aside class="notes">
-<p>How can we safely roll back a transaction if an exception occurs? We don’t want our database to become tainted with faulty data. This requirement for Transaction is called a strong exception guarantee; the state of the database will remain unchanged when an operation throws an exception.</p>
-<p>In order to build this, we would have to check some condition in the destructor of the transaction.</p>
-</aside>
-</section>
-<section id="stduncaught_exceptions-1" class="slide level2">
-<h2><code class="sourceCode cpp"><span class="bu">std::</span>uncaught_exceptions</code>?</h2>
-<div class="columns">
-<div class="column" style="width:65%;">
-<div class="sourceCode" id="cb68"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb68-1"><a href="#cb68-1"></a><span class="kw">struct</span> Transaction {</span>
-<span id="cb68-2"><a href="#cb68-2"></a>  ~Transaction() {</span>
-<span id="cb68-3"><a href="#cb68-3"></a>    <span class="cf">if</span> (<span class="co">/* ...uuhhh... */</span>) {</span>
-<span id="cb68-4"><a href="#cb68-4"></a>      <span class="co">// Rollback transaction!</span></span>
-<span id="cb68-5"><a href="#cb68-5"></a>    } <span class="cf">else</span> {</span>
-<span id="cb68-6"><a href="#cb68-6"></a>      <span class="co">// No need to rollback -- all good.</span></span>
-<span id="cb68-7"><a href="#cb68-7"></a>    }</span>
-<span id="cb68-8"><a href="#cb68-8"></a>  }</span>
-<span id="cb68-9"><a href="#cb68-9"></a>};</span></code></pre></div>
-</div><div class="column" style="width:35%;">
-<div class="sourceCode" id="cb69"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb69-1"><a href="#cb69-1"></a><span class="kw">struct</span> X {</span>
-<span id="cb69-2"><a href="#cb69-2"></a>  ~X() {</span>
-<span id="cb69-3"><a href="#cb69-3"></a>    <span class="cf">try</span> {</span>
-<span id="cb69-4"><a href="#cb69-4"></a>      Transaction t;</span>
-<span id="cb69-5"><a href="#cb69-5"></a>      <span class="co">// ...</span></span>
-<span id="cb69-6"><a href="#cb69-6"></a>    } <span class="cf">catch</span> (...) {}</span>
-<span id="cb69-7"><a href="#cb69-7"></a>  }</span>
-<span id="cb69-8"><a href="#cb69-8"></a>};</span>
-<span id="cb69-9"><a href="#cb69-9"></a></span>
-<span id="cb69-10"><a href="#cb69-10"></a><span class="dt">int</span> main() {</span>
-<span id="cb69-11"><a href="#cb69-11"></a>  <span class="cf">try</span> {</span>
-<span id="cb69-12"><a href="#cb69-12"></a>    X x;</span>
-<span id="cb69-13"><a href="#cb69-13"></a>  } <span class="cf">catch</span> (...) {}</span>
-<span id="cb69-14"><a href="#cb69-14"></a>}</span></code></pre></div>
-</div>
-</div>
-<aside class="notes">
-<p>But what condition? This is where uncaught exceptions comes in.</p>
-</aside>
-</section>
-<section id="stduncaught_exceptions-2" class="slide level2">
-<h2><code class="sourceCode cpp"><span class="bu">std::</span>uncaught_exceptions</code>?</h2>
-<div class="columns">
-<div class="column" style="width:65%;">
-<div class="sourceCode" id="cb70"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb70-1"><a href="#cb70-1"></a><span class="kw">struct</span> Transaction {</span>
-<span id="cb70-2"><a href="#cb70-2"></a>  Transaction()</span>
-<span id="cb70-3"><a href="#cb70-3"></a>    : num_exceptions{<span class="bu">std::</span>uncaught_exceptions()} {}</span>
-<span id="cb70-4"><a href="#cb70-4"></a></span>
-<span id="cb70-5"><a href="#cb70-5"></a>  ~Transaction() {</span>
-<span id="cb70-6"><a href="#cb70-6"></a>    <span class="cf">if</span> (<span class="bu">std::</span>uncaught_exceptions() != num_exceptions) {</span>
-<span id="cb70-7"><a href="#cb70-7"></a>      puts(<span class="st">&quot;Rollback transaction!&quot;</span>);</span>
-<span id="cb70-8"><a href="#cb70-8"></a>    } <span class="cf">else</span> {</span>
-<span id="cb70-9"><a href="#cb70-9"></a>      puts(<span class="st">&quot;No need to rollback -- all good.&quot;</span>);</span>
-<span id="cb70-10"><a href="#cb70-10"></a>    }</span>
-<span id="cb70-11"><a href="#cb70-11"></a>  }</span>
-<span id="cb70-12"><a href="#cb70-12"></a></span>
-<span id="cb70-13"><a href="#cb70-13"></a>  <span class="dt">int</span> num_exceptions = {};</span>
-<span id="cb70-14"><a href="#cb70-14"></a>};</span></code></pre></div>
-</div><div class="column" style="width:35%;">
-<div class="sourceCode" id="cb71"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb71-1"><a href="#cb71-1"></a><span class="kw">struct</span> X {</span>
-<span id="cb71-2"><a href="#cb71-2"></a>  ~X() {</span>
-<span id="cb71-3"><a href="#cb71-3"></a>    <span class="cf">try</span> {</span>
-<span id="cb71-4"><a href="#cb71-4"></a>      Transaction t;</span>
-<span id="cb71-5"><a href="#cb71-5"></a>      <span class="co">// ...</span></span>
-<span id="cb71-6"><a href="#cb71-6"></a>    } <span class="cf">catch</span> (...) {}</span>
-<span id="cb71-7"><a href="#cb71-7"></a>  }</span>
-<span id="cb71-8"><a href="#cb71-8"></a>};</span>
-<span id="cb71-9"><a href="#cb71-9"></a></span>
-<span id="cb71-10"><a href="#cb71-10"></a><span class="dt">int</span> main() {</span>
-<span id="cb71-11"><a href="#cb71-11"></a>  <span class="cf">try</span> {</span>
-<span id="cb71-12"><a href="#cb71-12"></a>    X x;</span>
-<span id="cb71-13"><a href="#cb71-13"></a>  } <span class="cf">catch</span> (...) {}</span>
-<span id="cb71-14"><a href="#cb71-14"></a>}</span></code></pre></div>
-</div>
-</div>
-<aside class="notes">
-<p>It takes a bit of administration, but by using the check around uncaught_exceptions, we can detect whether an exception occurred that affects the transaction.</p>
-</aside>
-</section>
-<section id="smfs-and-inheritance-5" class="slide level2">
-<h2>SMFs and inheritance</h2>
-<p>Multiple inheritance and multiple non-<code class="sourceCode cpp"><span class="at">static</span></code> class members:</p>
-<div class="sourceCode" id="cb72"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb72-1"><a href="#cb72-1"></a><span class="kw">struct</span> Derived</span>
-<span id="cb72-2"><a href="#cb72-2"></a>  : Base1,    <span class="co">// Base class initialization in left-to-right order 1..N</span></span>
-<span id="cb72-3"><a href="#cb72-3"></a>    Base2,</span>
-<span id="cb72-4"><a href="#cb72-4"></a>    <span class="co">// ...</span></span>
-<span id="cb72-5"><a href="#cb72-5"></a>    BaseN</span>
-<span id="cb72-6"><a href="#cb72-6"></a>{</span>
-<span id="cb72-7"><a href="#cb72-7"></a>  Member <span class="va">m1_</span>; <span class="co">// Initialization of non-static members in declaration order 1..M</span></span>
-<span id="cb72-8"><a href="#cb72-8"></a>  Member <span class="va">m2_</span>;</span>
-<span id="cb72-9"><a href="#cb72-9"></a>  <span class="co">// ...</span></span>
-<span id="cb72-10"><a href="#cb72-10"></a>  Member <span class="va">mM_</span>;</span>
-<span id="cb72-11"><a href="#cb72-11"></a>};</span></code></pre></div>
-</section>
-<section id="multiple-destructors" class="slide level2">
-<h2>Multiple destructors</h2>
-<p>C++20 adds <strong>prospective destructors</strong> for allowing <em>concepts</em></p>
-<blockquote>
-<p>A type that can be a <strong>trivial type</strong> (depending on the <code class="sourceCode cpp"><span class="kw">requires</span></code> clause) or not, can have multiple destructors on which overload resolution is performed.</p>
-</blockquote>
-<p>(also holds for copy constructors)</p>
-<p><a href="https://eel.is/c++draft/class.dtor">ISO C++ draft</a> § class.dtor</p>
-<aside class="notes">
-<p>…</p>
-</aside>
-</section>
-<section id="are-there-any-other-smfs" class="slide level2">
-<h2>Are there any other SMFs?</h2>
-<p>In C++20 comparison operators can be <code>=</code> <code class="sourceCode cpp"><span class="cf">default</span></code>’ed as well.</p>
-<div class="sourceCode" id="cb73"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb73-1"><a href="#cb73-1"></a><span class="kw">struct</span> X {</span>
-<span id="cb73-2"><a href="#cb73-2"></a>  <span class="dt">bool</span> <span class="kw">operator</span>==() = <span class="cf">default</span>;</span>
-<span id="cb73-3"><a href="#cb73-3"></a>};</span></code></pre></div>
-</section>
-<section id="using-uncopyable" class="slide level2">
-<h2>Using <code>Uncopyable</code></h2>
-<blockquote>
-<p>Use <code>Uncopyable</code> as a base class for more readable (earlier) compiler errors for pre-C++11</p>
-</blockquote>
-<div class="fragment">
-<blockquote>
-<p>Use base class or direct deletion of SMFs in C++11</p>
-</blockquote>
-<aside class="notes">
-<p>Class type uncopyability and unmovability can be used as a base class instead of directly in the derived class for better compiler errors in older compilers. When implementing the uncopyability or unmovability in a type directly, would generate an error for this class type directly, while when using the base class, an error will be generated for the base class type, making it immediately clear what is going on.</p>
-<p>Actually boost has the class <code>noncopyable</code> that implements just this.</p>
-<p>If you’re lucky enough to be able to write your code in C++11 or newer, I would suggest to either use the base class, or deleting of special member functions directly in the designated type. Take into account the rules you will see later in this session, and you’ll be fine – it’s not all that complicated. It is mostly a matter of consistency of your codebase and style/taste.</p>
-</aside>
-</div>
-</section>
-<section id="creating-an-uncopyable-type" class="slide level2">
-<h2>Creating an uncopyable type</h2>
-<p><strong>Private declarations</strong> <img data-src="images/cpp-classic.png" style="width:6.0%" /></p>
-<div class="sourceCode" id="cb74"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb74-1"><a href="#cb74-1"></a><span class="kw">class</span> T {</span>
-<span id="cb74-2"><a href="#cb74-2"></a><span class="kw">private</span>:</span>
-<span id="cb74-3"><a href="#cb74-3"></a>  T(<span class="at">const</span> T&amp;);</span>
-<span id="cb74-4"><a href="#cb74-4"></a>  T&amp; <span class="kw">operator</span>=(<span class="at">const</span> T&amp;);</span>
-<span id="cb74-5"><a href="#cb74-5"></a>};</span></code></pre></div>
-<p>Compiler error when copying:</p>
-<pre><code>&lt;source&gt;:29:8: error: &#39;T::T(const T&amp;)&#39; is private within this context
-   29 |   T y{x};
-      |        ^</code></pre>
-<aside class="notes">
-<p>Let’s consider we want our type to uncopyable. How can we force this behaviour?</p>
-<p>It’s quite simple, we make the copy operations private, that’s it.</p>
-<p>If you still try to do so in your code, the compiler error is shown below.</p>
-<p>What about C++11 and later?</p>
-</aside>
-</section>
-<section id="creating-a-uncopyable-type" class="slide level2">
-<h2>Creating a uncopyable type</h2>
-<p><strong>Explicitly removed definitions</strong> <img data-src="images/cpp-modern.png" style="width:6.0%" /></p>
-<div class="sourceCode" id="cb76"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb76-1"><a href="#cb76-1"></a><span class="kw">class</span> T {</span>
-<span id="cb76-2"><a href="#cb76-2"></a><span class="kw">public</span>:</span>
-<span id="cb76-3"><a href="#cb76-3"></a>  T(<span class="at">const</span> T&amp;) = <span class="kw">delete</span>;</span>
-<span id="cb76-4"><a href="#cb76-4"></a>  T&amp; <span class="kw">operator</span>=(<span class="at">const</span> T&amp;) = <span class="kw">delete</span>;</span>
-<span id="cb76-5"><a href="#cb76-5"></a>};</span></code></pre></div>
-<p>Compiler error when copying:</p>
-<pre><code>source&gt;:29:8: error: use of deleted function &#39;T::T(const T&amp;)&#39;
-   29 |   T y{x};
-      |        ^</code></pre>
-<aside class="notes">
-<p>For C++11 and later, we use the is delete syntax. Is delete is the opposite of is default, which request the compiler to implement a default implementation of an SMF. Now it does not matter in what section of the class type the definition is placed, be it private, protected or public.</p>
-<p>I think the compiler error for this example is more clear and explicit than the previous one.</p>
-<p>On a sidenote: one might wonder why we want to make an object uncopyable? If your object manages a resource such as hardware for example, it might be impossible to do this from two places at the same time. In that case you will want to prevent a user or your colleague to accidentally create a copy of the object managing the resource.</p>
-</aside>
-</section>
-<section id="constexpr-constructors" class="slide level2">
-<h2><code class="sourceCode cpp"><span class="kw">constexpr</span></code> constructors</h2>
-<blockquote>
-<p>The constructors with a <code class="sourceCode cpp"><span class="kw">constexpr</span></code> specifier make their type a <strong>LiteralType</strong>.</p>
-</blockquote>
-</section>
-<section id="pure-virtual-destructor" class="slide level2">
-<h2>Pure <code class="sourceCode cpp"><span class="kw">virtual</span></code> destructor</h2>
-<p>…An abstract base class with a pure <code class="sourceCode cpp"><span class="kw">virtual</span></code> destructor needs an implementation as well…</p>
-</section>
-<section id="initialization-in-c20" class="slide level2">
-<h2>Initialization in C++20</h2>
-<p><img data-src="images/initialization.svg" style="width:60.0%" /></p>
-<p>From: <a href="https://github.com/randomnetcat/cpp_initialization">https://github.com/randomnetcat/cpp_initialization</a></p>
-<aside class="notes">
-<p>I don’t know if you can see it, but here’s a flow diagram of initialization in C++20. Each possible flow path describes a real-world scenario and the corresponding initialization mechanism that is triggered. Which is a lot.</p>
-<p>To keep it simple and straightforward, I’d like to quickly show you some of these.</p>
-</aside>
-</section>
-<section id="forms-of-initialization" class="slide level2">
-<h2>Forms of initialization</h2>
-<div class="sourceCode" id="cb78"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb78-1"><a href="#cb78-1"></a><span class="bu">std::</span>string a;         <span class="co">// Default initialization.</span></span>
-<span id="cb78-2"><a href="#cb78-2"></a><span class="bu">std::</span>string b{};       <span class="co">// Value initialization.</span></span>
-<span id="cb78-3"><a href="#cb78-3"></a><span class="bu">std::</span>string c{<span class="st">&quot;hi!&quot;</span>};  <span class="co">// Direct initialization.</span></span>
-<span id="cb78-4"><a href="#cb78-4"></a><span class="bu">std::</span>string d = <span class="st">&quot;hi!&quot;</span>; <span class="co">// Copy initialization.</span></span></code></pre></div>
-<p>There are more forms.</p>
-<aside class="notes">
-<p>From the examples, each one of these triggers a constructor, but technically is another form of initialization:</p>
-<ol type="1">
-<li>Default initialization (i.e. no initializer is given).</li>
-<li>Value initialization; performs default initialization or zero-initialization.</li>
-<li>Direct initialization; copy elision for prvalues, or corresponding constructor.</li>
-<li>Copy initialization; copy elision for prvalues, or corresponding constructor.</li>
-</ol>
-<p>There are more forms of initialization, such as list initialization, aggregate initialization and reference initialization. But these are out of scope for this session.</p>
-<p>Let’s look at the default constructor first.</p>
-</aside>
-</section>
-<section id="initialization-of-pods" class="slide level2">
-<h2>Initialization of PODs</h2>
-<p>…</p>
-<aside class="notes">
-<p>…</p>
-</aside>
-</section>
-<section id="declarations-vs.-definitions" class="slide level2">
-<h2>Declarations vs. definitions</h2>
-</section>
-<section id="example-declarations" class="slide level2">
-<h2>Example declarations</h2>
-<div class="columns">
-<div class="column">
-<div class="sourceCode" id="cb79"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true"></a><span class="dt">int</span> i;</span>
-<span id="cb79-2"><a href="#cb79-2" aria-hidden="true"></a></span>
-<span id="cb79-3"><a href="#cb79-3" aria-hidden="true"></a><span class="dt">float</span> array[<span class="dv">2</span>];</span>
-<span id="cb79-4"><a href="#cb79-4" aria-hidden="true"></a></span>
-<span id="cb79-5"><a href="#cb79-5" aria-hidden="true"></a><span class="kw">auto</span>&amp; [x, y] = array;</span>
-<span id="cb79-6"><a href="#cb79-6" aria-hidden="true"></a></span>
-<span id="cb79-7"><a href="#cb79-7" aria-hidden="true"></a><span class="dt">void</span> func();</span>
-<span id="cb79-8"><a href="#cb79-8" aria-hidden="true"></a></span>
-<span id="cb79-9"><a href="#cb79-9" aria-hidden="true"></a><span class="kw">namespace</span> Earth {}</span>
-<span id="cb79-10"><a href="#cb79-10" aria-hidden="true"></a></span>
-<span id="cb79-11"><a href="#cb79-11" aria-hidden="true"></a><span class="kw">using</span> FuncPtr = <span class="bu">std::</span>function&lt;<span class="dt">void</span>()&gt;;</span>
-<span id="cb79-12"><a href="#cb79-12" aria-hidden="true"></a></span>
-<span id="cb79-13"><a href="#cb79-13" aria-hidden="true"></a><span class="kw">static_assert</span>(assertion, <span class="st">&quot;Fail!&quot;</span>);</span></code></pre></div>
-</div><div class="column">
-<div class="sourceCode" id="cb80"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true"></a><span class="kw">enum</span> <span class="kw">class</span> E;</span>
-<span id="cb80-2"><a href="#cb80-2" aria-hidden="true"></a></span>
-<span id="cb80-3"><a href="#cb80-3" aria-hidden="true"></a><span class="kw">union</span> U;</span>
-<span id="cb80-4"><a href="#cb80-4" aria-hidden="true"></a></span>
-<span id="cb80-5"><a href="#cb80-5" aria-hidden="true"></a><span class="kw">struct</span> X;</span>
-<span id="cb80-6"><a href="#cb80-6" aria-hidden="true"></a></span>
-<span id="cb80-7"><a href="#cb80-7" aria-hidden="true"></a><span class="kw">template</span>&lt;<span class="kw">typename</span> T&gt;</span>
-<span id="cb80-8"><a href="#cb80-8" aria-hidden="true"></a><span class="kw">struct</span> Y;</span>
-<span id="cb80-9"><a href="#cb80-9" aria-hidden="true"></a></span>
-<span id="cb80-10"><a href="#cb80-10" aria-hidden="true"></a><span class="kw">template</span> <span class="kw">struct</span> Y&lt;<span class="dt">int</span>&gt;;</span>
-<span id="cb80-11"><a href="#cb80-11" aria-hidden="true"></a></span>
-<span id="cb80-12"><a href="#cb80-12" aria-hidden="true"></a><span class="co">// Also: Explicit template specializations</span></span>
-<span id="cb80-13"><a href="#cb80-13" aria-hidden="true"></a><span class="co">// Also: Linkage specification</span></span>
-<span id="cb80-14"><a href="#cb80-14" aria-hidden="true"></a><span class="co">// Also: Asm declaration</span></span></code></pre></div>
-</div>
-</div>
-</section>
-<section id="example-definitions" class="slide level2">
-<h2>Example definitions</h2>
-<div class="columns">
-<div class="column">
-<div class="sourceCode" id="cb81"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true"></a><span class="dt">int</span> i = <span class="dv">42</span>;</span>
-<span id="cb81-2"><a href="#cb81-2" aria-hidden="true"></a></span>
-<span id="cb81-3"><a href="#cb81-3" aria-hidden="true"></a><span class="dt">float</span> array[<span class="dv">2</span>] = {};</span>
-<span id="cb81-4"><a href="#cb81-4" aria-hidden="true"></a></span>
-<span id="cb81-5"><a href="#cb81-5" aria-hidden="true"></a><span class="dt">void</span> func() {</span>
-<span id="cb81-6"><a href="#cb81-6" aria-hidden="true"></a>  <span class="co">// ...</span></span>
-<span id="cb81-7"><a href="#cb81-7" aria-hidden="true"></a>}</span>
-<span id="cb81-8"><a href="#cb81-8" aria-hidden="true"></a></span>
-<span id="cb81-9"><a href="#cb81-9" aria-hidden="true"></a><span class="kw">struct</span> X {</span>
-<span id="cb81-10"><a href="#cb81-10" aria-hidden="true"></a>  <span class="dt">int</span> <span class="va">value_</span> = <span class="dv">0</span>;</span>
-<span id="cb81-11"><a href="#cb81-11" aria-hidden="true"></a>};</span></code></pre></div>
-</div><div class="column">
-<div class="sourceCode" id="cb82"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true"></a><span class="kw">enum</span> <span class="kw">class</span> E {</span>
-<span id="cb82-2"><a href="#cb82-2" aria-hidden="true"></a>  Zero,</span>
-<span id="cb82-3"><a href="#cb82-3" aria-hidden="true"></a>  One</span>
-<span id="cb82-4"><a href="#cb82-4" aria-hidden="true"></a>};</span>
-<span id="cb82-5"><a href="#cb82-5" aria-hidden="true"></a></span>
-<span id="cb82-6"><a href="#cb82-6" aria-hidden="true"></a><span class="kw">template</span>&lt;<span class="kw">typename</span> T&gt; <span class="co">// A.K.A. &#39;temploid&#39;.</span></span>
-<span id="cb82-7"><a href="#cb82-7" aria-hidden="true"></a><span class="kw">struct</span> Y {</span>
-<span id="cb82-8"><a href="#cb82-8" aria-hidden="true"></a>  <span class="kw">auto</span> size() {</span>
-<span id="cb82-9"><a href="#cb82-9" aria-hidden="true"></a>    <span class="kw">sizeof</span>(T);</span>
-<span id="cb82-10"><a href="#cb82-10" aria-hidden="true"></a>  }</span>
-<span id="cb82-11"><a href="#cb82-11" aria-hidden="true"></a>};</span></code></pre></div>
-</div>
-</div>
-</section>
-<section id="the-options-we-have.." class="slide level2">
-<h2>The options we have..</h2>
-<ul>
-<li class="fragment"><strong>Do nothing</strong>, let the compiler figure it out,</li>
-<li class="fragment">Provide a <strong>custom implementation</strong>,</li>
-<li class="fragment">Provide <strong>default implementation</strong><sup>†</sup>,</li>
-<li class="fragment"><strong>‘Hide’</strong> an SMF<sup>†</sup>.</li>
-</ul>
-<div class="fragment">
-<p><sup>†</sup> <em>C++-version-dependent procedure.</em></p>
-</div>
-</section>
-<section id="the-options-we-have..-1" class="slide level2">
-<h2>The options we have.. <img data-src="images/cpp-classic.png" style="width:8.0%" /></h2>
-<ul>
-<li class="fragment">Default implementation: <code class="sourceCode cpp">T(){}</code></li>
-<li class="fragment">‘Hiding’ an SMF: declaration in <code class="sourceCode cpp"><span class="kw">private</span></code> section</li>
-</ul>
-</section>
-<section id="the-options-we-have..-2" class="slide level2">
-<h2>The options we have.. <img data-src="images/cpp-modern.png" style="width:8.0%" /></h2>
-<ul>
-<li class="fragment">Default implementation: <code class="sourceCode cpp">T() = <span class="cf">default</span>;</code></li>
-<li class="fragment">‘Hiding’ an SMF: <code class="sourceCode cpp">T() = <span class="kw">delete</span>;</code> in <code class="sourceCode cpp"><span class="kw">public</span></code> section</li>
-</ul>
-</section>
-<section id="member-variable-staticness" class="slide level2">
-<h2>Member variable <code class="sourceCode cpp"><span class="at">static</span></code>ness</h2>
-<p>Consider:</p>
-<div class="sourceCode" id="cb83"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb83-1"><a href="#cb83-1"></a><span class="kw">struct</span> T {</span>
-<span id="cb83-2"><a href="#cb83-2"></a>  <span class="at">static</span> <span class="kw">constexpr</span> <span class="dt">uint32_t</span> SERIAL = <span class="bn">0x20061983</span>; <span class="co">// No need for SMFs to deal with.</span></span>
-<span id="cb83-3"><a href="#cb83-3"></a>};</span></code></pre></div>
-</section></section>
     </div>
   </div>
 
