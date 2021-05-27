@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Kris van Rens">
+  <title>A bird’s-eye view of template&lt;&gt;</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="reveal.js/dist/reset.css">
+  <link rel="stylesheet" href="reveal.js/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="reveal.js/dist/theme/solarized.css" id="theme">
+  <link rel="stylesheet" href="reveal.js/plugin/highlight/kvr.css">
+  <link rel="stylesheet" href="css/pandoc-overrides.css"/>
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">A bird’s-eye view<br/>of <strong><span style="font-family:Inconsolata"><span style="color:rgb(170,13,145)">template</span><span style="color:rgb(38,48,51)">&lt;<img src='images/cpp-logo.png' width='14%' style='margin-top:2%;margin-bottom:-4%'/>&gt;</span></span></strong></h1>
+  <p class="author">Kris van Rens</p>
+</section>
+
+<section id="workshop-contents" class="title-slide slide level1">
+<h1>Workshop contents</h1>
+<ol type="1">
+<li class="fragment"><strong>Extending <code class="sourceCode cpp">Fraction<span class="op">&lt;&gt;</span></code></strong></li>
+<li class="fragment"><strong>Rolling your own trait</strong></li>
+<li class="fragment"><strong>Type erasure</strong></li>
+</ol>
+</section>
+
+<section>
+<section id="extending-fraction" class="title-slide slide level1">
+<h1>Extending <code class="sourceCode cpp">Fraction<span class="op">&lt;&gt;</span></code></h1>
+
+</section>
+<section id="heres-where-we-left-off" class="slide level2">
+<h2>Here’s where we left off…</h2>
+<div class="columns">
+<div class="column" style="width:60%;">
+<pre ><code class="cpp" data-line-numbers="">template&lt;typename Type&gt;
+class Fraction {
+  static_assert(std::is_integral_v&lt;Type&gt;, "Not an integral type");
+
+  Type numerator_   = {};
+  Type denominator_ = {};
+
+public:
+  Fraction(Type numerator, Type denominator)
+    : numerator_{numerator},
+      denominator_{denominator} {
+  }
+
+  Type numerator()   { return numerator_;   }
+  Type denominator() { return denominator_; }
+
+  double real() {
+    return static_cast&lt;double&gt;(numerator_) / denominator_;
+  }
+};</code></pre>
+</div><div class="column" style="width:40%;">
+<pre ><code class="cpp" data-line-numbers="">Fraction&lt;int&gt;           x{22, 7};
+Fraction&lt;unsigned long&gt; y{355U, 113U};
+
+printf("x = %.8lf\n", x.real());
+printf("y = %.8lf\n", y.real());</code></pre>
+<pre ><code class="text">x = 3.14285714
+y = 3.14159292</code></pre>
+</div>
+</div>
+</section>
+<section id="but-its-still-not-done" class="slide level2">
+<h2>But it’s still not done</h2>
+<div class="columns">
+<div class="column" style="width:60%;">
+<pre ><code class="cpp" data-line-numbers="">template&lt;typename Type&gt;
+class Fraction {
+  static_assert(std::is_integral_v&lt;Type&gt;, "Not an integral type");
+
+  Type numerator_   = {};
+  Type denominator_ = {};
+
+public:
+  Fraction(Type numerator, Type denominator)
+    : numerator_{numerator},
+      denominator_{denominator} {
+  }
+
+  Type numerator()   { return numerator_;   }
+  Type denominator() { return denominator_; }
+
+  double real() {
+    return static_cast&lt;double&gt;(numerator_) / denominator_;
+  }
+};</code></pre>
+</div><div class="column" style="width:40%;">
+<pre ><code class="cpp" data-line-numbers="">Fraction&lt;int&gt;           x{22, 7};
+Fraction&lt;unsigned long&gt; y{355U, 113U};
+Fraction&lt;bool&gt;          z{true, true};
+
+printf("x = %.8lf\n", x.real());
+printf("y = %.8lf\n", y.real());
+printf("z = %.8lf\n", z.real());</code></pre>
+<pre ><code class="text">x = 3.14285714
+y = 3.14159292
+z = 1.00000000</code></pre>
+<p><img data-src="images/em-face_with_raised_eyebrow.svg" style="width:10.0%" /></p>
+</div>
+</div>
+</section>
+<section id="excercise-1a" class="slide level2">
+<h2>Excercise 1a</h2>
+<p>Extend the static assertion to exclude <code class="sourceCode cpp"><span class="dt">bool</span></code> as well.</p>
+<p>Use <a href="https://cppreference.com">cppreference.com</a> or similar to find a trait.</p>
+<p> </p>
+<p><img data-src="images/em-link.svg" style="width:3.0%" /> <a href="https://www.godbolt.org/z/8Pn1sbfsK">Excercise code link</a> (<a href="https://www.godbolt.org/z/37zxYdvPd">solution</a>)</p>
+</section>
+<section id="rejecting-all-abuse" class="slide level2">
+<h2>Rejecting all abuse</h2>
+<pre ><code class="cpp" data-line-numbers="">template&lt;typename Type&gt;
+class Fraction {
+  static_assert(std::is_integral_v&lt;Type&gt; && !std::is_same_v&lt;Type, bool&gt;,
+                "Must be a non-boolean integral type");
+
+  Type numerator_   = {};
+  Type denominator_ = {};
+
+public:
+  Fraction(Type numerator, Type denominator)
+    : numerator_{numerator},
+      denominator_{denominator} {
+  }
+
+  Type numerator()   { return numerator_;   }
+  Type denominator() { return denominator_; }
+
+  double real() {
+    return static_cast&lt;double&gt;(numerator_) / denominator_;
+  }
+};</code></pre>
+</section>
+<section id="excercise-1b" class="slide level2">
+<h2>Excercise 1b</h2>
+<p>Create a C++20 concept out of the assertion.</p>
+<p>Use the talk slides and <a href="https://cppreference.com">cppreference.com</a>.</p>
+<p> </p>
+<p><img data-src="images/em-link.svg" style="width:3.0%" /> <a href="https://www.godbolt.org/z/YvPsfx76a">Excercise code link</a> (<a href="https://www.godbolt.org/z/bxM3rv7Y3">solution</a>)</p>
+</section>
+<section id="cleaned-up-with-a-concept" class="slide level2">
+<h2>Cleaned up with a <code class="sourceCode cpp"><span class="kw">concept</span></code></h2>
+<pre ><code class="cpp" data-line-numbers="">template&lt;typename Type&gt;
+concept NonBooleanIntegral = std::is_integral_v&lt;Type&gt; && !std::is_same_v&lt;Type, bool&gt;;</code></pre>
+<pre ><code class="cpp" data-line-numbers="">template&lt;NonBooleanIntegral Type&gt;
+class Fraction {
+  Type numerator_   = {};
+  Type denominator_ = {};
+
+public:
+  Fraction(Type numerator, Type denominator)
+    : numerator_{numerator},
+      denominator_{denominator} {
+  }
+
+  Type numerator()   { return numerator_;   }
+  Type denominator() { return denominator_; }
+
+  double real() {
+    return static_cast&lt;double&gt;(numerator_) / denominator_;
+  }
+};</code></pre>
+</section>
+<section id="extending-fraction-some-more" class="slide level2">
+<h2>Extending <code class="sourceCode cpp">Fraction<span class="op">&lt;&gt;</span></code> some more</h2>
+<div class="columns">
+<div class="column" style="width:55%;">
+<pre ><code class="cpp" data-line-numbers="">template&lt;NonBooleanIntegral Type&gt;
+class Fraction {
+  Type numerator_   = {};
+  Type denominator_ = {};
+
+public:
+  Fraction(Type numerator, Type denominator);
+};</code></pre>
+</div><div class="column" style="width:45%;">
+<pre ><code class="cpp" data-line-numbers="">Fraction&lt;int&gt;           x{22, 7};
+Fraction&lt;unsigned long&gt; y{355U, 113U};
+
+printf("x = %.8lf\n", x.real());
+printf("y = %.8lf\n", y.real());</code></pre>
+<pre ><code class="text">x = 3.14285714
+y = 3.14159292</code></pre>
+</div>
+</div>
+<p>Let’s add a generalized constructor</p>
+</section>
+<section id="generalized-constructor" class="slide level2">
+<h2>Generalized constructor</h2>
+<div class="columns">
+<div class="column" style="width:55%;">
+<pre ><code class="cpp" data-line-numbers="3,4,9-12">template&lt;NonBooleanIntegral Type&gt;
+class Fraction {
+  Type numerator_   = {};
+  Type denominator_ = 1;
+
+public:
+  Fraction(Type numerator, Type denominator);
+
+  template&lt;typename OtherType&gt;
+  explicit Fraction(OtherType other)
+    : numerator_{static_cast&lt;Type&gt;(other)} {
+  }
+
+  // ...
+};</code></pre>
+</div><div class="column" style="width:45%;">
+<pre ><code class="cpp" data-line-numbers="3,7">Fraction&lt;int&gt;           x{22, 7};
+Fraction&lt;unsigned long&gt; y{355U, 113U};
+Fraction&lt;unsigned int&gt;  z{3.1};
+
+printf("x = %.8lf\n", x.real());
+printf("y = %.8lf\n", y.real());
+printf("z = %.8lf\n", z.real());</code></pre>
+<pre ><code class="text">x = 3.14285714
+y = 3.14159292
+z = 3.00000000</code></pre>
+</div>
+</div>
+</section>
+<section id="generalized-constructor-copy" class="slide level2">
+<h2>Generalized constructor + copy</h2>
+<div class="columns">
+<div class="column" style="width:55%;">
+<pre ><code class="cpp" data-line-numbers="">template&lt;NonBooleanIntegral Type&gt;
+class Fraction {
+  Type numerator_   = {};
+  Type denominator_ = 1;
+
+public:
+  Fraction(Type numerator, Type denominator);
+
+  template&lt;typename OtherType&gt;
+  explicit Fraction(OtherType other)
+    : numerator_{static_cast&lt;Type&gt;(other)} {
+  }
+
+  // ...
+};</code></pre>
+</div><div class="column" style="width:45%;">
+<pre ><code class="cpp" data-line-numbers="1,5,10">Fraction&lt;int&gt;           x{22, 7};
+Fraction&lt;unsigned long&gt; y{355U, 113U};
+Fraction&lt;unsigned int&gt;  z{3.1};
+
+auto c{x}; // Calls implicit copy constructor.
+
+printf("x = %.8lf\n", x.real());
+printf("y = %.8lf\n", y.real());
+printf("z = %.8lf\n", z.real());
+printf("c = %.8lf\n", c.real());</code></pre>
+<pre ><code class="text">x = 3.14285714
+y = 3.14159292
+z = 3.00000000
+c = 3.14285714</code></pre>
+</div>
+</div>
+</section>
+<section id="generalized-constructor-copy-1" class="slide level2">
+<h2>Generalized constructor + copy</h2>
+<div class="columns">
+<div class="column" style="width:55%;">
+<pre ><code class="cpp" data-line-numbers="9-14">template&lt;NonBooleanIntegral Type&gt;
+class Fraction {
+  Type numerator_   = {};
+  Type denominator_ = 1;
+
+public:
+  Fraction(Type numerator, Type denominator);
+
+  // Perfect forwarding constructor.
+  template&lt;typename OtherType&gt;
+  explicit Fraction(OtherType&& other)
+    : numerator_{static_cast&lt;Type&gt;(
+                   std::forward&lt;OtherType&gt;(other))} {
+  }
+
+  // ...
+};</code></pre>
+</div><div class="column" style="width:45%;">
+<pre ><code class="cpp" data-line-numbers="1,5">Fraction&lt;int&gt;           x{22, 7};
+Fraction&lt;unsigned long&gt; y{355U, 113U};
+Fraction&lt;unsigned int&gt;  z{3.1};
+
+auto c{x}; // Erroneously calls forwarding ctor.
+
+printf("x = %.8lf\n", x.real());
+printf("y = %.8lf\n", y.real());
+printf("z = %.8lf\n", z.real());
+printf("c = %.8lf\n", c.real());</code></pre>
+<pre ><code class="text">&lt;source&gt;: error: invalid 'static_cast' from type
+                   'Fraction&lt;int&gt;' to type 'int'
+    |     : numerator_{static_cast&lt;Type&gt;(
+    |                  ^~~~~~~~~~~~~~~~~~
+    |           std::forward&lt;OtherType&gt;(other))} {
+    |           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ...</code></pre>
+</div>
+</div>
+</section>
+<section id="generalized-constructor-copy-2" class="slide level2">
+<h2>Generalized constructor + copy</h2>
+<pre ><code class="cpp" data-line-numbers="6-10">template&lt;NonBooleanIntegral Type&gt;
+class Fraction {
+  // ...
+
+public:
+  // Perfect forwarding constructor.
+  template&lt;typename OtherType&gt;
+  explicit Fraction(OtherType&& other)
+    : numerator_{static_cast&lt;Type&gt;(std::forward&lt;OtherType&gt;(other))} {
+  }
+
+  // ...
+};</code></pre>
+<pre ><code class="cpp" data-line-numbers="">Fraction&lt;int&gt; x{22, 7};
+auto c{x}; // Erroneously calls forwarding ctor.</code></pre>
+</section>
+<section id="conditional-disablement" class="slide level2">
+<h2>Conditional disablement</h2>
+<pre ><code class="cpp" data-line-numbers="6-11">template&lt;NonBooleanIntegral Type&gt;
+class Fraction {
+  // ...
+
+public:
+  // Perfect forwarding constructor.
+  template&lt;typename OtherType,
+           std::enable_if_t&lt;/* ..check convertability OtherType --&gt; Type.. */, bool&gt; = true&gt;
+  explicit Fraction(OtherType&& other)
+    : numerator_{static_cast&lt;Type&gt;(std::forward&lt;OtherType&gt;(other))} {
+  }
+
+  // ...
+};</code></pre>
+<pre ><code class="cpp" data-line-numbers="">Fraction&lt;int&gt; x{22, 7};
+auto c{x}; // Erroneously calls forwarding ctor.</code></pre>
+</section>
+<section id="excercise-1c" class="slide level2">
+<h2>Excercise 1c</h2>
+<p>Find the type trait to evaluate convertability.</p>
+<p>Use <a href="https://cppreference.com">cppreference.com</a> or similar to find it.</p>
+<p> </p>
+<p><img data-src="images/em-link.svg" style="width:3.0%" /> <a href="https://www.godbolt.org/z/T1xvK1fMx">Excercise code link</a> (<a href="https://www.godbolt.org/z/ae9dTTEac">solution</a>)</p>
+</section>
+<section id="conditional-disablement-1" class="slide level2">
+<h2>Conditional disablement</h2>
+<pre ><code class="cpp" data-line-numbers="6-11">template&lt;NonBooleanIntegral Type&gt;
+class Fraction {
+  // ...
+
+public:
+  // Perfect forwarding constructor for convertible types.
+  template&lt;typename OtherType,
+           std::enable_if_t&lt;std::is_convertible_v&lt;Type, OtherType&gt;, bool&gt; = true&gt;
+  explicit Fraction(OtherType&& other)
+    : numerator_{static_cast&lt;Type&gt;(std::forward&lt;OtherType&gt;(other))} {
+  }
+
+  // ...
+};</code></pre>
+<pre ><code class="cpp" data-line-numbers="">Fraction&lt;int&gt; x{22, 7};
+auto c{x}; // Calls implicit copy constructor.</code></pre>
+</section>
+<section id="excercise-1d" class="slide level2">
+<h2>Excercise 1d</h2>
+<p>Move <code>enable_if</code> trait evaluation to a custom type alias, and use it as a template <em>type</em> argument to the generalized constructor, e.g.:</p>
+<pre ><code class="cpp" data-line-numbers="">template&lt;typename OtherType, typename = custom_type_alias&lt;OtherType&gt;&gt;
+explicit Fraction(OtherType&& other) { /* ... */ }</code></pre>
+<p><small>Hint: use the <code>_t</code> convention to get a short-hand to <code>::type</code> of <code class="sourceCode cpp">enable_if</code>.</small></p>
+<p> </p>
+<p><img data-src="images/em-link.svg" style="width:3.0%" /> <a href="https://www.godbolt.org/z/ae9dTTEac">Excercise code link</a> (<a href="https://www.godbolt.org/z/qh3fhcKzc">solution</a>)</p>
+</section>
+<section id="making-enable_if-look-pretty" class="slide level2">
+<h2>Making <code>enable_if</code> look pretty</h2>
+<pre ><code class="cpp" data-line-numbers="">template&lt;NonBooleanIntegral Type&gt;
+class Fraction {
+  template&lt;typename OtherType&gt;
+  using is_convertible_t = std::enable_if_t&lt;std::is_convertible_v&lt;Type, OtherType&gt;, bool&gt;;
+
+  // ...
+
+public:
+  // Perfect forwarding constructor for convertible types.
+  template&lt;typename OtherType, typename = is_convertible_t&lt;OtherType&gt;&gt;
+  explicit Fraction(OtherType&& other)
+    : numerator_{static_cast&lt;Type&gt;(std::forward&lt;OtherType&gt;(other))} {
+  }
+
+  // ...
+};</code></pre>
+</section></section>
+<section>
+<section id="rolling-your-own-type-trait" class="title-slide slide level1">
+<h1>Rolling your own type trait</h1>
+
+</section>
+<section id="rolling-your-own-trait" class="slide level2">
+<h2>Rolling your own trait</h2>
+<p>Suppose we want to check if a type is of template type <code class="sourceCode cpp">A<span class="op">&lt;&gt;</span></code>:</p>
+<div class="columns">
+<div class="column">
+<pre ><code class="cpp" data-line-numbers="">// ???</code></pre>
+</div><div class="column">
+<pre ><code class="cpp" data-line-numbers="">template&lt;typename Type&gt;
+struct A {};
+
+template&lt;typename Type&gt;
+struct B {};</code></pre>
+<pre ><code class="cpp" data-line-numbers="">static_assert(/* Check: A&lt;int&gt;    */); // OK
+static_assert(/* Check: A&lt;float&gt;&gt; */); // OK
+static_assert(/* Check: B&lt;int&gt;&gt;   */); // FAIL
+static_assert(/* Check: int       */); // FAIL</code></pre>
+</div>
+</div>
+</section>
+<section id="rolling-your-own-trait-1" class="slide level2">
+<h2>Rolling your own trait</h2>
+<p>Suppose we want to check if a type is of template type <code class="sourceCode cpp">A<span class="op">&lt;&gt;</span></code>:</p>
+<div class="columns">
+<div class="column">
+<pre ><code class="cpp" data-line-numbers="">template&lt;typename Type&gt;
+struct is_typeA {
+  // ???
+};</code></pre>
+</div><div class="column">
+<pre ><code class="cpp" data-line-numbers="">template&lt;typename Type&gt;
+struct A {};
+
+template&lt;typename Type&gt;
+struct B {};</code></pre>
+<pre ><code class="cpp" data-line-numbers="">static_assert(/* Check: A&lt;int&gt;    */); // OK
+static_assert(/* Check: A&lt;float&gt;&gt; */); // OK
+static_assert(/* Check: B&lt;int&gt;&gt;   */); // FAIL
+static_assert(/* Check: int       */); // FAIL</code></pre>
+</div>
+</div>
+</section>
+<section id="rolling-your-own-trait-2" class="slide level2">
+<h2>Rolling your own trait</h2>
+<p>Suppose we want to check if a type is of template type <code class="sourceCode cpp">A<span class="op">&lt;&gt;</span></code>:</p>
+<div class="columns">
+<div class="column">
+<pre ><code class="cpp" data-line-numbers="">template&lt;typename Type&gt;  // General case.
+struct is_typeA
+   : std::false_type {}; // Provides bool 'value'.
+
+// TODO: Positive case.</code></pre>
+</div><div class="column">
+<pre ><code class="cpp" data-line-numbers="">template&lt;typename Type&gt;
+struct A {};
+
+template&lt;typename Type&gt;
+struct B {};</code></pre>
+<pre ><code class="cpp" data-line-numbers="">static_assert(/* Check: A&lt;int&gt;    */); // OK
+static_assert(/* Check: A&lt;float&gt;&gt; */); // OK
+static_assert(/* Check: B&lt;int&gt;&gt;   */); // FAIL
+static_assert(/* Check: int       */); // FAIL</code></pre>
+</div>
+</div>
+</section>
+<section id="excercise-2a" class="slide level2">
+<h2>Excercise 2a</h2>
+<p>Write the positive <code>value</code> full specialization of <code class="sourceCode cpp">is_typeA</code></p>
+<p> </p>
+<p><img data-src="images/em-link.svg" style="width:3.0%" /> <a href="https://www.godbolt.org/z/KG6jM8vT6">Excercise code link</a> (<a href="https://www.godbolt.org/z/a7YE98ETq">solution</a>)</p>
+</section>
+<section id="full-specialization" class="slide level2">
+<h2>Full specialization</h2>
+<p>Suppose we want to check if a type is of template type <code class="sourceCode cpp">A<span class="op">&lt;&gt;</span></code>:</p>
+<div class="columns">
+<div class="column">
+<pre ><code class="cpp" data-line-numbers="">template&lt;typename Type&gt;  // General case.
+struct is_typeA
+   : std::false_type {}; // Provides bool 'value'.
+
+template&lt;typename Type&gt;  // Full specialization.
+struct is_typeA&lt;A&lt;Type&gt;&gt;
+   : std::true_type {};  // Provides bool 'value'.</code></pre>
+</div><div class="column">
+<pre ><code class="cpp" data-line-numbers="">template&lt;typename Type&gt;
+struct A {};
+
+template&lt;typename Type&gt;
+struct B {};</code></pre>
+<pre ><code class="cpp" data-line-numbers="">static_assert(is_typeA&lt;A&lt;int&gt;&gt;::value);   // OK
+static_assert(is_typeA&lt;A&lt;float&gt;&gt;::value); // OK
+static_assert(is_typeA&lt;B&lt;int&gt;&gt;::value);   // FAIL
+static_assert(is_typeA&lt;int&gt;::value);      // FAIL</code></pre>
+</div>
+</div>
+</section>
+<section id="excercise-2b" class="slide level2">
+<h2>Excercise 2b</h2>
+<p>Add a variable template helper <code class="sourceCode cpp">is_typeA_v<span class="op">&lt;&gt;</span></code> for short notation.</p>
+<p> </p>
+<p><img data-src="images/em-link.svg" style="width:3.0%" /> <a href="https://www.godbolt.org/z/a7YE98ETq">Excercise code link</a> (<a href="https://www.godbolt.org/z/ze5K4qns1">solution</a>)</p>
+</section>
+<section id="a-finishing-touch" class="slide level2">
+<h2>A finishing touch</h2>
+<div class="columns">
+<div class="column" style="width:58%;">
+<pre ><code class="cpp" data-line-numbers="">template&lt;typename Type&gt;
+struct is_typeA
+   : std::false_type {};
+
+template&lt;typename Type&gt;
+struct is_typeA&lt;A&lt;Type&gt;&gt;
+   : std::true_type {};
+
+template&lt;typename Type&gt;
+inline static constexpr bool is_typeA_v = is_typeA&lt;Type&gt;::value;</code></pre>
+</div><div class="column" style="width:42%;">
+<pre ><code class="cpp" data-line-numbers="">template&lt;typename Type&gt;
+struct A {};
+
+template&lt;typename Type&gt;
+struct B {};</code></pre>
+<pre ><code class="cpp" data-line-numbers="">static_assert(is_typeA_v&lt;A&lt;int&gt;&gt;);   // OK
+static_assert(is_typeA_v&lt;A&lt;float&gt;&gt;); // OK
+static_assert(is_typeA_v&lt;B&lt;int&gt;&gt;);   // FAIL
+static_assert(is_typeA_v&lt;int&gt;);      // FAIL</code></pre>
+</div>
+</div>
+</section>
+<section id="testing-type-traits" class="slide level2">
+<h2>Testing type traits</h2>
+<p>Tests for the <code class="sourceCode cpp">is_typeA<span class="op">&lt;&gt;</span></code> trait:</p>
+<pre ><code class="cpp" data-line-numbers="">TEST_CASE("is_testA type trait")
+{
+  static_assert(is_typeA_v&lt;A&lt;int&gt;&gt;);
+  static_assert(is_typeA_v&lt;A&lt;float&gt;&gt;);
+  static_assert(!is_typeA_v&lt;B&lt;int&gt;&gt;);
+  static_assert(!is_typeA_v&lt;int&gt;);
+}</code></pre>
+<p>A failing test will error out at compile-time</p>
+</section></section>
+<section>
+<section id="type-erasure" class="title-slide slide level1">
+<h1>Type erasure</h1>
+
+</section>
+<section id="polymorphism-in-c" class="slide level2">
+<h2>Polymorphism in C++</h2>
+<p><img data-src="images/polymorphism.png" style="width:70.0%" /></p>
+</section>
+<section id="compile-time-polymorphism" class="slide level2">
+<h2>Compile-time polymorphism</h2>
+<div class="columns">
+<div class="column">
+<p><strong>Pros</strong>:</p>
+<ul>
+<li class="fragment">No need for an <em>is-a relationship</em>,</li>
+<li class="fragment">No run-time overhead,</li>
+<li class="fragment">Non-intrusive.</li>
+</ul>
+</div><div class="column">
+<p><strong>Cons</strong>:</p>
+<ul>
+<li class="fragment">No explicit interface,</li>
+<li class="fragment">Compile-time bound,</li>
+<li class="fragment">No heterogeneous collections.</li>
+</ul>
+</div>
+</div>
+<div class="fragment">
+<p><img data-src="images/em-information_source.svg" style="width:3.0%" /> Consider <em>type erasure</em> to bridge static/dynamic polymorphism</p>
+</div>
+</section>
+<section id="concept-based-type-erasure" class="slide level2">
+<h2>Concept-based type erasure</h2>
+<p>A means to achieve flexible run-time polymorphism</p>
+<ul>
+<li class="fragment">Used in STL types like <code class="sourceCode cpp"><span class="bu">std::</span>any</code> and <code class="sourceCode cpp"><span class="bu">std::</span>function</code>,</li>
+<li class="fragment">Advantages of both compile-time and run-time polymorphism,</li>
+<li class="fragment">Implements a <em>using a</em> relationship more than a <em>is a</em> relationship.</li>
+<li class="fragment">Uses type and function templates under the hood.</li>
+</ul>
+</section>
+<section id="concept-based-type-erasure-1" class="slide level2">
+<h2>Concept-based type erasure</h2>
+<div class="columns">
+<div class="column">
+<pre ><code class="cpp" data-line-numbers="">struct Number {
+  const long data_;
+};
+
+struct Text {
+  const std::string data_;
+};
+
+struct NumberSequence {
+  const std::array&lt;Number, 6&gt; data_;
+};</code></pre>
+</div><div class="column">
+<pre ><code class="cpp" data-line-numbers="">Number         n{17};
+Text           t{"Hello"};
+NumberSequence s{5, 4, 3, 2, 1, 0};</code></pre>
+</div>
+</div>
+</section>
+<section id="concept-based-type-erasure-2" class="slide level2">
+<h2>Concept-based type erasure</h2>
+<div class="columns">
+<div class="column">
+<pre ><code class="cpp" data-line-numbers="">struct Number {
+  const long data_;
+};
+
+struct Text {
+  const std::string data_;
+};
+
+struct NumberSequence {
+  const std::array&lt;Number, 6&gt; data_;
+};</code></pre>
+</div><div class="column">
+<pre ><code class="cpp" data-line-numbers="">using Numbers         = std::vector&lt;Number&gt;;
+using Texts           = std::vector&lt;Text&gt;;
+using NumberSequences = std::vector&lt;NumberSequence&gt;;
+
+Numbers         n{{0}, {1}, {1}, {2}, {3}, {5}};
+Texts           t{{"Hi"}, {"There"}, {"!"}};
+NumberSequences s{{0, 1, 1,  2,  3,  5},
+                  {1, 4, 9, 16, 25, 36}};</code></pre>
+</div>
+</div>
+</section>
+<section id="concept-based-type-erasure-3" class="slide level2">
+<h2>Concept-based type erasure</h2>
+<div class="columns">
+<div class="column">
+<pre ><code class="cpp" data-line-numbers="">class Object {
+
+
+
+  // ...
+
+
+
+public:
+  template&lt;typename Type&gt;
+  explicit Object(Type object);
+};</code></pre>
+</div><div class="column">
+<pre ><code class="cpp" data-line-numbers="">Object o1{Number{17}};
+Object o2{Text{"Hello"}};
+Object o3{NumberSequence{5, 4, 3, 2, 1, 0}};</code></pre>
+</div>
+</div>
+</section>
+<section id="concept-based-type-erasure-4" class="slide level2">
+<h2>Concept-based type erasure</h2>
+<div class="columns">
+<div class="column">
+<pre ><code class="cpp" data-line-numbers="">class Object {
+  struct Concept;
+
+  template&lt;typename Type&gt;
+  struct Model final : Concept;
+
+  std::unique_ptr&lt;const Concept&gt; model_;
+
+public:
+  template&lt;typename Type&gt;
+  explicit Object(Type object);
+};</code></pre>
+</div><div class="column">
+<pre ><code class="cpp" data-line-numbers="">Object o1{Number{17}};
+Object o2{Text{"Hello"}};
+Object o3{NumberSequence{5, 4, 3, 2, 1, 0}};</code></pre>
+</div>
+</div>
+</section>
+<section id="concept-based-type-erasure-5" class="slide level2">
+<h2>Concept-based type erasure</h2>
+<div class="columns">
+<div class="column">
+<pre ><code class="cpp" data-line-numbers="2">class Object {
+  struct Concept;
+
+  template&lt;typename Type&gt;
+  struct Model final : Concept;
+
+  std::unique_ptr&lt;const Concept&gt; model_;
+
+public:
+  template&lt;typename Type&gt;
+  explicit Object(Type object);
+};</code></pre>
+</div><div class="column">
+<pre ><code class="cpp" data-line-numbers="">Object o1{Number{17}};
+Object o2{Text{"Hello"}};
+Object o3{NumberSequence{5, 4, 3, 2, 1, 0}};</code></pre>
+<table style="width:89%;">
+<colgroup>
+<col style="width: 88%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><code>Concept</code> is the interface</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="concept-based-type-erasure-6" class="slide level2">
+<h2>Concept-based type erasure</h2>
+<div class="columns">
+<div class="column">
+<pre ><code class="cpp" data-line-numbers="2,7">class Object {
+  struct Concept;
+
+  template&lt;typename Type&gt;
+  struct Model final : Concept;
+
+  std::unique_ptr&lt;const Concept&gt; model_;
+
+public:
+  template&lt;typename Type&gt;
+  explicit Object(Type object);
+};</code></pre>
+</div><div class="column">
+<pre ><code class="cpp" data-line-numbers="">Object o1{Number{17}};
+Object o2{Text{"Hello"}};
+Object o3{NumberSequence{5, 4, 3, 2, 1, 0}};</code></pre>
+<table style="width:89%;">
+<colgroup>
+<col style="width: 88%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><code>Concept</code> is the interface</td>
+</tr>
+<tr class="even">
+<td><code>model_</code> is the data storage</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="concept-based-type-erasure-7" class="slide level2">
+<h2>Concept-based type erasure</h2>
+<div class="columns">
+<div class="column">
+<pre ><code class="cpp" data-line-numbers="2,4,5,7">class Object {
+  struct Concept;
+
+  template&lt;typename Type&gt;
+  struct Model final : Concept;
+
+  std::unique_ptr&lt;const Concept&gt; model_;
+
+public:
+  template&lt;typename Type&gt;
+  explicit Object(Type object);
+};</code></pre>
+</div><div class="column">
+<pre ><code class="cpp" data-line-numbers="">Object o1{Number{17}};
+Object o2{Text{"Hello"}};
+Object o3{NumberSequence{5, 4, 3, 2, 1, 0}};</code></pre>
+<table style="width:89%;">
+<colgroup>
+<col style="width: 88%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><code>Concept</code> is the interface</td>
+</tr>
+<tr class="even">
+<td><code>model_</code> is the data storage</td>
+</tr>
+<tr class="odd">
+<td><code>Model</code> is the conversion type</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="concept-based-type-erasure-8" class="slide level2">
+<h2>Concept-based type erasure</h2>
+<div class="columns">
+<div class="column" style="width:40%;">
+<pre ><code class="cpp" data-line-numbers="">class Object {
+  struct Concept {
+    virtual ~Concept() = default;
+  };
+
+  template&lt;typename Type&gt;
+  struct Model final : Concept {
+    const Type data_;
+
+    template&lt;typename OtherType = Type&gt;
+    explicit Model(OtherType data)
+      : data_{data} {
+    }
+  };
+
+  std::unique_ptr&lt;const Concept&gt; model_;
+
+public:
+  template&lt;typename Type&gt;
+  explicit Object(Type object);
+};</code></pre>
+</div><div class="column" style="width:60%;">
+<pre ><code class="cpp" data-line-numbers="">template&lt;typename Type&gt;
+Object::Object(Type object)
+  : model_{std::make_shared&lt;Model&lt;std::decay_t&lt;Type&gt;&gt;&gt;(object)} {
+}</code></pre>
+<pre ><code class="cpp" data-line-numbers="">Object o1{Number{17}};
+Object o2{Text{"Hello"}};
+Object o3{NumberSequence{5, 4, 3, 2, 1, 0}};</code></pre>
+<p>Bare-bones version..</p>
+</div>
+</div>
+</section>
+<section id="excercise-3a" class="slide level2">
+<h2>Excercise 3a</h2>
+<p>There’s too many copies being made of the captured object.</p>
+<p>Improve the handling by employing forwarding references.</p>
+<p> </p>
+<p><img data-src="images/em-link.svg" style="width:3.0%" /> <a href="https://www.godbolt.org/z/s8r99n3qh">Excercise code link</a> (<a href="https://www.godbolt.org/z/esGMTvrso">solution</a>)</p>
+</section>
+<section id="concept-based-type-erasure-9" class="slide level2">
+<h2>Concept-based type erasure</h2>
+<div class="columns">
+<div class="column" style="width:45%;">
+<pre ><code class="cpp" data-line-numbers="">class Object {
+  struct Concept {
+    virtual ~Concept() = default;
+  };
+
+  template&lt;typename Type&gt;
+  struct Model final : Concept {
+    const Type data_;
+
+    template&lt;typename OtherType = Type&gt;
+    explicit Model(OtherType&& data)
+      : data_{std::forward&lt;OtherType&gt;(data)} {
+    }
+  };
+
+  std::unique_ptr&lt;const Concept&gt; model_;
+
+public:
+  template&lt;typename Type&gt;
+  explicit Object(Type&& object);
+};</code></pre>
+</div><div class="column" style="width:55%;">
+<pre ><code class="cpp" data-line-numbers="">template&lt;typename Type&gt;
+Object::Object(Type&& object)
+  : model_{std::make_shared&lt;Model&lt;std::decay_t&lt;Type&gt;&gt;&gt;(
+             std::forward&lt;Type&gt;(object))} {
+}</code></pre>
+<pre ><code class="cpp" data-line-numbers="">Object o1{Number{17}};
+Object o2{Text{"Hello"}};
+Object o3{NumberSequence{5, 4, 3, 2, 1, 0}};</code></pre>
+<p>No more copies</p>
+</div>
+</div>
+</section>
+<section id="concept-based-type-erasure-10" class="slide level2">
+<h2>Concept-based type erasure</h2>
+<div class="columns">
+<div class="column" style="width:45%;">
+<pre ><code class="cpp" data-line-numbers="">struct Number {
+  const long data_;
+
+  [[nodiscard]] std::string serialize() const {
+    return std::to_string(data_);
+  }
+};
+
+struct Text {
+  const std::string data_;
+
+  [[nodiscard]] std::string serialize() const {
+    return data_;
+  }
+};</code></pre>
+</div><div class="column" style="width:55%;">
+<pre ><code class="cpp" data-line-numbers="">struct NumberSequence {
+  const std::array&lt;Number, 6&gt; data_;
+
+  [[nodiscard]] std::string serialize() const {
+    return std::accumulate(
+      std::next(data_.begin()),
+                data_.end(),
+                data_[0].serialize(),
+                [](auto a, auto b) {
+                  return std::move(a) + '-' + b.serialize();
+                });
+  }
+};</code></pre>
+</div>
+</div>
+</section>
+<section id="concept-based-type-erasure-11" class="slide level2">
+<h2>Concept-based type erasure</h2>
+<div class="columns">
+<div class="column">
+<pre ><code class="cpp" data-line-numbers="">struct Number {
+  const long data_;
+
+  [[nodiscard]] std::string serialize() const;
+};
+
+struct Text {
+  const std::string data_;
+
+  [[nodiscard]] std::string serialize() const;
+};
+
+struct NumberSequence {
+  const std::array&lt;Number, 6&gt; data_;
+
+  [[nodiscard]] std::string serialize() const;
+};</code></pre>
+</div><div class="column">
+<pre ><code class="cpp" data-line-numbers="">Number n{42};
+std::cout &lt;&lt; serialize(n) &lt;&lt; '\n';
+
+Text t{"Hi"};
+std::cout &lt;&lt; serialize(t) &lt;&lt; '\n';
+
+NumberSequence s{0, 1, 1, 2, 3, 5};
+std::cout &lt;&lt; serialize(s) &lt;&lt; '\n';</code></pre>
+<pre ><code class="text">42
+Hi
+0-1-1-2-3-5</code></pre>
+</div>
+</div>
+</section>
+<section id="excercise-3b" class="slide level2">
+<h2>Excercise 3b</h2>
+<p>Make the <code>Object</code> class serializable as well.</p>
+<p> </p>
+<p><img data-src="images/em-link.svg" style="width:3.0%" /> <a href="https://www.godbolt.org/z/71qeK1K76">Excercise code link</a> (<a href="https://www.godbolt.org/z/bbjK51ej4">solution</a>)</p>
+</section>
+<section id="concept-based-type-erasure-12" class="slide level2">
+<h2>Concept-based type erasure</h2>
+<div class="columns">
+<div class="column" style="width:45%;">
+<pre ><code class="cpp" data-line-numbers="">class Serializable {
+  struct Concept {
+    virtual ~Concept() = default;
+    virtual std::string serialize() const = 0;
+  };
+
+  template&lt;typename Type&gt;
+  struct Model final : Concept {
+    const Type data_;
+
+    template&lt;typename OtherType = Type&gt;
+    explicit Model(OtherType&& data);
+    std::string serialize() const override;
+  };
+
+  std::shared_ptr&lt;const Concept&gt; model_;
+
+public:
+  template&lt;typename Type&gt;
+  explicit Serializable(Type&& serializable);
+  [[nodiscard]] std::string serialize() const;
+};</code></pre>
+</div><div class="column" style="width:55%;">
+<pre ><code class="cpp" data-line-numbers="">template&lt;typename Type&gt;
+template&lt;typename OtherType = Type&gt;
+Serializable::Model&lt;Type&gt;::Model(OtherType&& data)
+  : data_{std::forward&lt;OtherType&gt;(data)} {
+}
+
+template&lt;typename Type&gt;
+std::string Serializable::Model&lt;Type&gt;::serialize() const {
+  return ::serialize(data_);
+}
+
+template&lt;typename Type&gt;
+Serializable::Serializable(Type&& serializable)
+  : model_{std::make_shared&lt;Model&lt;std::decay_t&lt;Type&gt;&gt;&gt;(
+      std::forward&lt;Type&gt;(serializable))} {
+}</code></pre>
+</div>
+</div>
+</section>
+<section id="concept-based-type-erasure-13" class="slide level2">
+<h2>Concept-based type erasure</h2>
+<div class="columns">
+<div class="column">
+<pre ><code class="cpp" data-line-numbers="">using Serializables = std::vector&lt;Serializable&gt;;
+
+template&lt;typename Type&gt;
+std::string serialize(const Type& serializable) {
+  return serializable.serialize();
+}
+
+std::string serialize(const Serializables& v) {
+  std::string result;
+
+  for (const auto& s : v) {
+    result += '&lt;' + serialize(s) + '&gt;';
+  }
+
+  return result;
+}</code></pre>
+</div><div class="column">
+<pre ><code class="cpp" data-line-numbers="">Serializables v;
+
+v.emplace_back(Number{42});
+v.emplace_back(Text{"Hi"});
+v.emplace_back(NumberSequence{0, 1, 1, 2, 3, 5});
+v.emplace_back(Serializables{v});
+v.emplace_back(Number{17});
+v.emplace_back(Text{"There"});
+
+std::cout &lt;&lt; serialize(v) &lt;&lt; '\n';</code></pre>
+<pre ><code class="text">&lt;42&gt;&lt;Hi&gt;&lt;0-1-1-2-3-5&gt;&lt;&lt;42&gt;&lt;Hi&gt;&lt;0-1-1-2-3-5&gt;&gt;&lt;17&gt;&lt;There&gt;</code></pre>
+<p><img data-src="images/em-link.svg" style="width:6.0%" /> <a href="https://www.godbolt.org/z/T7YTfc1ab">Final code link</a></p>
+</div>
+</div>
+</section>
+<section id="potential-improvements" class="slide level2">
+<h2>Potential improvements</h2>
+<p>Type erasure class <code>Serializable</code> could be improved to:</p>
+<ul>
+<li class="fragment">Implement small object optimization:
+<ul>
+<li class="fragment">Directly store the object it represents itself,</li>
+<li class="fragment">Use <code>Concept</code> as a custom vtable.</li>
+</ul></li>
+</ul>
+<div class="fragment">
+<p><small> </small></p>
+<pre ><code class="cpp" data-line-numbers="">struct Serializable::Concept {
+  void (*dtor_)(void*) noexcept;        // Destructor.
+  void (*move_)(void*, void*) noexcept; // Move operator.
+
+  // Add other functions to restore e.g. copying behavior.
+
+  std::string (*serialize_)() const;
+};</code></pre>
+</div>
+</section></section>
+    </div>
+  </div>
+
+  <script src="reveal.js/dist/reveal.js"></script>
+
+  // reveal.js plugins
+  <script src="reveal.js/plugin/notes/notes.js"></script>
+  <script src="reveal.js/plugin/search/search.js"></script>
+  <script src="reveal.js/plugin/zoom/zoom.js"></script>
+  <script src="reveal.js/plugin/highlight/highlight.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+        // Display the page number of the current slide
+        slideNumber: true,
+        // Push each slide change to the browser history
+        history: true,
+        // Transition style
+        transition: 'fade', // none/fade/slide/convex/concave/zoom
+
+        // reveal.js plugins
+        plugins: [
+          RevealHighlight,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    </body>
+</html>
