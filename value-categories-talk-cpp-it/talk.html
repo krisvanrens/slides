@@ -8,8 +8,8 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
-  <link rel="stylesheet" href="reveal.js/css/reset.css">
-  <link rel="stylesheet" href="reveal.js/css/reveal.css">
+  <link rel="stylesheet" href="reveal.js/dist/reset.css">
+  <link rel="stylesheet" href="reveal.js/dist/reveal.css">
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
@@ -17,81 +17,11 @@
     div.column{display: inline-block; vertical-align: top; width: 50%;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
     ul.task-list{list-style: none;}
-    pre > code.sourceCode { white-space: pre; position: relative; }
-    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-    pre > code.sourceCode > span:empty { height: 1.2em; }
-    code.sourceCode > span { color: inherit; text-decoration: inherit; }
-    div.sourceCode { margin: 1em 0; }
-    pre.sourceCode { margin: 0; }
-    @media screen {
-    div.sourceCode { overflow: auto; }
-    }
-    @media print {
-    pre > code.sourceCode { white-space: pre-wrap; }
-    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-    }
-    pre.numberSource code
-      { counter-reset: source-line 0; }
-    pre.numberSource code > span
-      { position: relative; left: -4em; counter-increment: source-line; }
-    pre.numberSource code > span > a:first-child::before
-      { content: counter(source-line);
-        position: relative; left: -1em; text-align: right; vertical-align: baseline;
-        border: none; display: inline-block;
-        -webkit-touch-callout: none; -webkit-user-select: none;
-        -khtml-user-select: none; -moz-user-select: none;
-        -ms-user-select: none; user-select: none;
-        padding: 0 4px; width: 4em;
-        color: #aaaaaa;
-      }
-    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-    div.sourceCode
-      {   }
-    @media screen {
-    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-    }
-    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-    code span.at { color: #7d9029; } /* Attribute */
-    code span.bn { color: #40a070; } /* BaseN */
-    code span.bu { } /* BuiltIn */
-    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-    code span.ch { color: #4070a0; } /* Char */
-    code span.cn { color: #880000; } /* Constant */
-    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-    code span.dt { color: #902000; } /* DataType */
-    code span.dv { color: #40a070; } /* DecVal */
-    code span.er { color: #ff0000; font-weight: bold; } /* Error */
-    code span.ex { } /* Extension */
-    code span.fl { color: #40a070; } /* Float */
-    code span.fu { color: #06287e; } /* Function */
-    code span.im { } /* Import */
-    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-    code span.op { color: #666666; } /* Operator */
-    code span.ot { color: #007020; } /* Other */
-    code span.pp { color: #bc7a00; } /* Preprocessor */
-    code span.sc { color: #4070a0; } /* SpecialChar */
-    code span.ss { color: #bb6688; } /* SpecialString */
-    code span.st { color: #4070a0; } /* String */
-    code span.va { color: #19177c; } /* Variable */
-    code span.vs { color: #4070a0; } /* VerbatimString */
-    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
-  <link rel="stylesheet" href="reveal.js/css/theme/solarized.css" id="theme">
-  <!-- Printing and PDF exports -->
-  <script>
-    var link = document.createElement( 'link' );
-    link.rel = 'stylesheet';
-    link.type = 'text/css';
-    link.href = window.location.search.match( /print-pdf/gi ) ? 'reveal.js/css/print/pdf.css' : 'reveal.js/css/print/paper.css';
-    document.getElementsByTagName( 'head' )[0].appendChild( link );
-  </script>
-  <!--[if lt IE 9]>
-  <script src="reveal.js/lib/js/html5shiv.js"></script>
-  <![endif]-->
+  <link rel="stylesheet" href="reveal.js/dist/theme/solarized.css" id="theme">
+  <link rel="stylesheet" href="reveal.js/plugin/highlight/kvr.css">
+  <link rel="stylesheet" href="css/pandoc-overrides.css"/>
 </head>
 <body>
   <div class="reveal">
@@ -128,31 +58,31 @@
 <h2>Quiz</h2>
 <div class="columns">
 <div class="column">
-<div class="sourceCode" id="cb1"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a><span class="kw">struct</span> Number {</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true"></a>  <span class="dt">int</span> <span class="va">value_</span> = {};</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true"></a>};</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true"></a><span class="kw">class</span> T {</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true"></a><span class="kw">public</span>:</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true"></a>  T(<span class="at">const</span> Number &amp;n) : <span class="va">n_</span>{n} {}</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true"></a></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true"></a>  T(<span class="at">const</span> T &amp;) { puts(<span class="st">&quot;Copy c&#39;tor&quot;</span>); }</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true"></a></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true"></a>  Number get() { <span class="cf">return</span> <span class="va">n_</span>; }</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true"></a></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true"></a><span class="kw">private</span>:</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true"></a>  Number <span class="va">n_</span>;</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true"></a>};</span></code></pre></div>
+<pre ><code class="cpp">struct Number {
+  int value_ = {};
+};
+
+class T {
+public:
+  T(const Number &n) : n_{n} {}
+
+  T(const T &) { puts("Copy c'tor"); }
+
+  Number get() { return n_; }
+
+private:
+  Number n_;
+};</code></pre>
 </div><div class="column">
-<div class="sourceCode" id="cb2"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a><span class="at">static</span> T create(Number &amp;&amp;n) {</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true"></a>  <span class="cf">return</span> T{<span class="bu">std::</span>move(n)};</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true"></a>}</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true"></a></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true"></a><span class="dt">int</span> main() {</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true"></a>  T x = T{create(Number{<span class="dv">42</span>})};</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true"></a></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true"></a>  <span class="cf">return</span> x.get().<span class="va">value_</span>;</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true"></a>}</span></code></pre></div>
+<pre ><code class="cpp">static T create(Number &&n) {
+  return T{std::move(n)};
+}
+
+int main() {
+  T x = T{create(Number{42})};
+
+  return x.get().value_;
+}</code></pre>
 <p>What’s the output?</p>
 </div>
 </div>
@@ -194,25 +124,25 @@
 <section id="section" class="slide level2">
 <h2></h2>
 <h3 id="example-expressions-1">Example expressions (1)</h3>
-<div class="sourceCode" id="cb3"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true"></a><span class="dv">42</span>  <span class="co">// Expression evaluating to value 42</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true"></a></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true"></a><span class="dv">17</span> + <span class="dv">42</span>  <span class="co">// Expression evaluating to value 59</span></span></code></pre></div>
-<div class="sourceCode" id="cb4"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true"></a><span class="dt">int</span> a;</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true"></a></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true"></a>a = <span class="dv">23</span>  <span class="co">// Expression evaluating to value 23</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true"></a>a + <span class="dv">17</span>  <span class="co">// Expression evaluation to value 40</span></span></code></pre></div>
-<div class="sourceCode" id="cb5"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true"></a><span class="kw">static_cast</span>&lt;<span class="dt">float</span>&gt;(a)  <span class="co">// Expression evaluating to floating-point value 23.0f</span></span></code></pre></div>
+<pre ><code class="cpp">42  // Expression evaluating to value 42
+
+17 + 42  // Expression evaluating to value 59</code></pre>
+<pre ><code class="cpp">int a;
+
+a = 23  // Expression evaluating to value 23
+a + 17  // Expression evaluation to value 40</code></pre>
+<pre ><code class="cpp">static_cast&lt;float&gt;(a)  // Expression evaluating to floating-point value 23.0f</code></pre>
 </section>
 <section id="section-1" class="slide level2">
 <h2></h2>
 <h3 id="example-expressions-2">Example expressions (2)</h3>
-<div class="sourceCode" id="cb6"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true"></a><span class="dt">int</span> a;</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true"></a></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true"></a><span class="kw">sizeof</span> a  <span class="co">// Expression evaluating to the byte size of &#39;a&#39;</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true"></a>          <span class="co">// Id-expression &#39;a&#39; is unevaluated</span></span></code></pre></div>
-<div class="sourceCode" id="cb7"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true"></a>[]{ <span class="cf">return</span> <span class="dv">3</span>; }  <span class="co">// Expression evaluating to a closure</span></span></code></pre></div>
-<div class="sourceCode" id="cb8"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true"></a>printf(<span class="st">&quot;Hi!</span><span class="sc">\n</span><span class="st">&quot;</span>)  <span class="co">// Expression evaluating to the number of characters written</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true"></a>                 <span class="co">// Result is often discarded, i.e. a &#39;discarded-value expression&#39;</span></span></code></pre></div>
+<pre ><code class="cpp">int a;
+
+sizeof a  // Expression evaluating to the byte size of 'a'
+          // Id-expression 'a' is unevaluated</code></pre>
+<pre ><code class="cpp">[]{ return 3; }  // Expression evaluating to a closure</code></pre>
+<pre ><code class="cpp">printf("Hi!\n")  // Expression evaluating to the number of characters written
+                 // Result is often discarded, i.e. a 'discarded-value expression'</code></pre>
 </section>
 <section id="expressions-in-c" class="slide level2">
 <h2>Expressions in C++</h2>
@@ -253,22 +183,22 @@
 <h3 id="does-it-evaluate-to-an-identity">Does it evaluate to an identity?</h3>
 <div class="columns">
 <div class="column">
-<div class="sourceCode" id="cb9"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true"></a><span class="dt">int</span> a;</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true"></a></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true"></a>a  <span class="co">// Has identity</span></span></code></pre></div>
-<div class="sourceCode" id="cb10"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true"></a><span class="dv">42</span>                <span class="co">// Has no identity</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true"></a><span class="kw">nullptr</span>           <span class="co">// Has no identity</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true"></a><span class="kw">false</span>             <span class="co">// Has no identity</span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true"></a>[]{ <span class="cf">return</span> <span class="dv">42</span>; }  <span class="co">// Has no identity</span></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true"></a><span class="st">&quot;Hi&quot;</span>              <span class="co">// Has identity</span></span></code></pre></div>
-<div class="sourceCode" id="cb11"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true"></a><span class="bu">std::</span>cout  <span class="co">// Has identity</span></span></code></pre></div>
+<pre ><code class="cpp">int a;
+
+a  // Has identity</code></pre>
+<pre ><code class="cpp">42                // Has no identity
+nullptr           // Has no identity
+false             // Has no identity
+[]{ return 42; }  // Has no identity
+"Hi"              // Has identity</code></pre>
+<pre ><code class="cpp">std::cout  // Has identity</code></pre>
 </div><div class="column">
-<div class="sourceCode" id="cb12"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true"></a>a + <span class="dv">2</span>      <span class="co">// Has no identity</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true"></a>a || <span class="kw">true</span>  <span class="co">// Has no identity</span></span></code></pre></div>
-<div class="sourceCode" id="cb13"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true"></a>a++  <span class="co">// Has no identity</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true"></a>++a  <span class="co">// Has identity</span></span></code></pre></div>
-<div class="sourceCode" id="cb14"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true"></a><span class="kw">static_cast</span>&lt;<span class="dt">int</span>&gt;(a)  <span class="co">// Has no identity</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true"></a><span class="bu">std::</span>move(a)         <span class="co">// Has identity</span></span></code></pre></div>
+<pre ><code class="cpp">a + 2      // Has no identity
+a || true  // Has no identity</code></pre>
+<pre ><code class="cpp">a++  // Has no identity
+++a  // Has identity</code></pre>
+<pre ><code class="cpp">static_cast&lt;int&gt;(a)  // Has no identity
+std::move(a)         // Has identity</code></pre>
 </div>
 </div>
 </section>
@@ -287,20 +217,20 @@
 <h3 id="can-its-resources-be-safely-stolen-1">Can its resources be safely stolen?</h3>
 <div class="columns">
 <div class="column">
-<div class="sourceCode" id="cb15"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true"></a><span class="bu">std::</span>string func()</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true"></a>{</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true"></a>  <span class="cf">return</span> <span class="st">&quot;Steal me!&quot;</span>;</span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true"></a>}</span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true"></a></span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true"></a><span class="bu">std::</span>vector&lt;<span class="bu">std::</span>string&gt; vec;</span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true"></a></span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true"></a>vec.push_back(func());</span></code></pre></div>
+<pre ><code class="cpp">std::string func()
+{
+  return "Steal me!";
+}
+
+std::vector&lt;std::string&gt; vec;
+
+vec.push_back(func());</code></pre>
 </div><div class="column">
-<div class="sourceCode" id="cb16"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true"></a><span class="bu">std::</span>string x{<span class="st">&quot;Steal me!&quot;</span>};</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true"></a></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true"></a><span class="bu">std::</span>vector&lt;<span class="bu">std::</span>string&gt; vec;</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true"></a></span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true"></a>vec.push_back(<span class="bu">std::</span>move(x));</span></code></pre></div>
+<pre ><code class="cpp">std::string x{"Steal me!"};
+
+std::vector&lt;std::string&gt; vec;
+
+vec.push_back(std::move(x));</code></pre>
 </div>
 </div>
 </section>
@@ -347,9 +277,9 @@
 <h2>Examples (1)</h2>
 <div class="columns">
 <div class="column">
-<div class="sourceCode" id="cb17"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true"></a><span class="dv">42</span>  <span class="co">// prvalue</span></span></code></pre></div>
-<div class="sourceCode" id="cb18"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true"></a><span class="kw">nullptr</span>  <span class="co">// prvalue</span></span></code></pre></div>
-<div class="sourceCode" id="cb19"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true"></a><span class="st">&quot;Hi there!&quot;</span>  <span class="co">// lvalue</span></span></code></pre></div>
+<pre ><code class="cpp">42  // prvalue</code></pre>
+<pre ><code class="cpp">nullptr  // prvalue</code></pre>
+<pre ><code class="cpp">"Hi there!"  // lvalue</code></pre>
 </div><div class="column">
 <p><img data-src="images/value-categories-table.png" style="width:90.0%" /></p>
 </div>
@@ -359,9 +289,9 @@
 <h2>Examples (2)</h2>
 <div class="columns">
 <div class="column">
-<div class="sourceCode" id="cb20"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true"></a><span class="dt">int</span> x = <span class="dv">42</span>;</span></code></pre></div>
-<div class="sourceCode" id="cb21"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true"></a>++x  <span class="co">// lvalue</span></span></code></pre></div>
-<div class="sourceCode" id="cb22"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true"></a>x++  <span class="co">// prvalue</span></span></code></pre></div>
+<pre ><code class="cpp">int x = 42;</code></pre>
+<pre ><code class="cpp">++x  // lvalue</code></pre>
+<pre ><code class="cpp">x++  // prvalue</code></pre>
 </div><div class="column">
 <p><img data-src="images/value-categories-table.png" style="width:90.0%" /></p>
 </div>
@@ -371,9 +301,9 @@
 <h2>Examples (3)</h2>
 <div class="columns">
 <div class="column">
-<div class="sourceCode" id="cb23"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true"></a><span class="dt">int</span> x = <span class="dv">42</span>;</span></code></pre></div>
-<div class="sourceCode" id="cb24"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true"></a>x   <span class="co">// lvalue</span></span></code></pre></div>
-<div class="sourceCode" id="cb25"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true"></a><span class="bu">std::</span>move(x)  <span class="co">// xvalue</span></span></code></pre></div>
+<pre ><code class="cpp">int x = 42;</code></pre>
+<pre ><code class="cpp">x   // lvalue</code></pre>
+<pre ><code class="cpp">std::move(x)  // xvalue</code></pre>
 </div><div class="column">
 <p><img data-src="images/value-categories-table.png" style="width:90.0%" /></p>
 </div>
@@ -383,15 +313,15 @@
 <h2>Examples (4)</h2>
 <div class="columns">
 <div class="column">
-<div class="sourceCode" id="cb26"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true"></a><span class="dt">void</span> func(<span class="dt">int</span> &amp;&amp;arg)</span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true"></a>{</span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true"></a>  <span class="co">// &#39;arg&#39; is an lvalue</span></span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true"></a></span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true"></a>  <span class="co">// &#39;std::move(arg)&#39; is an xvalue</span></span>
-<span id="cb26-6"><a href="#cb26-6" aria-hidden="true"></a>  other_func(<span class="bu">std::</span>move(arg));</span>
-<span id="cb26-7"><a href="#cb26-7" aria-hidden="true"></a>}</span>
-<span id="cb26-8"><a href="#cb26-8" aria-hidden="true"></a></span>
-<span id="cb26-9"><a href="#cb26-9" aria-hidden="true"></a>func(<span class="dv">42</span>);  <span class="co">// &#39;42&#39; is a prvalue</span></span></code></pre></div>
+<pre ><code class="cpp">void func(int &&arg)
+{
+  // 'arg' is an lvalue
+
+  // 'std::move(arg)' is an xvalue
+  other_func(std::move(arg));
+}
+
+func(42);  // '42' is a prvalue</code></pre>
 </div><div class="column">
 <p><img data-src="images/value-categories-table.png" style="width:90.0%" /></p>
 </div>
@@ -401,11 +331,11 @@
 <h2>Examples (5)</h2>
 <div class="columns">
 <div class="column">
-<div class="sourceCode" id="cb27"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true"></a><span class="dt">void</span> func(<span class="dt">int</span> &amp;arg);   <span class="co">// #1</span></span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true"></a><span class="dt">void</span> func(<span class="dt">int</span> &amp;&amp;arg);  <span class="co">// #2</span></span></code></pre></div>
-<div class="sourceCode" id="cb28"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true"></a><span class="dt">int</span> &amp;&amp;x = <span class="dv">42</span>;</span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true"></a></span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true"></a>func(x);  <span class="co">// Which overload is called?</span></span></code></pre></div>
+<pre ><code class="cpp">void func(int &arg);   // #1
+void func(int &&arg);  // #2</code></pre>
+<pre ><code class="cpp">int &&x = 42;
+
+func(x);  // Which overload is called?</code></pre>
 </div><div class="column">
 <p><img data-src="images/value-categories-table.png" style="width:90.0%" /></p>
 </div>
@@ -439,31 +369,31 @@
 <h2>Quiz revisited</h2>
 <div class="columns">
 <div class="column">
-<div class="sourceCode" id="cb29"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true"></a><span class="kw">struct</span> Number {</span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true"></a>  <span class="dt">int</span> <span class="va">value_</span> = {};</span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true"></a>};</span>
-<span id="cb29-4"><a href="#cb29-4" aria-hidden="true"></a></span>
-<span id="cb29-5"><a href="#cb29-5" aria-hidden="true"></a><span class="kw">class</span> T {</span>
-<span id="cb29-6"><a href="#cb29-6" aria-hidden="true"></a><span class="kw">public</span>:</span>
-<span id="cb29-7"><a href="#cb29-7" aria-hidden="true"></a>  T(<span class="at">const</span> Number &amp;n) : <span class="va">n_</span>{n} {}</span>
-<span id="cb29-8"><a href="#cb29-8" aria-hidden="true"></a></span>
-<span id="cb29-9"><a href="#cb29-9" aria-hidden="true"></a>  T(<span class="at">const</span> T &amp;) { puts(<span class="st">&quot;Copy c&#39;tor&quot;</span>); }</span>
-<span id="cb29-10"><a href="#cb29-10" aria-hidden="true"></a></span>
-<span id="cb29-11"><a href="#cb29-11" aria-hidden="true"></a>  Number get() { <span class="cf">return</span> <span class="va">n_</span>; }</span>
-<span id="cb29-12"><a href="#cb29-12" aria-hidden="true"></a></span>
-<span id="cb29-13"><a href="#cb29-13" aria-hidden="true"></a><span class="kw">private</span>:</span>
-<span id="cb29-14"><a href="#cb29-14" aria-hidden="true"></a>  Number <span class="va">n_</span>;</span>
-<span id="cb29-15"><a href="#cb29-15" aria-hidden="true"></a>};</span></code></pre></div>
+<pre ><code class="cpp">struct Number {
+  int value_ = {};
+};
+
+class T {
+public:
+  T(const Number &n) : n_{n} {}
+
+  T(const T &) { puts("Copy c'tor"); }
+
+  Number get() { return n_; }
+
+private:
+  Number n_;
+};</code></pre>
 </div><div class="column">
-<div class="sourceCode" id="cb30"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true"></a><span class="at">static</span> T create(Number &amp;&amp;n) {</span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true"></a>  <span class="cf">return</span> T{<span class="bu">std::</span>move(n)};</span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true"></a>}</span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true"></a></span>
-<span id="cb30-5"><a href="#cb30-5" aria-hidden="true"></a><span class="dt">int</span> main() {</span>
-<span id="cb30-6"><a href="#cb30-6" aria-hidden="true"></a>  T x = T{create(Number{<span class="dv">42</span>})};</span>
-<span id="cb30-7"><a href="#cb30-7" aria-hidden="true"></a></span>
-<span id="cb30-8"><a href="#cb30-8" aria-hidden="true"></a>  <span class="cf">return</span> x.get().<span class="va">value_</span>;</span>
-<span id="cb30-9"><a href="#cb30-9" aria-hidden="true"></a>}</span></code></pre></div>
+<pre ><code class="cpp">static T create(Number &&n) {
+  return T{std::move(n)};
+}
+
+int main() {
+  T x = T{create(Number{42})};
+
+  return x.get().value_;
+}</code></pre>
 <p>What’s the output?</p>
 </div>
 </div>
@@ -500,20 +430,20 @@
 <div class="columns">
 <div class="column">
 <p>C++ code:</p>
-<div class="sourceCode" id="cb31"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true"></a>T func()</span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true"></a>{</span>
-<span id="cb31-3"><a href="#cb31-3" aria-hidden="true"></a>  <span class="cf">return</span> T{};  <span class="co">// Create temporary</span></span>
-<span id="cb31-4"><a href="#cb31-4" aria-hidden="true"></a>}</span>
-<span id="cb31-5"><a href="#cb31-5" aria-hidden="true"></a></span>
-<span id="cb31-6"><a href="#cb31-6" aria-hidden="true"></a>T x = func();  <span class="co">// Create temporary</span></span></code></pre></div>
+<pre ><code class="cpp">T func()
+{
+  return T{};  // Create temporary
+}
+
+T x = func();  // Create temporary</code></pre>
 </div><div class="column">
 <p>Possible output (1):</p>
-<div class="sourceCode" id="cb32"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true"></a>T()</span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true"></a>T(<span class="at">const</span> &amp;)</span>
-<span id="cb32-3"><a href="#cb32-3" aria-hidden="true"></a>~T()</span>
-<span id="cb32-4"><a href="#cb32-4" aria-hidden="true"></a>T(<span class="at">const</span> &amp;)</span>
-<span id="cb32-5"><a href="#cb32-5" aria-hidden="true"></a>~T()</span>
-<span id="cb32-6"><a href="#cb32-6" aria-hidden="true"></a>~T()</span></code></pre></div>
+<pre ><code class="cpp">T()
+T(const &)
+~T()
+T(const &)
+~T()
+~T()</code></pre>
 </div>
 </div>
 <p>No copy elision.</p>
@@ -524,18 +454,18 @@
 <div class="columns">
 <div class="column">
 <p>C++ code:</p>
-<div class="sourceCode" id="cb33"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true"></a>T func()</span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true"></a>{</span>
-<span id="cb33-3"><a href="#cb33-3" aria-hidden="true"></a>  <span class="cf">return</span> T{};  <span class="co">// Create temporary?</span></span>
-<span id="cb33-4"><a href="#cb33-4" aria-hidden="true"></a>}</span>
-<span id="cb33-5"><a href="#cb33-5" aria-hidden="true"></a></span>
-<span id="cb33-6"><a href="#cb33-6" aria-hidden="true"></a>T x = func();  <span class="co">// Create temporary?</span></span></code></pre></div>
+<pre ><code class="cpp">T func()
+{
+  return T{};  // Create temporary?
+}
+
+T x = func();  // Create temporary?</code></pre>
 </div><div class="column">
 <p>Possible output (2):</p>
-<div class="sourceCode" id="cb34"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true"></a>T()</span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true"></a>T(<span class="at">const</span> &amp;)</span>
-<span id="cb34-3"><a href="#cb34-3" aria-hidden="true"></a>~T()</span>
-<span id="cb34-4"><a href="#cb34-4" aria-hidden="true"></a>~T()</span></code></pre></div>
+<pre ><code class="cpp">T()
+T(const &)
+~T()
+~T()</code></pre>
 </div>
 </div>
 <p>Partial copy elision.</p>
@@ -546,16 +476,16 @@
 <div class="columns">
 <div class="column">
 <p>C++ code:</p>
-<div class="sourceCode" id="cb35"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true"></a>T func()</span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true"></a>{</span>
-<span id="cb35-3"><a href="#cb35-3" aria-hidden="true"></a>  <span class="cf">return</span> T{};</span>
-<span id="cb35-4"><a href="#cb35-4" aria-hidden="true"></a>}</span>
-<span id="cb35-5"><a href="#cb35-5" aria-hidden="true"></a></span>
-<span id="cb35-6"><a href="#cb35-6" aria-hidden="true"></a>T x = func();</span></code></pre></div>
+<pre ><code class="cpp">T func()
+{
+  return T{};
+}
+
+T x = func();</code></pre>
 </div><div class="column">
 <p>Possible output (3):</p>
-<div class="sourceCode" id="cb36"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true"></a>T()</span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true"></a>~T()</span></code></pre></div>
+<pre ><code class="cpp">T()
+~T()</code></pre>
 </div>
 </div>
 <p>Full copy elision.</p>
@@ -592,19 +522,19 @@
 <blockquote>
 <p>If, in an initialization of an object, when the initializer expression is a <span style="color:#0066cc"><strong><code>prvalue</code></strong></span> of the same class type as the variable type.</p>
 </blockquote>
-<div class="sourceCode" id="cb37"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true"></a>T x{T{}}; <span class="co">// Only one (default) construction of T allowed here</span></span></code></pre></div>
+<pre ><code class="cpp">T x{T{}}; // Only one (default) construction of T allowed here</code></pre>
 </section>
 <section id="guaranteed-copy-elision-2" class="slide level2">
 <h2>Guaranteed copy elision (2)</h2>
 <blockquote>
 <p>If, in a <code>return</code> statement the operand is a <span style="color:#0066cc"><strong><code>prvalue</code></strong></span> of the same class type as the function return type.</p>
 </blockquote>
-<div class="sourceCode" id="cb38"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true"></a>T func()</span>
-<span id="cb38-2"><a href="#cb38-2" aria-hidden="true"></a>{</span>
-<span id="cb38-3"><a href="#cb38-3" aria-hidden="true"></a>  <span class="cf">return</span> T{};</span>
-<span id="cb38-4"><a href="#cb38-4" aria-hidden="true"></a>}</span>
-<span id="cb38-5"><a href="#cb38-5" aria-hidden="true"></a></span>
-<span id="cb38-6"><a href="#cb38-6" aria-hidden="true"></a>T x{func()}; <span class="co">// Only one (default) construction of T allowed here</span></span></code></pre></div>
+<pre ><code class="cpp">T func()
+{
+  return T{};
+}
+
+T x{func()}; // Only one (default) construction of T allowed here</code></pre>
 </section>
 <section id="section-17" class="slide level2">
 <h2></h2>
@@ -626,23 +556,23 @@
 </section>
 <section id="temporary-materialization" class="slide level2">
 <h2>Temporary materialization</h2>
-<div class="sourceCode" id="cb39"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true"></a><span class="kw">struct</span> Person {</span>
-<span id="cb39-2"><a href="#cb39-2" aria-hidden="true"></a>  <span class="bu">std::</span>string <span class="va">name_</span>;</span>
-<span id="cb39-3"><a href="#cb39-3" aria-hidden="true"></a>  <span class="dt">unsigned</span> <span class="dt">int</span> <span class="va">age_</span> = {};</span>
-<span id="cb39-4"><a href="#cb39-4" aria-hidden="true"></a>};</span>
-<span id="cb39-5"><a href="#cb39-5" aria-hidden="true"></a></span>
-<span id="cb39-6"><a href="#cb39-6" aria-hidden="true"></a>Person createPerson() {</span>
-<span id="cb39-7"><a href="#cb39-7" aria-hidden="true"></a>  <span class="bu">std::</span>string name;</span>
-<span id="cb39-8"><a href="#cb39-8" aria-hidden="true"></a>  <span class="dt">unsigned</span> <span class="dt">int</span> age = <span class="dv">0</span>;</span>
-<span id="cb39-9"><a href="#cb39-9" aria-hidden="true"></a></span>
-<span id="cb39-10"><a href="#cb39-10" aria-hidden="true"></a>  <span class="co">// Get data from somewhere in runtime..</span></span>
-<span id="cb39-11"><a href="#cb39-11" aria-hidden="true"></a></span>
-<span id="cb39-12"><a href="#cb39-12" aria-hidden="true"></a>  <span class="cf">return</span> Person{name, age};    <span class="co">// 1. Initial prvalue expression</span></span>
-<span id="cb39-13"><a href="#cb39-13" aria-hidden="true"></a>}</span>
-<span id="cb39-14"><a href="#cb39-14" aria-hidden="true"></a></span>
-<span id="cb39-15"><a href="#cb39-15" aria-hidden="true"></a><span class="dt">int</span> main() {</span>
-<span id="cb39-16"><a href="#cb39-16" aria-hidden="true"></a>  <span class="cf">return</span> createPerson().<span class="va">age_</span>;  <span class="co">// 2. Temporary materialization: xvalue</span></span>
-<span id="cb39-17"><a href="#cb39-17" aria-hidden="true"></a>}</span></code></pre></div>
+<pre ><code class="cpp">struct Person {
+  std::string name_;
+  unsigned int age_ = {};
+};
+
+Person createPerson() {
+  std::string name;
+  unsigned int age = 0;
+
+  // Get data from somewhere in runtime..
+
+  return Person{name, age};    // 1. Initial prvalue expression
+}
+
+int main() {
+  return createPerson().age_;  // 2. Temporary materialization: xvalue
+}</code></pre>
 </section>
 <section id="temporary-materialization-1" class="slide level2">
 <h2>Temporary materialization</h2>
@@ -695,17 +625,17 @@
 <p>The most simple example</p>
 <div class="columns">
 <div class="column">
-<div class="sourceCode" id="cb40"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true"></a>T func()</span>
-<span id="cb40-2"><a href="#cb40-2" aria-hidden="true"></a>{</span>
-<span id="cb40-3"><a href="#cb40-3" aria-hidden="true"></a>  T result;</span>
-<span id="cb40-4"><a href="#cb40-4" aria-hidden="true"></a></span>
-<span id="cb40-5"><a href="#cb40-5" aria-hidden="true"></a>  <span class="cf">return</span> result;</span>
-<span id="cb40-6"><a href="#cb40-6" aria-hidden="true"></a>}</span>
-<span id="cb40-7"><a href="#cb40-7" aria-hidden="true"></a></span>
-<span id="cb40-8"><a href="#cb40-8" aria-hidden="true"></a>T x = func();</span></code></pre></div>
+<pre ><code class="cpp">T func()
+{
+  T result;
+
+  return result;
+}
+
+T x = func();</code></pre>
 </div><div class="column">
-<div class="sourceCode" id="cb41"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true"></a>T()</span>
-<span id="cb41-2"><a href="#cb41-2" aria-hidden="true"></a>~T()</span></code></pre></div>
+<pre ><code class="cpp">T()
+~T()</code></pre>
 </div>
 </div>
 </section>
@@ -714,22 +644,22 @@
 <p>Slightly more involved</p>
 <div class="columns">
 <div class="column">
-<div class="sourceCode" id="cb42"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true"></a>T func()</span>
-<span id="cb42-2"><a href="#cb42-2" aria-hidden="true"></a>{</span>
-<span id="cb42-3"><a href="#cb42-3" aria-hidden="true"></a>  T result;</span>
-<span id="cb42-4"><a href="#cb42-4" aria-hidden="true"></a></span>
-<span id="cb42-5"><a href="#cb42-5" aria-hidden="true"></a>  <span class="cf">if</span> (something)</span>
-<span id="cb42-6"><a href="#cb42-6" aria-hidden="true"></a>    <span class="cf">return</span> result;</span>
-<span id="cb42-7"><a href="#cb42-7" aria-hidden="true"></a></span>
-<span id="cb42-8"><a href="#cb42-8" aria-hidden="true"></a>  <span class="co">// ...</span></span>
-<span id="cb42-9"><a href="#cb42-9" aria-hidden="true"></a></span>
-<span id="cb42-10"><a href="#cb42-10" aria-hidden="true"></a>  <span class="cf">return</span> result;</span>
-<span id="cb42-11"><a href="#cb42-11" aria-hidden="true"></a>}</span>
-<span id="cb42-12"><a href="#cb42-12" aria-hidden="true"></a></span>
-<span id="cb42-13"><a href="#cb42-13" aria-hidden="true"></a>T x = func();</span></code></pre></div>
+<pre ><code class="cpp">T func()
+{
+  T result;
+
+  if (something)
+    return result;
+
+  // ...
+
+  return result;
+}
+
+T x = func();</code></pre>
 </div><div class="column">
-<div class="sourceCode" id="cb43"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true"></a>T()</span>
-<span id="cb43-2"><a href="#cb43-2" aria-hidden="true"></a>~T()</span></code></pre></div>
+<pre ><code class="cpp">T()
+~T()</code></pre>
 <p>It still works</p>
 </div>
 </div>
@@ -743,27 +673,27 @@
 <div class="columns">
 <div class="column">
 <p>Multiple outputs</p>
-<div class="sourceCode" id="cb44"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true"></a>T func()</span>
-<span id="cb44-2"><a href="#cb44-2" aria-hidden="true"></a>{</span>
-<span id="cb44-3"><a href="#cb44-3" aria-hidden="true"></a>  T result;</span>
-<span id="cb44-4"><a href="#cb44-4" aria-hidden="true"></a></span>
-<span id="cb44-5"><a href="#cb44-5" aria-hidden="true"></a>  <span class="cf">if</span> (something)</span>
-<span id="cb44-6"><a href="#cb44-6" aria-hidden="true"></a>    <span class="cf">return</span> {};  <span class="co">// prvalue</span></span>
-<span id="cb44-7"><a href="#cb44-7" aria-hidden="true"></a></span>
-<span id="cb44-8"><a href="#cb44-8" aria-hidden="true"></a>  <span class="cf">return</span> result; <span class="co">// lvalue</span></span>
-<span id="cb44-9"><a href="#cb44-9" aria-hidden="true"></a>}</span>
-<span id="cb44-10"><a href="#cb44-10" aria-hidden="true"></a></span>
-<span id="cb44-11"><a href="#cb44-11" aria-hidden="true"></a>T x = func();</span></code></pre></div>
+<pre ><code class="cpp">T func()
+{
+  T result;
+
+  if (something)
+    return {};  // prvalue
+
+  return result; // lvalue
+}
+
+T x = func();</code></pre>
 </div><div class="column">
 <p>Output stored elsewhere</p>
-<div class="sourceCode" id="cb45"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true"></a><span class="at">static</span> T result;</span>
-<span id="cb45-2"><a href="#cb45-2" aria-hidden="true"></a></span>
-<span id="cb45-3"><a href="#cb45-3" aria-hidden="true"></a>T func()</span>
-<span id="cb45-4"><a href="#cb45-4" aria-hidden="true"></a>{</span>
-<span id="cb45-5"><a href="#cb45-5" aria-hidden="true"></a>  <span class="cf">return</span> result;</span>
-<span id="cb45-6"><a href="#cb45-6" aria-hidden="true"></a>}</span>
-<span id="cb45-7"><a href="#cb45-7" aria-hidden="true"></a></span>
-<span id="cb45-8"><a href="#cb45-8" aria-hidden="true"></a>T x = func();</span></code></pre></div>
+<pre ><code class="cpp">static T result;
+
+T func()
+{
+  return result;
+}
+
+T x = func();</code></pre>
 </div>
 </div>
 </section>
@@ -773,24 +703,24 @@
 <div class="columns">
 <div class="column">
 <p>Slicing <img data-src="images/em-pizza.svg" style="width:4.0%" /></p>
-<div class="sourceCode" id="cb46"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true"></a><span class="kw">struct</span> U : T { <span class="co">/* Additional members */</span> };</span>
-<span id="cb46-2"><a href="#cb46-2" aria-hidden="true"></a></span>
-<span id="cb46-3"><a href="#cb46-3" aria-hidden="true"></a>T func()</span>
-<span id="cb46-4"><a href="#cb46-4" aria-hidden="true"></a>{</span>
-<span id="cb46-5"><a href="#cb46-5" aria-hidden="true"></a>  U result;</span>
-<span id="cb46-6"><a href="#cb46-6" aria-hidden="true"></a></span>
-<span id="cb46-7"><a href="#cb46-7" aria-hidden="true"></a>  <span class="cf">return</span> result;</span>
-<span id="cb46-8"><a href="#cb46-8" aria-hidden="true"></a>}</span>
-<span id="cb46-9"><a href="#cb46-9" aria-hidden="true"></a></span>
-<span id="cb46-10"><a href="#cb46-10" aria-hidden="true"></a>T x = func();</span></code></pre></div>
+<pre ><code class="cpp">struct U : T { /* Additional members */ };
+
+T func()
+{
+  U result;
+
+  return result;
+}
+
+T x = func();</code></pre>
 </div><div class="column">
 <p>Returning a function argument</p>
-<div class="sourceCode" id="cb47"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true"></a>T func(T arg)</span>
-<span id="cb47-2"><a href="#cb47-2" aria-hidden="true"></a>{</span>
-<span id="cb47-3"><a href="#cb47-3" aria-hidden="true"></a>  <span class="cf">return</span> arg;</span>
-<span id="cb47-4"><a href="#cb47-4" aria-hidden="true"></a>}</span>
-<span id="cb47-5"><a href="#cb47-5" aria-hidden="true"></a></span>
-<span id="cb47-6"><a href="#cb47-6" aria-hidden="true"></a>T x = func(T{});</span></code></pre></div>
+<pre ><code class="cpp">T func(T arg)
+{
+  return arg;
+}
+
+T x = func(T{});</code></pre>
 </div>
 </div>
 </section>
@@ -799,17 +729,17 @@
 <p>When even <span style="color:#7ea6e0">N</span>RVO is not possible..</p>
 <div class="columns">
 <div class="column">
-<div class="sourceCode" id="cb48"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true"></a>T func(T arg)</span>
-<span id="cb48-2"><a href="#cb48-2" aria-hidden="true"></a>{</span>
-<span id="cb48-3"><a href="#cb48-3" aria-hidden="true"></a>  <span class="cf">return</span> arg;</span>
-<span id="cb48-4"><a href="#cb48-4" aria-hidden="true"></a>}</span>
-<span id="cb48-5"><a href="#cb48-5" aria-hidden="true"></a></span>
-<span id="cb48-6"><a href="#cb48-6" aria-hidden="true"></a>T x = func(T{});</span></code></pre></div>
+<pre ><code class="cpp">T func(T arg)
+{
+  return arg;
+}
+
+T x = func(T{});</code></pre>
 </div><div class="column">
-<div class="sourceCode" id="cb49"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true"></a>T()</span>
-<span id="cb49-2"><a href="#cb49-2" aria-hidden="true"></a>T(&amp;&amp;)</span>
-<span id="cb49-3"><a href="#cb49-3" aria-hidden="true"></a>~T()</span>
-<span id="cb49-4"><a href="#cb49-4" aria-hidden="true"></a>~T()</span></code></pre></div>
+<pre ><code class="cpp">T()
+T(&&)
+~T()
+~T()</code></pre>
 </div>
 </div>
 <p>Implicit <span style="color:#0066cc"><strong><code>rvalue</code></strong></span> conversion!</p>
@@ -828,31 +758,31 @@
 <h2>Quiz revisited</h2>
 <div class="columns">
 <div class="column">
-<div class="sourceCode" id="cb50"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true"></a><span class="kw">struct</span> Number {</span>
-<span id="cb50-2"><a href="#cb50-2" aria-hidden="true"></a>  <span class="dt">int</span> <span class="va">value_</span> = {};</span>
-<span id="cb50-3"><a href="#cb50-3" aria-hidden="true"></a>};</span>
-<span id="cb50-4"><a href="#cb50-4" aria-hidden="true"></a></span>
-<span id="cb50-5"><a href="#cb50-5" aria-hidden="true"></a><span class="kw">class</span> T {</span>
-<span id="cb50-6"><a href="#cb50-6" aria-hidden="true"></a><span class="kw">public</span>:</span>
-<span id="cb50-7"><a href="#cb50-7" aria-hidden="true"></a>  T(<span class="at">const</span> Number &amp;n) : <span class="va">n_</span>{n} {}</span>
-<span id="cb50-8"><a href="#cb50-8" aria-hidden="true"></a></span>
-<span id="cb50-9"><a href="#cb50-9" aria-hidden="true"></a>  T(<span class="at">const</span> T &amp;) { puts(<span class="st">&quot;Copy c&#39;tor&quot;</span>); }</span>
-<span id="cb50-10"><a href="#cb50-10" aria-hidden="true"></a></span>
-<span id="cb50-11"><a href="#cb50-11" aria-hidden="true"></a>  Number get() { <span class="cf">return</span> <span class="va">n_</span>; }</span>
-<span id="cb50-12"><a href="#cb50-12" aria-hidden="true"></a></span>
-<span id="cb50-13"><a href="#cb50-13" aria-hidden="true"></a><span class="kw">private</span>:</span>
-<span id="cb50-14"><a href="#cb50-14" aria-hidden="true"></a>  Number <span class="va">n_</span>;</span>
-<span id="cb50-15"><a href="#cb50-15" aria-hidden="true"></a>};</span></code></pre></div>
+<pre ><code class="cpp">struct Number {
+  int value_ = {};
+};
+
+class T {
+public:
+  T(const Number &n) : n_{n} {}
+
+  T(const T &) { puts("Copy c'tor"); }
+
+  Number get() { return n_; }
+
+private:
+  Number n_;
+};</code></pre>
 </div><div class="column">
-<div class="sourceCode" id="cb51"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true"></a><span class="at">static</span> T create(Number &amp;&amp;n) {</span>
-<span id="cb51-2"><a href="#cb51-2" aria-hidden="true"></a>  <span class="cf">return</span> T{<span class="bu">std::</span>move(n)};</span>
-<span id="cb51-3"><a href="#cb51-3" aria-hidden="true"></a>}</span>
-<span id="cb51-4"><a href="#cb51-4" aria-hidden="true"></a></span>
-<span id="cb51-5"><a href="#cb51-5" aria-hidden="true"></a><span class="dt">int</span> main() {</span>
-<span id="cb51-6"><a href="#cb51-6" aria-hidden="true"></a>  T x = T{create(Number{<span class="dv">42</span>})};</span>
-<span id="cb51-7"><a href="#cb51-7" aria-hidden="true"></a></span>
-<span id="cb51-8"><a href="#cb51-8" aria-hidden="true"></a>  <span class="cf">return</span> x.get().<span class="va">value_</span>;</span>
-<span id="cb51-9"><a href="#cb51-9" aria-hidden="true"></a>}</span></code></pre></div>
+<pre ><code class="cpp">static T create(Number &&n) {
+  return T{std::move(n)};
+}
+
+int main() {
+  T x = T{create(Number{42})};
+
+  return x.get().value_;
+}</code></pre>
 <p>What’s the output?</p>
 </div>
 </div>
@@ -861,25 +791,25 @@
 <h2>Quiz revisited</h2>
 <div class="columns">
 <div class="column">
-<div class="sourceCode" id="cb52"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true"></a><span class="kw">struct</span> Number {</span>
-<span id="cb52-2"><a href="#cb52-2" aria-hidden="true"></a>  <span class="dt">int</span> <span class="va">value_</span> = {};</span>
-<span id="cb52-3"><a href="#cb52-3" aria-hidden="true"></a>};</span>
-<span id="cb52-4"><a href="#cb52-4" aria-hidden="true"></a></span>
-<span id="cb52-5"><a href="#cb52-5" aria-hidden="true"></a><span class="kw">class</span> T {</span>
-<span id="cb52-6"><a href="#cb52-6" aria-hidden="true"></a><span class="kw">public</span>:</span>
-<span id="cb52-7"><a href="#cb52-7" aria-hidden="true"></a>  T(<span class="at">const</span> Number &amp;n) : <span class="va">n_</span>{n} {}</span>
-<span id="cb52-8"><a href="#cb52-8" aria-hidden="true"></a></span>
-<span id="cb52-9"><a href="#cb52-9" aria-hidden="true"></a>  Number get() { <span class="cf">return</span> <span class="va">n_</span>; }</span>
-<span id="cb52-10"><a href="#cb52-10" aria-hidden="true"></a></span>
-<span id="cb52-11"><a href="#cb52-11" aria-hidden="true"></a><span class="kw">private</span>:</span>
-<span id="cb52-12"><a href="#cb52-12" aria-hidden="true"></a>  Number <span class="va">n_</span>;</span>
-<span id="cb52-13"><a href="#cb52-13" aria-hidden="true"></a>};</span></code></pre></div>
+<pre ><code class="cpp">struct Number {
+  int value_ = {};
+};
+
+class T {
+public:
+  T(const Number &n) : n_{n} {}
+
+  Number get() { return n_; }
+
+private:
+  Number n_;
+};</code></pre>
 </div><div class="column">
-<div class="sourceCode" id="cb53"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true"></a><span class="dt">int</span> main() {</span>
-<span id="cb53-2"><a href="#cb53-2" aria-hidden="true"></a>  T x = T{Number{<span class="dv">42</span>}};</span>
-<span id="cb53-3"><a href="#cb53-3" aria-hidden="true"></a></span>
-<span id="cb53-4"><a href="#cb53-4" aria-hidden="true"></a>  <span class="cf">return</span> x.get().<span class="va">value_</span>;</span>
-<span id="cb53-5"><a href="#cb53-5" aria-hidden="true"></a>}</span></code></pre></div>
+<pre ><code class="cpp">int main() {
+  T x = T{Number{42}};
+
+  return x.get().value_;
+}</code></pre>
 <p>What’s the output?</p>
 </div>
 </div>
@@ -902,7 +832,7 @@
 <ul>
 <li class="fragment"><strong>Copy elision</strong>: part of the standard; permits,</li>
 <li class="fragment"><strong>Temporary materialization</strong>: part of the standard; mandates,</li>
-<li class="fragment"><span style="color:#ea6b66">U</span>RVO and <span style="color:#7ea6e0">N</span>RVO: unofficial terms,</li>
+<li class="fragment"><span style="color:#ea6b66">U</span>RVO and <span style="color:#7ea6e0">N</span>RVO: unofficial terms.</li>
 <li class="fragment">Implicit move: a RVO that happens even without copy elision,</li>
 <li class="fragment"><span style="color:#0066cc"><strong><code>prvalue</code></strong></span>s are <strong>not</strong> moved from.</li>
 </ul>
@@ -916,12 +846,18 @@
     </div>
   </div>
 
-  <script src="reveal.js/js/reveal.js"></script>
+  <script src="reveal.js/dist/reveal.js"></script>
+
+  // reveal.js plugins
+  <script src="reveal.js/plugin/notes/notes.js"></script>
+  <script src="reveal.js/plugin/search/search.js"></script>
+  <script src="reveal.js/plugin/zoom/zoom.js"></script>
+  <script src="reveal.js/plugin/highlight/highlight.js"></script>
 
   <script>
 
       // Full list of configuration options available at:
-      // https://github.com/hakimel/reveal.js#configuration
+      // https://revealjs.com/config/
       Reveal.initialize({
         // Display the page number of the current slide
         slideNumber: true,
@@ -930,11 +866,12 @@
         // Transition style
         transition: 'fade', // none/fade/slide/convex/concave/zoom
 
-        // Optional reveal.js plugins
-        dependencies: [
-          { src: 'reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
-          { src: 'reveal.js/plugin/zoom-js/zoom.js', async: true },
-          { src: 'reveal.js/plugin/notes/notes.js', async: true }
+        // reveal.js plugins
+        plugins: [
+          RevealHighlight,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
         ]
       });
     </script>
