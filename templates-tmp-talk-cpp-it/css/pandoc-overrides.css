@@ -1,0 +1,11 @@
+div.sourceCode {
+  overflow: visible;
+}
+
+pre.numberSource {
+  border-left: none;
+}
+
+pre > code.sourceCode > span > a:first-child::before {
+  text-decoration: none;
+}

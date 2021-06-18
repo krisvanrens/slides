@@ -1,0 +1,1423 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Kris van Rens">
+  <title>A bird’s-eye view of template&lt;&gt;</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="reveal.js/dist/reset.css">
+  <link rel="stylesheet" href="reveal.js/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="reveal.js/dist/theme/solarized.css" id="theme">
+  <link rel="stylesheet" href="reveal.js/plugin/highlight/kvr.css">
+  <link rel="stylesheet" href="css/pandoc-overrides.css"/>
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">A bird’s-eye view<br/>of <strong><span style="font-family:Inconsolata"><span style="color:rgb(170,13,145)">template</span><span style="color:rgb(38,48,51)">&lt;<img src='images/cpp-logo.png' width='14%' style='margin-top:2%;margin-bottom:-4%'/>&gt;</span></span></strong></h1>
+  <p class="subtitle"><small><strong>C++ Italy – June 19, 2021</strong></small></p>
+  <p class="author">Kris van Rens</p>
+</section>
+
+<section>
+<section id="whats-ahead" class="title-slide slide level1">
+<h1>What’s ahead?</h1>
+<ul>
+<li class="fragment"><strong>Introduction</strong></li>
+<li class="fragment"><strong>Templates in practice</strong></li>
+<li class="fragment"><strong>Taming templates</strong></li>
+<li class="fragment"><strong>Template metaprogramming</strong></li>
+<li class="fragment"><strong>Questions</strong> <img data-src="images/em-left_speech_bubble.svg" style="width:6.0%" /> <img data-src="images/em-question.svg" style="width:6.0%" /></li>
+</ul>
+</section>
+<section id="a-little-bit-about-me" class="slide level2">
+<h2>A little bit about me</h2>
+<p><img data-src="images/em-nerd_face.svg" style="width:7.0%" /> <img data-src="images/em-man-woman-girl-boy.svg" style="width:7.0%" /> <img data-src="images/em-guitar.svg" style="width:7.0%" /> <img data-src="images/em-running.svg" style="width:7.0%" /> <img data-src="images/em-man_climbing.svg" style="width:7.0%" /></p>
+<p><a href="mailto:kris@vanrens.org">kris@vanrens.org</a></p>
+</section>
+<section id="the-premise-and-goals" class="slide level2">
+<h2>The premise and goals</h2>
+<div class="fragment">
+<p><img data-src="images/em-swimmer.svg" style="width:6.0%" /> <img data-src="images/em-sos.svg" style="width:6.0%" /> <img data-src="images/em-woozy_face.svg" style="width:6.0%" /></p>
+</div>
+</section></section>
+<section>
+<section id="introduction" class="title-slide slide level1">
+<h1>Introduction</h1>
+
+</section>
+<section id="c-and-libraries-today" class="slide level2">
+<h2>C++ and libraries today</h2>
+<p><img data-src="images/multi-paradigm.png" style="width:80.0%" /></p>
+</section>
+<section id="c-and-libraries-today-1" class="slide level2">
+<h2>C++ and libraries today</h2>
+<p><img data-src="images/multi-paradigm_highlight.png" style="width:80.0%" /></p>
+</section>
+<section id="a-bit-of-history.." class="slide level2">
+<h2>A bit of history..</h2>
+<p><img data-src="images/history_timeline01.png" style="width:90.0%" /></p>
+</section>
+<section id="a-bit-of-history..-1" class="slide level2">
+<h2>A bit of history..</h2>
+<p><img data-src="images/history_timeline02.png" style="width:90.0%" /></p>
+</section>
+<section id="a-bit-of-history..-2" class="slide level2">
+<h2>A bit of history..</h2>
+<p><img data-src="images/history_timeline03.png" style="width:90.0%" /></p>
+</section>
+<section id="a-bit-of-history..-3" class="slide level2">
+<h2>A bit of history..</h2>
+<p><img data-src="images/history_timeline04.png" style="width:90.0%" /></p>
+</section>
+<section id="a-bit-of-history..-4" class="slide level2">
+<h2>A bit of history..</h2>
+<p><img data-src="images/history_timeline05.png" style="width:90.0%" /></p>
+</section>
+<section id="section" class="slide level2">
+<h2></h2>
+<div class="columns">
+<div class="column" style="width:70%;">
+<p><img data-src="images/fundamentals_paper.png" style="width:90.0%" /></p>
+</div><div class="column" style="width:30%;">
+<p>Alexander Stepanov</p>
+<p><img data-src="images/AlexanderStepanov.jpg" style="width:80.0%" /></p>
+<p><a href="http://stepanovpapers.com">stepanovpapers.com</a></p>
+</div>
+</div>
+</section>
+<section id="a-bit-of-history..-5" class="slide level2">
+<h2>A bit of history..</h2>
+<p><img data-src="images/history_timeline05.png" style="width:90.0%" /></p>
+</section>
+<section id="a-bit-of-history..-6" class="slide level2">
+<h2>A bit of history..</h2>
+<p><img data-src="images/history_timeline06.png" style="width:90.0%" /></p>
+</section>
+<section id="a-bit-of-history..-7" class="slide level2">
+<h2>A bit of history..</h2>
+<p><img data-src="images/history_timeline07.png" style="width:90.0%" /></p>
+</section>
+<section id="a-bit-of-history..-8" class="slide level2">
+<h2>A bit of history..</h2>
+<p><img data-src="images/history_timeline08.png" style="width:90.0%" /></p>
+</section>
+<section id="a-bit-of-history..-9" class="slide level2">
+<h2>A bit of history..</h2>
+<p><img data-src="images/history_timeline09.png" style="width:90.0%" /></p>
+</section>
+<section id="a-bit-of-history..-10" class="slide level2">
+<h2>A bit of history..</h2>
+<p><img data-src="images/history_timeline10.png" style="width:90.0%" /></p>
+</section>
+<section id="a-bit-of-history..-11" class="slide level2">
+<h2>A bit of history..</h2>
+<p><img data-src="images/history_timeline11.png" style="width:90.0%" /></p>
+</section>
+<section id="what-are-templates" class="slide level2">
+<h2>What are templates?</h2>
+<div class="columns">
+<div class="column" style="width:80%;">
+<blockquote>
+<p>A template is a cookie-cutter that specifies how to cut cookies that all look pretty much the same (although the cookies can be made of various kinds of dough, they’ll all have the same basic shape).</p>
+</blockquote>
+<p>From: <em>The C++ FAQ</em></p>
+</div><div class="column" style="width:20%;">
+<p><img data-src="images/cookie-cutter.jpg" /></p>
+</div>
+</div>
+</section>
+<section id="what-are-templates-1" class="slide level2">
+<h2>What are templates?</h2>
+<blockquote>
+<p>A template is a “pattern” that the <strong>compiler</strong> uses to generate a family of classes/functions/variables.</p>
+</blockquote>
+<div class="fragment">
+<p>The trade-off is a longer compilation time <img data-src="images/em-stopwatch.svg" style="width:4.0%" /></p>
+</div>
+</section>
+<section id="what-templates-can-do" class="slide level2">
+<h2>What templates can do</h2>
+<ul>
+<li class="fragment">Simplify code and architecture, improve reuse,</li>
+<li class="fragment">Move code interpretation to compile-time,</li>
+<li class="fragment">Do certain things otherwise impossible.</li>
+</ul>
+</section>
+<section id="digression" class="slide level2">
+<h2><code>&lt;digression&gt;</code> …</h2>
+<h3 id="compile-time-programming">Compile-time programming</h3>
+</section>
+<section id="look-ma-no-templates" class="slide level2">
+<h2>Look ma, no templates!</h2>
+<div class="columns">
+<div class="column" style="width:70%;">
+<pre ><code class="cpp" data-line-numbers="">constexpr unsigned long factorial(unsigned long value) {
+  return (value == 1 ? 1 : value * factorial(value - 1));
+}
+
+int main() {
+  return factorial(5);
+}</code></pre>
+</div><div class="column" style="width:30%;">
+<p>Output:</p>
+<pre ><code class="asm" data-line-numbers="">main:
+      mov   eax, 120
+      ret</code></pre>
+</div>
+</div>
+</section>
+<section id="away-with-fud" class="slide level2">
+<h2>Away with FUD!</h2>
+<blockquote>
+<p>Templates allow compile-time programming.</p>
+</blockquote>
+<blockquote>
+<p>Not all compile-time programming is templates.</p>
+</blockquote>
+</section>
+<section id="digression-1" class="slide level2">
+<h2>… <code>&lt;/digression&gt;</code></h2>
+</section>
+<section id="kinds-of-templates" class="slide level2">
+<h2>Kinds of templates</h2>
+<ul>
+<li class="fragment"><strong>Function</strong> templates <small><em>(since C++98)</em></small></li>
+<li class="fragment"><strong>Class</strong> template <small><em>(since C++98)</em></small></li>
+<li class="fragment"><strong>Alias</strong> templates <small><em>(since C++11)</em></small></li>
+<li class="fragment"><strong>Variable</strong> templates <small><em>(since C++14)</em></small></li>
+<li class="fragment"><strong>Concepts</strong> <small><em>(since C++20)</em></small></li>
+</ul>
+</section>
+<section id="function-templates" class="slide level2">
+<h2>Function templates</h2>
+<div class="columns">
+<div class="column">
+<p><strong>Regular function</strong>:</p>
+<pre ><code class="cpp" data-line-numbers="">int cube(int value) {
+  return value * value * value;
+}
+&nbsp;</code></pre>
+<pre ><code class="cpp" data-line-numbers="">int result = cube(5);</code></pre>
+</div><div class="column">
+<p><strong>Function template</strong>:</p>
+<pre ><code class="cpp" data-line-numbers="">template&lt;typename Type&gt;
+Type cube(Type value) {
+  return value * value * value;
+}</code></pre>
+<pre ><code class="cpp" data-line-numbers="">auto result1 = cube(5);    // int
+auto result2 = cube(0.4f); // float
+auto result3 = cube(0.73); // double
+auto result4 = cube(std::complex{3.2f, 2.73f});</code></pre>
+</div>
+</div>
+<div class="fragment">
+<p>Or, using C++20 abbreviated function templates:</p>
+<div class="columns">
+<div class="column" style="width:25%;">
+
+</div><div class="column" style="width:50%;">
+<pre ><code class="cpp" data-line-numbers="">auto cube(auto value) {
+  return value * value * value;
+}</code></pre>
+</div><div class="column" style="width:25%;">
+
+</div>
+</div>
+</div>
+</section>
+<section id="class-templates" class="slide level2">
+<h2>Class templates</h2>
+<div class="columns">
+<div class="column">
+<p><strong>Regular class</strong>:</p>
+<pre ><code class="cpp" data-line-numbers="">class Point {
+  int x_ = 0;
+  int y_ = 0;
+
+public:
+  std::pair&lt;int, int&gt; get() const {
+    return {x_, y_};
+  }
+};
+&nbsp;</code></pre>
+<pre ><code class="cpp" data-line-numbers="">Point p;
+
+int [x, y] = p.get();</code></pre>
+</div><div class="column">
+<p><strong>Class template</strong>:</p>
+<pre ><code class="cpp" data-line-numbers="">template&lt;typename Type&gt;
+class Point {
+  Type x_ = {};
+  Type y_ = {};
+
+public:
+  std::pair&lt;Type, Type&gt; get() const {
+    return {x_, y_};
+  }
+};</code></pre>
+<pre ><code class="cpp" data-line-numbers="">Point&lt;int&gt;   p1;
+Point&lt;float&gt; p2;
+
+auto [x1, y1] = p1.get();
+auto [x2, y2] = p2.get();</code></pre>
+</div>
+</div>
+</section>
+<section id="variable-templates" class="slide level2">
+<h2>Variable templates</h2>
+<div class="columns">
+<div class="column">
+<p><strong>Helpers for traits</strong>:</p>
+<pre ><code class="cpp" data-line-numbers="">template&lt;typename Type&gt;
+struct trait {
+  static constexpr bool value = true;
+};
+
+template&lt;typename Type&gt;
+static constexpr bool trait_v = trait&lt;Type&gt;::value;</code></pre>
+<pre ><code class="cpp" data-line-numbers="">static_assert(trait&lt;Type&gt;::value, "Trait must hold");
+static_assert(trait_v&lt;Type&gt;,      "Trait must hold");</code></pre>
+</div><div class="column">
+<p><strong>Constant variables</strong>:</p>
+<pre ><code class="cpp" data-line-numbers="">template&lt;typename Type&gt;
+constexpr Type e = 2.71828182845904523536028747135666L;</code></pre>
+<pre ><code class="cpp" data-line-numbers="">auto threshold1 = 100 * e&lt;float&gt;;
+auto threshold2 = 100 * e&lt;double&gt;;
+auto threshold3 = 100 * e&lt;long double&gt;;</code></pre>
+</div>
+</div>
+</section>
+<section id="alias-templates" class="slide level2">
+<h2>Alias templates</h2>
+<p>Given this class template:</p>
+<pre ><code class="cpp" data-line-numbers="">template&lt;typename KeyType, typename ValueType&gt;
+struct Map;</code></pre>
+<div class="columns">
+<div class="column">
+<p><strong>Regular alias definition</strong>:</p>
+<pre ><code class="cpp" data-line-numbers="">using CharToFloat = Map&lt;char, float&gt;;
+using IntToFloat  = Map&lt;int,  float&gt;;
+using LongToFloat = Map&lt;long, float&gt;;</code></pre>
+</div><div class="column">
+<p><strong>Alias template</strong>:</p>
+<pre ><code class="cpp" data-line-numbers="">template&lt;typename KeyType&gt;
+using FloatMap = Map&lt;KeyType, float&gt;;</code></pre>
+<pre ><code class="cpp" data-line-numbers="">FloatMap&lt;char&gt;        a;
+FloatMap&lt;int&gt;         b;
+FloatMap&lt;long&gt;        c;
+FloatMap&lt;std::string&gt; d;
+// ...</code></pre>
+</div>
+</div>
+</section>
+<section id="concepts" class="slide level2">
+<h2>Concepts</h2>
+<p>Since C++20, used for modeling syntactic and semantic constraints</p>
+<div class="columns">
+<div class="column">
+<p><strong>Concept</strong>:</p>
+<pre ><code class="cpp" data-line-numbers="">#include &lt;concepts&gt;
+
+template&lt;typename T&gt;
+concept EqualityComparable = requires (T a, T b) {
+    { a == b } -&gt; std::same_as&lt;bool&gt;;
+    { a != b } -&gt; std::same_as&lt;bool&gt;;
+};</code></pre>
+</div><div class="column">
+<p><strong>Usage</strong>:</p>
+<pre ><code class="cpp" data-line-numbers="">bool is_equal(const EqualityComparable auto &a,
+              const EqualityComparable auto &b) {
+  return a == b;
+}</code></pre>
+<p>Ensures <code>a</code> and <code>b</code> can be compared</p>
+</div>
+</div>
+</section>
+<section id="template-parameters" class="slide level2">
+<h2>Template parameters</h2>
+<p><strong>Type</strong> vs. <strong>non-type</strong></p>
+<div class="columns">
+<div class="column">
+<p>Type parameter</p>
+<pre ><code class="cpp" data-line-numbers="">template&lt;typename Type&gt;
+struct List {};
+
+auto l1 = List&lt;int&gt;{};
+auto l2 = List&lt;float&gt;{};</code></pre>
+</div><div class="column">
+<p>Non-type parameter</p>
+<pre ><code class="cpp" data-line-numbers="">template&lt;unsigned int Size&gt;
+struct Stack {};
+
+auto s1 = Stack&lt;3&gt;{};
+auto s2 = Stack&lt;17&gt;{};</code></pre>
+</div>
+</div>
+</section>
+<section id="non-type-parameters" class="slide level2">
+<h2>Non-type parameters</h2>
+<p>Examples of non-type parameters:</p>
+<div class="columns">
+<div class="column" style="width:25%;">
+
+</div><div class="column" style="width:50%;">
+<pre ><code class="cpp">template&lt;auto N&gt; Generic { /* ... */ };</code></pre>
+</div><div class="column" style="width:25%;">
+
+</div>
+</div>
+<div class="columns">
+<div class="column" style="width:33%;">
+<p>Up until C++17 <img data-src="images/em-white_check_mark.svg" style="width:7.0%" /></p>
+<pre ><code class="cpp" data-line-numbers="">Generic&lt;42&gt;      g1;
+Generic&lt;true&gt;    g2;
+Generic&lt;'t'&gt;     g3;
+Generic&lt;nullptr&gt; g4;
+Generic&lt;&obj&gt;    g5;</code></pre>
+</div><div class="column" style="width:33%;">
+<p>Since C++20 <img data-src="images/em-white_check_mark.svg" style="width:7.0%" /></p>
+<pre ><code class="cpp" data-line-numbers="">Generic&lt;4.2f&gt;             g6;
+Generic&lt;1.7&gt;              g7;
+Generic&lt;MyCustomType&gt;     g8;
+Generic&lt;[]{ return 42; }&gt; g9;</code></pre>
+</div><div class="column" style="width:33%;">
+<p><img data-src="images/em-x.svg" style="width:7.0%" /></p>
+<pre ><code class="cpp" data-line-numbers="">Generic&lt;arr[0]&gt; g10;
+Generic&lt;"Unix"&gt; g11;</code></pre>
+</div>
+</div>
+</section>
+<section id="template-template-parameters" class="slide level2">
+<h2>Template template parameters</h2>
+<pre ><code class="cpp" data-line-numbers="">template&lt;typename Type&gt;
+struct ContainerA { /* ... */ };
+
+template&lt;typename Type&gt;
+struct ContainerB { /* ... */ };
+
+template&lt;template&lt;typename&gt; typename Container&gt;
+struct IntegerStorage {
+  Container&lt;int&gt; container_;
+};
+
+IntegerStorage&lt;ContainerA&gt; l1;
+IntegerStorage&lt;ContainerB&gt; l2;</code></pre>
+</section>
+<section id="template-template-parameters-1" class="slide level2">
+<h2>Template template parameters</h2>
+<pre ><code class="cpp" data-line-numbers="7-13">template&lt;typename Type&gt;
+struct ContainerA { /* ... */ };
+
+template&lt;typename Type&gt;
+struct ContainerB { /* ... */ };
+
+template&lt;          template&lt;typename&gt; typename Container          &gt;
+//                 ^^^^^^^^^^^^^^^^^^
+//                   template type with one type argument expected
+//
+struct IntegerStorage {
+  Container&lt;int&gt; container_;
+};
+
+IntegerStorage&lt;ContainerA&gt; l1;
+IntegerStorage&lt;ContainerB&gt; l2;</code></pre>
+</section>
+<section id="variadic-templates" class="slide level2">
+<h2>Variadic templates</h2>
+<pre ><code class="cpp" data-line-numbers="">template&lt;typename... Args&gt;
+int naivePrintfWrapper(const std::string& fFormat, Args... fArgs) {
+  return printf(fFormat.c_str(), fArgs...); // Just copy all the arguments.
+}</code></pre>
+<pre ><code class="cpp" data-line-numbers="">naivePrintfWrapper("How are you today?\n");
+naivePrintfWrapper("Message: %s - %d\n", __FUNCTION__, __LINE__);
+naivePrintfWrapper("[%.2f, %.2f, %.2f]\n", 3.14f, 2.78f, 10.1f);</code></pre>
+<p>Related topics: <em>parameter packs</em>, <em>fold expressions</em></p>
+</section></section>
+<section>
+<section id="templates-in-practice" class="title-slide slide level1">
+<h1>Templates in practice</h1>
+</section>
+<section id="type-templates" class="slide level2">
+<h2>Type templates</h2>
+<p>Let’s build a simple stack type:</p>
+<pre ><code class="cpp" data-line-numbers="">class Stack {
+  std::deque&lt;...&gt; data_;
+
+public:
+  void push(... &&element);
+  std::optional&lt;...&gt; pop();
+};</code></pre>
+</section>
+<section id="type-templates-1" class="slide level2">
+<h2>Type templates</h2>
+<div class="columns">
+<div class="column">
+<pre ><code class="cpp" data-line-numbers="">template&lt;typename Type&gt;
+class Stack {
+  std::deque&lt;Type&gt; data_;
+
+public:
+  void push(Type&& element);
+  std::optional&lt;Type&gt; pop();
+};</code></pre>
+</div><div class="column">
+<pre ><code class="cpp" data-line-numbers="">template&lt;typename Type&gt;
+void Stack&lt;Type&gt;::push(Type&& element) {
+  data_.push_back(std::move(element));
+}
+
+template&lt;typename Type&gt;
+std::optional&lt;Type&gt; Stack&lt;Type&gt;::pop() {
+  std::optional&lt;Type&gt; result;
+
+  if (data_.empty()) {
+    return result;
+  }
+
+  result = std::move(data_.back());
+  data_.pop_back();
+
+  return result;
+}</code></pre>
+</div>
+</div>
+</section>
+<section id="type-templates-2" class="slide level2">
+<h2>Type templates</h2>
+<p>The stack in action:</p>
+<div class="columns">
+<div class="column">
+<pre ><code class="cpp" data-line-numbers="">Stack&lt;int&gt; s1;
+
+s1.push(42);
+s1.push(17);
+
+Stack&lt;std::string&gt; s2;
+
+s2.push("World");
+s2.push("Peace");</code></pre>
+</div><div class="column">
+<pre ><code class="cpp" data-line-numbers="">int v1 = s1.pop().value(); // 17.
+int v2 = s1.pop().value(); // 42.
+
+auto v3 = s1.pop(); // std::nullopt;
+
+auto v4 = s2.pop().value(); // "Peace".
+auto v5 = s2.pop(); // std::optional of "World".
+
+auto v6 = s2.pop(); // std::nullopt;
+auto v7 = s2.pop(); // std::nullopt;</code></pre>
+</div>
+</div>
+</section>
+<section id="default-values-for-types" class="slide level2">
+<h2>Default values for types</h2>
+<p>Suppose we want the template argument to be optional:</p>
+<div class="columns">
+<div class="column">
+<pre ><code class="cpp" data-line-numbers="">template&lt;typename Type&gt; // ???
+class Stack {
+  std::deque&lt;Type&gt; data_;
+
+public:
+  void push(Type&& element);
+  std::optional&lt;Type&gt; pop();
+};</code></pre>
+</div><div class="column">
+<pre ><code class="cpp" data-line-numbers="">Stack s1; // Should instantiate Stack&lt;int&gt;.
+
+s1.push(); // Push 0.
+
+Stack&lt;std::string&gt; s2;
+
+s2.push(); // Push "".
+
+// Etc.</code></pre>
+</div>
+</div>
+<p> </p>
+</section>
+<section id="default-values-for-types-1" class="slide level2">
+<h2>Default values for types</h2>
+<p>Suppose we want the template argument to be optional:</p>
+<div class="columns">
+<div class="column">
+<pre ><code class="cpp" data-line-numbers="1">template&lt;typename Type = int&gt;
+class Stack {
+  std::deque&lt;Type&gt; data_;
+
+public:
+  void push(Type&& element);
+  std::optional&lt;Type&gt; pop();
+};</code></pre>
+</div><div class="column">
+<pre ><code class="cpp" data-line-numbers="">Stack s1; // Instantiates Stack&lt;int&gt;.
+
+s1.push(); // Push 0.
+
+Stack&lt;std::string&gt; s2;
+
+s2.push(); // Push "".
+
+// Etc.</code></pre>
+</div>
+</div>
+<div class="fragment">
+<p>There are limitations as to where default arguments can be used</p>
+</div>
+</section>
+<section id="non-type-template-parameter" class="slide level2">
+<h2>Non-type template parameter</h2>
+<div class="columns">
+<div class="column" style="width:52%;">
+<p>Let’s add a maximum size:</p>
+<pre ><code class="cpp" data-line-numbers="">template&lt;typename Type, unsigned int MaxSize&gt;
+class Stack {
+  std::deque&lt;Type&gt; data_;
+
+public:
+  void push(Type&& element);
+  std::optional&lt;Type&gt; pop();
+};</code></pre>
+</div><div class="column" style="width:48%;">
+<pre ><code class="cpp" data-line-numbers="">template&lt;typename Type, unsigned int MaxSize&gt;
+void Stack&lt;Type, MaxSize&gt;::push(Type&& element) {
+  if (data_.size() &lt; MaxSize) {
+    data_.push_back(std::move(element));
+  }
+}
+
+template&lt;typename Type, unsigned int MaxSize&gt;
+std::optional&lt;Type&gt; Stack&lt;Type, MaxSize&gt;::pop() {
+  std::optional&lt;Type&gt; result;
+
+  if (data_.empty()) {
+    return result;
+  }
+
+  result = std::move(data_.back());
+  data_.pop_back();
+
+  return result;
+}</code></pre>
+</div>
+</div>
+</section>
+<section id="template-specialization" class="slide level2">
+<h2>Template specialization</h2>
+<p>How can we create a specific version for <code class="sourceCode cpp">MaxSize <span class="op">==</span> <span class="dv">1</span></code>?</p>
+<div class="fragment">
+<div class="columns">
+<div class="column">
+<pre ><code class="cpp" data-line-numbers="">template&lt;typename Type, unsigned int MaxSize&gt;
+class Stack { /* ... */ }; // 'primary template'.
+
+template&lt;typename Type&gt;
+class Stack&lt;Type, 1&gt; {
+  Type data_;
+  bool empty_ = true;
+
+public:
+  void push(Type&& element);
+  std::optional&lt;Type&gt; pop();
+};</code></pre>
+<p>This is a <em>partial specialization</em></p>
+</div><div class="column">
+<pre ><code class="cpp" data-line-numbers="">template&lt;typename Type&gt;
+void Stack&lt;Type, 1&gt;::push(Type&& element) {
+  if (empty_) {
+    data_ = std::move(element);
+    empty_ = false;
+  }
+}
+
+template&lt;typename Type&gt;
+std::optional&lt;Type&gt; Stack&lt;Type, 1&gt;::pop() {
+  std::optional&lt;Type&gt; result;
+
+  if (empty_) {
+    return result;
+  }
+
+  result = std::move(data_);
+  empty_ = true;
+
+  return result;
+}</code></pre>
+</div>
+</div>
+</div>
+</section></section>
+<section>
+<section id="taming-templates" class="title-slide slide level1">
+<h1>Taming templates</h1>
+</section>
+<section id="polymorphism-in-c" class="slide level2">
+<h2>Polymorphism in C++</h2>
+<p><img data-src="images/polymorphism.png" style="width:75.0%" /></p>
+</section>
+<section id="compile-time-polymorphism" class="slide level2">
+<h2>Compile-time polymorphism</h2>
+<p>Also: <strong>static polymorphism</strong></p>
+<div class="columns">
+<div class="column" style="width:35%;">
+<pre ><code class="cpp" data-line-numbers="">template&lt;typename Type&gt;
+void log(Type& printable) {
+  printable.print();
+}</code></pre>
+<pre ><code class="cpp" data-line-numbers="">struct A {
+  void print() { /* ... */ }
+};
+
+struct B {
+  void print() { /* ... */ }
+};</code></pre>
+</div><div class="column" style="width:65%;">
+<pre ><code class="cpp" data-line-numbers="">A a;
+B b;
+
+log(a); // Instantiates 'log&lt;A&gt;()'.
+log(b); // Instantiates 'log&lt;B&gt;()'.</code></pre>
+<p><em>Implicit</em> interface:</p>
+<p>Expects <code class="sourceCode cpp">Type<span class="op">::</span>print<span class="op">()</span></code> implicitly</p>
+</div>
+</div>
+</section>
+<section id="constraining-templated-entities" class="slide level2">
+<h2>Constraining templated entities</h2>
+<p>Now let’s break it:</p>
+<div class="columns">
+<div class="column" style="width:35%;">
+<pre ><code class="cpp" data-line-numbers="">template&lt;typename Type&gt;
+void log(Type& printable) {
+  printable.print();
+}</code></pre>
+<pre ><code class="cpp" data-line-numbers="">struct A {
+  void print() { /* ... */ }
+};
+
+struct B {
+  // No print()..
+};</code></pre>
+</div><div class="column" style="width:65%;">
+<pre ><code class="cpp" data-line-numbers="">A a;
+B b;
+
+log(a); // Instantiates 'log&lt;A&gt;()'.
+log(b); // Will try to instantiate 'log&lt;B&gt;()'.</code></pre>
+<pre ><code class="text">&lt;source&gt;: In instantiation of 'void log(Type&) [with Type = B]':
+&lt;source&gt;:   required from here
+&lt;source&gt;:3: error: 'struct B' has no member named 'print'
+    3 |   printable.print();
+      |   ~~~~~~~~~~^~~~~</code></pre>
+<p>That’s not so bad really..</p>
+</div>
+</div>
+</section>
+<section id="constraining-templated-entities-1" class="slide level2">
+<h2>Constraining templated entities</h2>
+<pre ><code class="cpp" data-line-numbers="">std::vector&lt;std::vector&lt;int&gt;&gt; v;
+auto result = std::find(v.begin(), v.end(), 42); // NOTE: No match for operator==.</code></pre>
+<div class="fragment">
+<pre ><code class="text">In file included from /opt/include/c++/11.1.0/bits/stl_algobase.h:71,
+                 from /opt/include/c++/11.1.0/vector:60,
+                 from &lt;source&gt;:1:
+/opt/include/c++/11.1.0/bits/predefined_ops.h: In instantiation of 'bool __gnu_cxx::__ops::_Iter_equals_val&lt;_Value&gt;::operator()(_Iterator) [with _Iterator = __gnu_cxx::__normal_iterator&lt;std::vector&lt;int&gt;*, std::vector&lt;std::vector&lt;int&gt; &gt; &gt;; _Value = const int]':
+/opt/include/c++/11.1.0/bits/stl_algobase.h:2069:14:   required from '_RandomAccessIterator std::__find_if(_RandomAccessIterator, _RandomAccessIterator, _Predicate, std::random_access_iterator_tag) [with _RandomAccessIterator = __gnu_cxx::__normal_iterator&lt;std::vector&lt;int&gt;*, std::vector&lt;std::vector&lt;int&gt; &gt; &gt;; _Predicate = __gnu_cxx::__ops::_Iter_equals_val&lt;const int&gt;]'
+
+                                     ...232 more lines...</code></pre>
+<p><img data-src="images/em-scream.svg" style="width:4.0%" /></p>
+</div>
+</section>
+<section id="constraining-templated-entities-2" class="slide level2">
+<h2>Constraining templated entities</h2>
+<blockquote>
+<p>Templates create a ‘Duck Typing’ scenario: anything is allowed. Improve modelling by imposing <strong>constraints</strong>.</p>
+</blockquote>
+<div class="fragment">
+<p><img data-src="images/em-toolbox.svg" style="width:4.0%" /></p>
+<ul>
+<li class="fragment">C++20 <em>concepts</em>,</li>
+<li class="fragment"><code class="sourceCode cpp"><span class="kw">static_assert</span><span class="op">()</span></code>,</li>
+<li class="fragment">Type traits.</li>
+</ul>
+</div>
+</section>
+<section id="static-assertions" class="slide level2">
+<h2>Static assertions</h2>
+<p>Preventing misuse of <code>Stack&lt;&gt;</code>:</p>
+<div class="columns">
+<div class="column" style="width:52%;">
+<pre ><code class="cpp" data-line-numbers="">template&lt;typename Type, unsigned int MaxSize&gt;
+class Stack {
+  static_assert(MaxSize != 0, "MaxSize cannot be zero");
+
+  std::deque&lt;Type&gt; data_;
+
+public:
+  void push(Type&& element);
+  std::optional&lt;Type&gt; pop();
+};</code></pre>
+</div><div class="column" style="width:48%;">
+<pre ><code class="cpp" data-line-numbers="">Stack&lt;int, 16&gt; s1;  // OK.
+Stack&lt;int, 0&gt;  s2;  // Compiler error!</code></pre>
+</div>
+</div>
+</section>
+<section id="static-assertions-1" class="slide level2">
+<h2>Static assertions</h2>
+<p>Preventing misuse of <code>Stack&lt;&gt;</code>:</p>
+<div class="columns">
+<div class="column" style="width:52%;">
+<pre ><code class="cpp" data-line-numbers="3">template&lt;typename Type, unsigned int MaxSize&gt;
+class Stack {
+  static_assert(MaxSize != 0, "MaxSize cannot be zero");
+
+  std::deque&lt;Type&gt; data_;
+
+public:
+  void push(Type&& element);
+  std::optional&lt;Type&gt; pop();
+};</code></pre>
+</div><div class="column" style="width:48%;">
+<pre ><code class="cpp" data-line-numbers="2">Stack&lt;int, 16&gt; s1;  // OK.
+Stack&lt;int, 0&gt;  s2;  // Compiler error!</code></pre>
+<pre ><code class="text">error: static_assert failed due to requirement '0U != 0'
+         "MaxSize cannot be zero"
+  static_assert(MaxSize != 0, "MaxSize cannot be zero");
+  ^             ~~~~~~~~~~~~</code></pre>
+</div>
+</div>
+</section>
+<section id="type-traits" class="slide level2">
+<h2>Type traits</h2>
+<blockquote>
+<p>Type traits enable type <strong>evaluation</strong> and <strong>modification</strong>.</p>
+</blockquote>
+<p>… at compile-time</p>
+</section>
+<section id="a-rational-number" class="slide level2">
+<h2>A rational number</h2>
+<div class="columns">
+<div class="column" style="width:55%;">
+<pre ><code class="cpp" data-line-numbers="">template&lt;typename Type&gt;
+class Fraction {
+  Type numerator_   = {};
+  Type denominator_ = {};
+
+public:
+  Fraction(Type numerator, Type denominator)
+    : numerator_{numerator},
+      denominator_{denominator} {
+  }
+
+  Type numerator()   { return numerator_;   }
+  Type denominator() { return denominator_; }
+
+  double real() {
+    return static_cast&lt;double&gt;(numerator_) / denominator_;
+  }
+};</code></pre>
+</div><div class="column" style="width:45%;">
+<pre ><code class="cpp" data-line-numbers="">Fraction&lt;int&gt;           a{22, 7};
+Fraction&lt;unsigned long&gt; b{355U, 113U};
+
+printf("a = %.8lf\n", a.real());
+printf("b = %.8lf\n", b.real());</code></pre>
+<pre ><code class="text">a = 3.14285714
+b = 3.14159292</code></pre>
+</div>
+</div>
+</section>
+<section id="a-rational-number-1" class="slide level2">
+<h2>A rational number</h2>
+<div class="columns">
+<div class="column" style="width:55%;">
+<pre ><code class="cpp" data-line-numbers="">template&lt;typename Type&gt;
+class Fraction {
+  Type numerator_   = {};
+  Type denominator_ = {};
+
+public:
+  Fraction(Type numerator, Type denominator)
+    : numerator_{numerator},
+      denominator_{denominator} {
+  }
+
+  Type numerator()   { return numerator_;   }
+  Type denominator() { return denominator_; }
+
+  double real() {
+    return static_cast&lt;double&gt;(numerator_) / denominator_;
+  }
+};</code></pre>
+</div><div class="column" style="width:45%;">
+<pre ><code class="cpp" data-line-numbers="3,4,8,9">Fraction&lt;int&gt;           a{22, 7};
+Fraction&lt;unsigned long&gt; b{355U, 113U};
+Fraction&lt;double&gt;        c{3.14159265, 1.0};
+Fraction&lt;bool&gt;          d{true, true};
+
+printf("a = %.8lf\n", a.real());
+printf("b = %.8lf\n", b.real());
+printf("c = %.8lf\n", c.real());
+printf("d = %.8lf\n", d.real());</code></pre>
+<pre ><code class="text">a = 3.14285714
+b = 3.14159292
+c = 3.14159265
+d = 1.00000000</code></pre>
+<p>Hmmm…</p>
+</div>
+</div>
+</section>
+<section id="imposing-constraints" class="slide level2">
+<h2>Imposing constraints</h2>
+<pre ><code class="cpp" data-line-numbers="">template&lt;typename Type&gt;
+class Fraction {
+  static_assert(/* ..insert compile-time check.. */,
+                "Not a non-boolean integral type");
+
+public:
+  // ...
+};</code></pre>
+<pre ><code class="cpp" data-line-numbers="">Fraction&lt;double&gt; c{3.14159265, 1.0};
+Fraction&lt;bool&gt;   d{true, true};</code></pre>
+<pre ><code class="text">
+
+
+                               ...a compiler error would be nice!...
+
+
+
+
+</code></pre>
+</section>
+<section id="imposing-constraints-1" class="slide level2">
+<h2>Imposing constraints</h2>
+<pre ><code class="cpp" data-line-numbers="3,4">template&lt;typename Type&gt;
+class Fraction {
+  static_assert(std::is_integral&lt;Type&gt;::value && !std::is_same&lt;Type, bool&gt;::value,
+                "Not a non-boolean integral type");
+
+public:
+  // ...
+};</code></pre>
+<pre ><code class="cpp" data-line-numbers="">Fraction&lt;double&gt; c{3.14159265, 1.0};
+Fraction&lt;bool&gt;   d{true, true};</code></pre>
+<pre ><code class="text">&lt;source&gt;: In instantiation of 'class Fraction&lt;double&gt;': required from here:
+&lt;source&gt;: error: static assertion failed: Not a non-boolean integral type
+    |   static_assert(std::is_integral&lt;Type&gt;::value && !std::is_same&lt;Type, bool&gt;::value,
+    |                                         ^~~~~
+&lt;source&gt;: In instantiation of 'class Fraction&lt;bool&gt;': required from here:
+&lt;source&gt;: error: static assertion failed: Not a non-boolean integral type
+    |   static_assert(std::is_integral&lt;Type&gt;::value && !std::is_same&lt;Type, bool&gt;::value,
+    |                                                                             ^~~~~</code></pre>
+</section>
+<section id="imposing-constraints-2" class="slide level2">
+<h2>Imposing constraints</h2>
+<pre ><code class="cpp" data-line-numbers="3,4">template&lt;typename Type&gt;
+class Fraction {
+  static_assert(std::is_integral_v&lt;Type&gt; && !std::is_same_v&lt;Type, bool&gt;,
+                "Not a non-boolean integral type");
+
+public:
+  // ...
+};</code></pre>
+<pre ><code class="cpp" data-line-numbers="">Fraction&lt;double&gt; c{3.14159265, 1.0};
+Fraction&lt;bool&gt;   d{true, true};</code></pre>
+<pre ><code class="text">&lt;source&gt;: In instantiation of 'class Fraction&lt;double&gt;': required from here:
+&lt;source&gt;: error: static assertion failed: Not a non-boolean integral type
+    |   static_assert(std::is_integral_v&lt;Type&gt; && !std::is_same_v&lt;Type, bool&gt;,
+    |                 ~~~~~^~~~~~~~~~~~~
+&lt;source&gt;: In instantiation of 'class Fraction&lt;bool&gt;': required from here:
+&lt;source&gt;: error: static assertion failed: Not a non-boolean integral type
+    |   static_assert(std::is_integral_v&lt;Type&gt; && !std::is_same_v&lt;Type, bool&gt;,
+    |                                              ~~~~~^~~~~~~~~</code></pre>
+</section>
+<section id="c20-concepts" class="slide level2">
+<h2>C++20 Concepts</h2>
+<blockquote>
+<p>A concept is a <strong>named set of requirements</strong> on template parameters. It can be used to select function overloads and template specializations.</p>
+</blockquote>
+<div class="fragment">
+<blockquote>
+<p>A concept is a <strong>predicate</strong>, evaluated at compile-time.</p>
+</blockquote>
+</div>
+</section>
+<section id="concept-form" class="slide level2">
+<h2>Concept form</h2>
+<table>
+<colgroup>
+<col style="width: 5%" />
+<col style="width: 88%" />
+<col style="width: 6%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td></td>
+<td><strong><code>template</code></strong> <code>&lt;</code><em><code>template-parameter-list</code></em><code>&gt;</code><br/> <strong><code>concept</code></strong> <em><code>concept-name</code></em> <code>=</code> <em><code>constraint-expression</code></em><code>;</code></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<div class="fragment">
+<p>E.g.:</p>
+<pre ><code class="cpp" data-line-numbers="">template&lt;typename Type&gt;
+concept UnsignedIntegral = std::is_integral_v&lt;Type&gt; && !std::is_signed_v&lt;Type&gt;;</code></pre>
+</div>
+<div class="fragment">
+<pre ><code class="cpp" data-line-numbers="">template&lt;typename Type&gt;
+concept Addable = requires (Type x) { x + x; };</code></pre>
+</div>
+</section>
+<section id="concept-example" class="slide level2">
+<h2>Concept example</h2>
+<pre ><code class="cpp" data-line-numbers="">template&lt;typename Type&gt;
+concept UnsignedIntegral = std::is_integral_v&lt;Type&gt; && !std::is_signed_v&lt;Type&gt;;</code></pre>
+<pre ><code class="cpp" data-line-numbers="">template&lt;UnsignedIntegral Type, Type Threshold&gt;
+struct Filter {
+  bool operator()(Type value) const {
+    return value &gt; Threshold;
+  }
+};
+
+// Filter&lt;long, 32&gt; fail; // &lt;-- Won't compile!
+
+Filter&lt;unsigned int, 32&gt; f;
+
+f(40); // True.
+f(10); // False.</code></pre>
+</section>
+<section id="back-to-fraction" class="slide level2">
+<h2>Back to <code>Fraction</code></h2>
+<pre ><code class="cpp" data-line-numbers="">#include &lt;type_traits&gt;
+
+template&lt;typename Type&gt;
+class Fraction {
+  static_assert(std::is_integral_v&lt;Type&gt; && !std::is_same_v&lt;Type, bool&gt;,
+                "Not a non-boolean integral type");
+
+public:
+  // ...
+};</code></pre>
+<pre ><code class="cpp" data-line-numbers="">Fraction&lt;int&gt;   f1; // OK.
+Fraction&lt;float&gt; f2; // Error: static assertion fails.</code></pre>
+</section>
+<section id="back-to-fraction-1" class="slide level2">
+<h2>Back to <code>Fraction</code></h2>
+<pre ><code class="cpp" data-line-numbers="">#include &lt;concepts&gt;
+
+template&lt;typename Type&gt;
+concept NonBooleanIntegral = std::integral&lt;Type&gt; && !std::same_as&lt;Type, bool&gt;;
+
+template&lt;NonBooleanIntegral Type&gt;
+class Fraction {
+public:
+  // ...
+};</code></pre>
+<pre ><code class="cpp" data-line-numbers="">Fraction&lt;int&gt;   f1; // OK.
+Fraction&lt;float&gt; f2; // Error: constraints not satisfied.</code></pre>
+</section>
+<section id="concept-usage-forms" class="slide level2">
+<h2>Concept usage forms</h2>
+<pre ><code class="cpp" data-line-numbers="">template&lt;typename Type&gt;
+concept UnsignedIntegral = std::is_integral_v&lt;Type&gt; && !std::is_signed_v&lt;Type&gt;;</code></pre>
+<div class="columns">
+<div class="column">
+<p>Form 1:</p>
+<pre ><code class="cpp" data-line-numbers="">template&lt;UnsignedIntegral Type&gt;
+void func(Type value) {
+  // ...
+}</code></pre>
+</div><div class="column">
+<p>Form 2:</p>
+<pre ><code class="cpp" data-line-numbers="">template&lt;typename Type&gt; requires UnsignedIntegral&lt;Type&gt;
+void func(Type value) {
+  // ...
+}</code></pre>
+<p>Form 3:</p>
+<pre ><code class="cpp" data-line-numbers="">template&lt;typename Type&gt;
+void func(Type value) requires UnsignedIntegral&lt;Type&gt; {
+  // ...
+}</code></pre>
+</div>
+</div>
+</section>
+<section id="the-requires-keyword" class="slide level2">
+<h2>The <code class="sourceCode cpp"><span class="kw">requires</span></code> keyword</h2>
+<p>The <code class="sourceCode cpp"><span class="kw">requires</span></code> keyword introduces a <em>requires-clause</em></p>
+<div class="fragment">
+<div class="columns">
+<div class="column">
+<p>Constant expression / <code class="sourceCode cpp"><span class="kw">concept</span></code>:</p>
+<pre ><code class="cpp" data-line-numbers="">template&lt;typename Type&gt;
+  requires std::is_integral_v&lt;Type&gt;
+struct X {
+  // ...
+};
+
+template&lt;typename Type&gt;
+  requires Integral&lt;Type&gt;
+struct X {
+  // ...
+};</code></pre>
+</div><div class="column">
+<p><em>Requires-expression</em>:</p>
+<pre ><code class="cpp" data-line-numbers="">template&lt;typename Type&gt;
+concept Addable = requires (Type x) { x + x; };</code></pre>
+<pre ><code class="cpp" data-line-numbers="">template&lt;typename Type&gt;
+  requires requires (Type x) { x + x; }
+Type add(Type a, Type b) {
+  return a + b;
+}</code></pre>
+</div>
+</div>
+</div>
+</section></section>
+<section>
+<section id="template-meta-programming" class="title-slide slide level1">
+<h1>Template meta-programming</h1>
+</section>
+<section id="serendipity" class="slide level2">
+<h2>Serendipity</h2>
+<ul>
+<li class="fragment">Template metaprogramming was ‘discovered’</li>
+<li class="fragment">In 1994 Erwin Unruh demonstrated this at a committee meeting</li>
+<li class="fragment">In fact, the template system is <em>Turing-complete</em></li>
+</ul>
+</section>
+<section id="examples" class="slide level2">
+<h2>Examples</h2>
+<p>Compile-time Fibonacci number calculation:</p>
+<div class="columns">
+<div class="column" style="width:70%;">
+<pre ><code class="cpp" data-line-numbers="">template&lt;int Index, int A = 0, int B = 1&gt;
+struct Fibonacci {
+  static constexpr int value = Fibonacci&lt;Index - 1, B, A + B&gt;::value;
+};
+
+template&lt;int A, int B&gt;
+struct Fibonacci&lt;0, A, B&gt; {
+  static constexpr int value = A;
+};
+
+template&lt;int A, int B&gt;
+struct Fibonacci&lt;1, A, B&gt; {
+  static constexpr int value = B;
+};
+
+int main() {
+  return Fibonacci&lt;8&gt;::value;
+}</code></pre>
+</div><div class="column" style="width:30%;">
+<p>Fibonacci sequence:</p>
+<pre ><code class="text">0 1 1 2 3 5 8 13 21 34 ...
+                 ^^</code></pre>
+<p>Build output:</p>
+<pre ><code class="asm" data-line-numbers="">main:
+      mov   eax, 21
+      ret</code></pre>
+</div>
+</div>
+</section>
+<section id="examples-1" class="slide level2">
+<h2>Examples</h2>
+<p>Compile-time Fibonacci number calculation:</p>
+<div class="columns">
+<div class="column" style="width:70%;">
+<pre ><code class="cpp" data-line-numbers="16-18">template&lt;int Index, int A = 0, int B = 1&gt;
+struct Fibonacci {
+  static constexpr int value = Fibonacci&lt;Index - 1, B, A + B&gt;::value;
+};
+
+template&lt;int A, int B&gt;
+struct Fibonacci&lt;0, A, B&gt; {
+  static constexpr int value = A;
+};
+
+template&lt;int A, int B&gt;
+struct Fibonacci&lt;1, A, B&gt; {
+  static constexpr int value = B;
+};
+
+int main() {
+  return Fibonacci&lt;8&gt;::value;
+}</code></pre>
+</div><div class="column" style="width:30%;">
+<p>Instantiations:</p>
+<pre ><code class="text">Fibonacci&lt;8, 0, 1&gt;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;</code></pre>
+</div>
+</div>
+</section>
+<section id="examples-2" class="slide level2">
+<h2>Examples</h2>
+<p>Compile-time Fibonacci number calculation:</p>
+<div class="columns">
+<div class="column" style="width:70%;">
+<pre ><code class="cpp" data-line-numbers="1-4,16-18">template&lt;int Index, int A = 0, int B = 1&gt;
+struct Fibonacci {
+  static constexpr int value = Fibonacci&lt;Index - 1, B, A + B&gt;::value;
+};
+
+template&lt;int A, int B&gt;
+struct Fibonacci&lt;0, A, B&gt; {
+  static constexpr int value = A;
+};
+
+template&lt;int A, int B&gt;
+struct Fibonacci&lt;1, A, B&gt; {
+  static constexpr int value = B;
+};
+
+int main() {
+  return Fibonacci&lt;8&gt;::value;
+}</code></pre>
+</div><div class="column" style="width:30%;">
+<p>Instantiations:</p>
+<pre ><code class="text">Fibonacci&lt;8, 0, 1&gt;
+Fibonacci&lt;7, 1, 1&gt;
+Fibonacci&lt;6, 1, 2&gt;
+Fibonacci&lt;5, 2, 3&gt;
+Fibonacci&lt;4, 3, 5&gt;
+Fibonacci&lt;3, 5, 8&gt;
+Fibonacci&lt;2, 8, 13&gt;
+&nbsp;</code></pre>
+</div>
+</div>
+</section>
+<section id="examples-3" class="slide level2">
+<h2>Examples</h2>
+<p>Compile-time Fibonacci number calculation:</p>
+<div class="columns">
+<div class="column" style="width:70%;">
+<pre ><code class="cpp" data-line-numbers="1-4,11-14,16-18">template&lt;int Index, int A = 0, int B = 1&gt;
+struct Fibonacci {
+  static constexpr int value = Fibonacci&lt;Index - 1, B, A + B&gt;::value;
+};
+
+template&lt;int A, int B&gt;
+struct Fibonacci&lt;0, A, B&gt; {
+  static constexpr int value = A;
+};
+
+template&lt;int A, int B&gt;
+struct Fibonacci&lt;1, A, B&gt; {
+  static constexpr int value = B;
+};
+
+int main() {
+  return Fibonacci&lt;8&gt;::value;
+}</code></pre>
+</div><div class="column" style="width:30%;">
+<p>Instantiations:</p>
+<pre ><code class="text">Fibonacci&lt;8, 0, 1&gt;
+Fibonacci&lt;7, 1, 1&gt;
+Fibonacci&lt;6, 1, 2&gt;
+Fibonacci&lt;5, 2, 3&gt;
+Fibonacci&lt;4, 3, 5&gt;
+Fibonacci&lt;3, 5, 8&gt;
+Fibonacci&lt;2, 8, 13&gt;
+Fibonacci&lt;1, 13, 21&gt;</code></pre>
+<p>Done!</p>
+</div>
+</div>
+</section>
+<section id="examples-4" class="slide level2">
+<h2>Examples</h2>
+<p>Compile-time Fibonacci number calculation:</p>
+<div class="columns">
+<div class="column" style="width:70%;">
+<pre ><code class="cpp" data-line-numbers="6-9">template&lt;int Index, int A = 0, int B = 1&gt;
+struct Fibonacci {
+  static constexpr int value = Fibonacci&lt;Index - 1, B, A + B&gt;::value;
+};
+
+template&lt;int A, int B&gt;  // Specialization is not used here.
+struct Fibonacci&lt;0, A, B&gt; {
+  static constexpr int value = A;
+};
+
+template&lt;int A, int B&gt;
+struct Fibonacci&lt;1, A, B&gt; {
+  static constexpr int value = B;
+};
+
+int main() {
+  return Fibonacci&lt;8&gt;::value;
+}</code></pre>
+</div><div class="column" style="width:30%;">
+<p>Instantiations:</p>
+<pre ><code class="text">Fibonacci&lt;8, 0, 1&gt;
+Fibonacci&lt;7, 1, 1&gt;
+Fibonacci&lt;6, 1, 2&gt;
+Fibonacci&lt;5, 2, 3&gt;
+Fibonacci&lt;4, 3, 5&gt;
+Fibonacci&lt;3, 5, 8&gt;
+Fibonacci&lt;2, 8, 13&gt;
+Fibonacci&lt;1, 13, 21&gt;</code></pre>
+<p>Done!</p>
+</div>
+</div>
+</section>
+<section id="one-slide-on-sfinae" class="slide level2">
+<h2>One slide on SFINAE</h2>
+<p>Abbreviation for <strong>“Substitution Failure Is Not An Error”</strong></p>
+<p>A rule for overload resolution in function templates, used in TMP</p>
+<div class="fragment">
+<p><img data-src="images/em-point_up.svg" style="width:6.0%" /> <em>Avoid direct use if possible</em> <img data-src="images/em-point_up.svg" style="width:6.0%" /></p>
+<p><em><small>(unless you really know what you’re doing)</small></em></p>
+</div>
+</section></section>
+<section>
+<section id="end" class="title-slide slide level1">
+<h1>End</h1>
+</section>
+<section id="if-you-want-to-know-it-all" class="slide level2">
+<h2>If you want to know it all</h2>
+<p><img data-src="images/template_book.jpg" style="width:30.0%" /></p>
+</section>
+<section id="thank-you" class="slide level2">
+<h2>Thank you <img data-src="images/em-grinning.svg" style="width:5.0%" /></h2>
+<div class="columns">
+<div class="column" style="width:74%;">
+<blockquote>
+<p>If you think this is cooler than ice cream, you’ve got the makings of a template metaprogrammer. If the templates and specializations, recursive instantiations and <code>enum</code> hacks and […] make your skin crawl, well, you’re a pretty normal C++ programmer.</p>
+</blockquote>
+<p>— <em>Scott Meyers, Effective C++</em></p>
+</div><div class="column" style="width:26%;">
+<p> </p>
+<p><img data-src="images/em-left_speech_bubble.svg" style="width:45.0%" /> <img data-src="images/em-question.svg" style="width:45.0%" /></p>
+<p><small><img data-src="images/em-link.svg" style="width:6.0%" /> <a href="https://github.com/krisvanrens/">github.com/krisvanrens</a></small></p>
+</div>
+</div>
+</section></section>
+    </div>
+  </div>
+
+  <script src="reveal.js/dist/reveal.js"></script>
+
+  // reveal.js plugins
+  <script src="reveal.js/plugin/notes/notes.js"></script>
+  <script src="reveal.js/plugin/search/search.js"></script>
+  <script src="reveal.js/plugin/zoom/zoom.js"></script>
+  <script src="reveal.js/plugin/highlight/highlight.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+        // Display the page number of the current slide
+        slideNumber: true,
+        // Push each slide change to the browser history
+        history: true,
+        // Transition style
+        transition: 'fade', // none/fade/slide/convex/concave/zoom
+
+        // reveal.js plugins
+        plugins: [
+          RevealHighlight,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    </body>
+</html>
