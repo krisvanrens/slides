@@ -515,8 +515,8 @@ naivePrintfWrapper("[%.2f, %.2f, %.2f]\n", 3.14f, 2.78f, 10.1f);</code></pre>
 <section id="templates-in-practice" class="title-slide slide level1">
 <h1>Templates in practice</h1>
 </section>
-<section id="type-templates" class="slide level2">
-<h2>Type templates</h2>
+<section id="a-type-template" class="slide level2">
+<h2>A type template</h2>
 <p>Let’s build a simple stack type:</p>
 <pre ><code class="cpp" data-line-numbers="">class Stack {
   std::deque&lt;...&gt; data_;
@@ -526,8 +526,8 @@ public:
   std::optional&lt;...&gt; pop();
 };</code></pre>
 </section>
-<section id="type-templates-1" class="slide level2">
-<h2>Type templates</h2>
+<section id="a-type-template-1" class="slide level2">
+<h2>A type template</h2>
 <div class="columns">
 <div class="column">
 <pre ><code class="cpp" data-line-numbers="">template&lt;typename Type&gt;
@@ -560,8 +560,8 @@ std::optional&lt;Type&gt; Stack&lt;Type&gt;::pop() {
 </div>
 </div>
 </section>
-<section id="type-templates-2" class="slide level2">
-<h2>Type templates</h2>
+<section id="a-type-template-2" class="slide level2">
+<h2>A type template</h2>
 <p>The stack in action:</p>
 <div class="columns">
 <div class="column">
@@ -785,9 +785,9 @@ log(a); // Instantiates 'log&lt;A&gt;()'.
 log(b); // Will try to instantiate 'log&lt;B&gt;()'.</code></pre>
 <pre ><code class="text">&lt;source&gt;: In instantiation of 'void log(Type&) [with Type = B]':
 &lt;source&gt;:   required from here
-&lt;source&gt;:3: error: 'struct B' has no member named 'print'
-    3 |   printable.print();
-      |   ~~~~~~~~~~^~~~~</code></pre>
+&lt;source&gt;: error: 'struct B' has no member named 'print'
+    |   printable.print();
+    |   ~~~~~~~~~~^~~~~</code></pre>
 <p>That’s not so bad really..</p>
 </div>
 </div>
@@ -1058,24 +1058,6 @@ concept UnsignedIntegral = std::is_integral_v&lt;Type&gt; && !std::is_signed_v&l
 concept Addable = requires (Type x) { x + x; };</code></pre>
 </div>
 </section>
-<section id="concept-example" class="slide level2">
-<h2>Concept example</h2>
-<pre ><code class="cpp" data-line-numbers="">template&lt;typename Type&gt;
-concept UnsignedIntegral = std::is_integral_v&lt;Type&gt; && !std::is_signed_v&lt;Type&gt;;</code></pre>
-<pre ><code class="cpp" data-line-numbers="">template&lt;UnsignedIntegral Type, Type Threshold&gt;
-struct Filter {
-  bool operator()(Type value) const {
-    return value &gt; Threshold;
-  }
-};
-
-// Filter&lt;long, 32&gt; fail; // &lt;-- Won't compile!
-
-Filter&lt;unsigned int, 32&gt; f;
-
-f(40); // True.
-f(10); // False.</code></pre>
-</section>
 <section id="back-to-fraction" class="slide level2">
 <h2>Back to <code>Fraction</code></h2>
 <pre ><code class="cpp" data-line-numbers="">#include &lt;type_traits&gt;
@@ -1092,6 +1074,21 @@ public:
 Fraction&lt;float&gt; f2; // Error: static assertion fails.</code></pre>
 </section>
 <section id="back-to-fraction-1" class="slide level2">
+<h2>Back to <code>Fraction</code></h2>
+<pre ><code class="cpp" data-line-numbers="">#include &lt;type_traits&gt;
+
+template&lt;typename Type&gt;
+concept NonBooleanIntegral = std::is_integral_v&lt;Type&gt; && !std::is_same_v&lt;Type, bool&gt;;
+
+template&lt;NonBooleanIntegral Type&gt;
+class Fraction {
+public:
+  // ...
+};</code></pre>
+<pre ><code class="cpp" data-line-numbers="">Fraction&lt;int&gt;   f1; // OK.
+Fraction&lt;float&gt; f2; // Error: constraints not satisfied.</code></pre>
+</section>
+<section id="back-to-fraction-2" class="slide level2">
 <h2>Back to <code>Fraction</code></h2>
 <pre ><code class="cpp" data-line-numbers="">#include &lt;concepts&gt;
 
@@ -1145,7 +1142,7 @@ struct X {
 };
 
 template&lt;typename Type&gt;
-  requires Integral&lt;Type&gt;
+  requires std::integral&lt;Type&gt;
 struct X {
   // ...
 };</code></pre>
